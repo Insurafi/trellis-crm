@@ -122,7 +122,7 @@ export default function AgentStatusList() {
             <Switch 
               checked={showActivity}
               onCheckedChange={setShowActivity}
-              size="sm"
+              className="h-4 w-7"
             />
           </div>
         </div>
