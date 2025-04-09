@@ -16,22 +16,32 @@ import Communications from "@/pages/communications";
 import Sidebar from "@/components/ui/sidebar";
 import MobileHeader from "@/components/ui/mobile-header";
 import { useState } from "react";
+// Lazy load the new pages
+import { lazy, Suspense } from "react";
+const Agents = lazy(() => import("@/pages/agents"));
+const Leads = lazy(() => import("@/pages/leads"));
+const Policies = lazy(() => import("@/pages/policies"));
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/clients" component={Clients} />
-      <Route path="/documents" component={Documents} />
-      <Route path="/quotes" component={Quotes} />
-      <Route path="/calendar" component={Calendar} />
-      <Route path="/tasks" component={Tasks} />
-      <Route path="/marketing" component={Marketing} />
-      <Route path="/pipeline" component={Pipeline} />
-      <Route path="/commissions" component={Commissions} />
-      <Route path="/communications" component={Communications} />
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <Switch>
+        <Route path="/" component={Dashboard} />
+        <Route path="/clients" component={Clients} />
+        <Route path="/documents" component={Documents} />
+        <Route path="/quotes" component={Quotes} />
+        <Route path="/calendar" component={Calendar} />
+        <Route path="/tasks" component={Tasks} />
+        <Route path="/marketing" component={Marketing} />
+        <Route path="/pipeline" component={Pipeline} />
+        <Route path="/commissions" component={Commissions} />
+        <Route path="/communications" component={Communications} />
+        <Route path="/agents" component={Agents} />
+        <Route path="/leads" component={Leads} />
+        <Route path="/policies" component={Policies} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 

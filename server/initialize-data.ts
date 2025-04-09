@@ -8,6 +8,7 @@ import { sql } from "drizzle-orm";
 import { initializePipelineData } from "./initialize-pipeline-data";
 import { initializeCommissionData } from "./initialize-commission-data";
 import { initializeCommunicationData } from "./initialize-communication-data";
+import { initializeAgentsLeadsPoliciesData } from "./initialize-agents-leads-policies";
 
 // Function to initialize sample data in the database
 export async function initializeData() {
@@ -201,6 +202,9 @@ export async function initializeData() {
     
     // Initialize communication templates
     await initializeCommunicationData();
+    
+    // Initialize agents, leads, and policies
+    await initializeAgentsLeadsPoliciesData();
     
   } catch (error) {
     console.error("Error initializing sample data:", error);

@@ -17,6 +17,7 @@ import {
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { sendEmail, processTemplate } from "./email-service";
+import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Error handling middleware for validation errors
@@ -948,6 +949,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleValidationError(error, res);
     }
   });
+
+  // Register the agent, leads, and policy routes
+  registerAgentLeadsPolicyRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

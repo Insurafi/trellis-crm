@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, decimal, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -394,4 +394,191 @@ export const communicationTemplatesRelations = relations(communicationTemplates,
 
 export const usersTemplatesRelations = relations(users, ({ many }) => ({
   templates: many(communicationTemplates),
+}));
+
+// Agents (extending users with insurance-specific details)
+export const agents = pgTable("agents", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  licenseNumber: text("license_number").notNull(),
+  licenseExpiration: date("license_expiration").notNull(),
+  npn: text("npn"), // National Producer Number
+  phoneNumber: text("phone_number").notNull(),
+  address: text("address"),
+  carrierAppointments: text("carrier_appointments"), // Comma-separated list or JSON in practice 
+  uplineAgentId: integer("upline_agent_id"),
+  commissionPercentage: decimal("commission_percentage", { precision: 5, scale: 2 }),
+  overridePercentage: decimal("override_percentage", { precision: 5, scale: 2 }),
+  specialties: text("specialties"), // Comma-separated list of specialties
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertAgentSchema = createInsertSchema(agents).pick({
+  userId: true,
+  licenseNumber: true,
+  licenseExpiration: true,
+  npn: true,
+  phoneNumber: true, 
+  address: true,
+  carrierAppointments: true,
+  uplineAgentId: true,
+  commissionPercentage: true,
+  overridePercentage: true,
+  specialties: true,
+  notes: true,
+});
+
+export type InsertAgent = z.infer<typeof insertAgentSchema>;
+export type Agent = typeof agents.$inferSelect;
+
+// Leads (prospective clients)
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  dateOfBirth: date("date_of_birth"),
+  email: text("email"),
+  phoneNumber: text("phone_number"),
+  address: text("address"),
+  // Health Information
+  height: text("height"), // Store as string to allow for different formats (e.g., 5'10")
+  weight: text("weight"), // Store as string to allow for different formats
+  smokerStatus: text("smoker_status"), // Yes, No, Former
+  medicalConditions: text("medical_conditions"), // Could be comma-separated or JSON in practice
+  familyHistory: text("family_history"), // Could be comma-separated or JSON in practice
+  // Financial Information
+  incomeRange: text("income_range"), // e.g., "50k-100k"
+  existingCoverage: text("existing_coverage"), // Details about current insurance
+  coverageNeeds: text("coverage_needs"), // Amount and type of coverage needed
+  // Lead Management
+  leadSource: text("lead_source"), // How the lead was acquired
+  assignedAgentId: integer("assigned_agent_id").references(() => agents.id),
+  status: text("status").default("new"), // new, contacted, qualified, proposal, closed-won, closed-lost
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  lastContactedAt: timestamp("last_contacted_at"),
+});
+
+export const insertLeadSchema = createInsertSchema(leads).pick({
+  firstName: true,
+  lastName: true,
+  dateOfBirth: true,
+  email: true,
+  phoneNumber: true,
+  address: true,
+  height: true,
+  weight: true,
+  smokerStatus: true,
+  medicalConditions: true,
+  familyHistory: true,
+  incomeRange: true,
+  existingCoverage: true,
+  coverageNeeds: true,
+  leadSource: true,
+  assignedAgentId: true,
+  status: true,
+  notes: true,
+  lastContactedAt: true,
+});
+
+export type InsertLead = z.infer<typeof insertLeadSchema>;
+export type Lead = typeof leads.$inferSelect;
+
+// Policies 
+export const policies = pgTable("policies", {
+  id: serial("id").primaryKey(),
+  policyNumber: text("policy_number").notNull(),
+  carrier: text("carrier").notNull(), // Insurance company
+  policyType: text("policy_type").notNull(), // Term, Whole Life, Universal Life, etc.
+  status: text("status").default("applied"), // Applied, Pending, Issued, In Force, Lapsed, Canceled
+  faceAmount: decimal("face_amount", { precision: 15, scale: 2 }).notNull(), // Coverage amount
+  premium: decimal("premium", { precision: 10, scale: 2 }).notNull(), // Payment amount
+  premiumFrequency: text("premium_frequency").default("monthly"), // monthly, quarterly, annually
+  applicationDate: date("application_date"),
+  issueDate: date("issue_date"),
+  expiryDate: date("expiry_date"), // For term policies
+  clientId: integer("client_id").references(() => clients.id),
+  leadId: integer("lead_id").references(() => leads.id),
+  agentId: integer("agent_id").references(() => agents.id).notNull(),
+  addRiders: json("add_riders"), // Additional coverage options
+  notes: text("notes"),
+  documents: json("documents"), // References to policy documents
+  cashValue: decimal("cash_value", { precision: 15, scale: 2 }), // For whole/universal life
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPolicySchema = createInsertSchema(policies).pick({
+  policyNumber: true,
+  carrier: true,
+  policyType: true,
+  status: true,
+  faceAmount: true,
+  premium: true,
+  premiumFrequency: true,
+  applicationDate: true,
+  issueDate: true,
+  expiryDate: true,
+  clientId: true,
+  leadId: true,
+  agentId: true,
+  addRiders: true,
+  notes: true,
+  documents: true,
+  cashValue: true,
+});
+
+export type InsertPolicy = z.infer<typeof insertPolicySchema>;
+export type Policy = typeof policies.$inferSelect;
+
+// Relations
+export const agentsRelations = relations(agents, ({ one, many }) => ({
+  user: one(users, {
+    fields: [agents.userId],
+    references: [users.id],
+  }),
+  uplineAgent: one(agents, {
+    fields: [agents.uplineAgentId],
+    references: [agents.id],
+  }),
+  downlineAgents: many(agents, { relationName: "uplineAgent" }),
+  leads: many(leads),
+  policies: many(policies),
+}));
+
+export const leadsRelations = relations(leads, ({ one, many }) => ({
+  assignedAgent: one(agents, {
+    fields: [leads.assignedAgentId],
+    references: [agents.id],
+  }),
+  policies: many(policies),
+}));
+
+export const policiesRelations = relations(policies, ({ one }) => ({
+  client: one(clients, {
+    fields: [policies.clientId],
+    references: [clients.id],
+  }),
+  lead: one(leads, {
+    fields: [policies.leadId],
+    references: [leads.id],
+  }),
+  agent: one(agents, {
+    fields: [policies.agentId],
+    references: [agents.id],
+  }),
+}));
+
+export const usersAgentsRelations = relations(users, ({ one }) => ({
+  agent: one(agents, {
+    fields: [users.id],
+    references: [agents.userId],
+  }),
+}));
+
+export const clientsPoliciesRelations = relations(clients, ({ many }) => ({
+  policies: many(policies),
 }));

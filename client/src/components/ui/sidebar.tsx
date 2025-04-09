@@ -11,7 +11,10 @@ import {
   BarChart2,
   DollarSign,
   MessageSquare,
-  Settings
+  Settings,
+  UserCheck,
+  UserSearch,
+  Shield
 } from "lucide-react";
 
 interface SidebarProps {
@@ -25,6 +28,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const navItems = [
     { path: "/", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
     { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
+    { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
+    { path: "/leads", icon: <UserSearch className="mr-3 h-5 w-5" />, label: "Leads" },
+    { path: "/policies", icon: <Shield className="mr-3 h-5 w-5" />, label: "Policies" },
     { path: "/documents", icon: <FileText className="mr-3 h-5 w-5" />, label: "Documents" },
     { path: "/quotes", icon: <Tag className="mr-3 h-5 w-5" />, label: "Quotes" },
     { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },

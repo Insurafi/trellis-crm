@@ -9,7 +9,10 @@ import {
   pipelineStages, type PipelineStage, type InsertPipelineStage,
   pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity,
   commissions, type Commission, type InsertCommission,
-  communicationTemplates, type CommunicationTemplate, type InsertCommunicationTemplate
+  communicationTemplates, type CommunicationTemplate, type InsertCommunicationTemplate,
+  agents, type Agent, type InsertAgent,
+  leads, type Lead, type InsertLead,
+  policies, type Policy, type InsertPolicy
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, gt, and, sql, count } from "drizzle-orm";
@@ -545,6 +548,136 @@ export class DatabaseStorage implements IStorage {
       .from(communicationTemplates)
       .where(eq(communicationTemplates.id, id));
     return template || undefined;
+  }
+  
+  // Agent methods
+  async getAgents(): Promise<Agent[]> {
+    return db.select().from(agents);
+  }
+  
+  async getAgent(id: number): Promise<Agent | undefined> {
+    const [agent] = await db.select().from(agents).where(eq(agents.id, id));
+    return agent || undefined;
+  }
+  
+  async getAgentByUserId(userId: number): Promise<Agent | undefined> {
+    const [agent] = await db.select().from(agents).where(eq(agents.userId, userId));
+    return agent || undefined;
+  }
+  
+  async getAgentsByUpline(uplineAgentId: number): Promise<Agent[]> {
+    return db.select().from(agents).where(eq(agents.uplineAgentId, uplineAgentId));
+  }
+  
+  async createAgent(insertAgent: InsertAgent): Promise<Agent> {
+    const [agent] = await db
+      .insert(agents)
+      .values(insertAgent)
+      .returning();
+    return agent;
+  }
+  
+  async updateAgent(id: number, agentData: Partial<InsertAgent>): Promise<Agent | undefined> {
+    const [agent] = await db
+      .update(agents)
+      .set(agentData)
+      .where(eq(agents.id, id))
+      .returning();
+    return agent || undefined;
+  }
+  
+  async deleteAgent(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(agents)
+      .where(eq(agents.id, id))
+      .returning();
+    return !!deleted;
+  }
+  
+  // Lead methods
+  async getLeads(): Promise<Lead[]> {
+    return db.select().from(leads);
+  }
+  
+  async getLeadsByAgent(agentId: number): Promise<Lead[]> {
+    return db.select().from(leads).where(eq(leads.assignedAgentId, agentId));
+  }
+  
+  async getLead(id: number): Promise<Lead | undefined> {
+    const [lead] = await db.select().from(leads).where(eq(leads.id, id));
+    return lead || undefined;
+  }
+  
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    const [lead] = await db
+      .insert(leads)
+      .values(insertLead)
+      .returning();
+    return lead;
+  }
+  
+  async updateLead(id: number, leadData: Partial<InsertLead>): Promise<Lead | undefined> {
+    const [lead] = await db
+      .update(leads)
+      .set(leadData)
+      .where(eq(leads.id, id))
+      .returning();
+    return lead || undefined;
+  }
+  
+  async deleteLead(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(leads)
+      .where(eq(leads.id, id))
+      .returning();
+    return !!deleted;
+  }
+  
+  // Policy methods
+  async getPolicies(): Promise<Policy[]> {
+    return db.select().from(policies);
+  }
+  
+  async getPoliciesByClient(clientId: number): Promise<Policy[]> {
+    return db.select().from(policies).where(eq(policies.clientId, clientId));
+  }
+  
+  async getPoliciesByLead(leadId: number): Promise<Policy[]> {
+    return db.select().from(policies).where(eq(policies.leadId, leadId));
+  }
+  
+  async getPoliciesByAgent(agentId: number): Promise<Policy[]> {
+    return db.select().from(policies).where(eq(policies.agentId, agentId));
+  }
+  
+  async getPolicy(id: number): Promise<Policy | undefined> {
+    const [policy] = await db.select().from(policies).where(eq(policies.id, id));
+    return policy || undefined;
+  }
+  
+  async createPolicy(insertPolicy: InsertPolicy): Promise<Policy> {
+    const [policy] = await db
+      .insert(policies)
+      .values(insertPolicy)
+      .returning();
+    return policy;
+  }
+  
+  async updatePolicy(id: number, policyData: Partial<InsertPolicy>): Promise<Policy | undefined> {
+    const [policy] = await db
+      .update(policies)
+      .set(policyData)
+      .where(eq(policies.id, id))
+      .returning();
+    return policy || undefined;
+  }
+  
+  async deletePolicy(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(policies)
+      .where(eq(policies.id, id))
+      .returning();
+    return !!deleted;
   }
 
   async createCommunicationTemplate(insertTemplate: InsertCommunicationTemplate): Promise<CommunicationTemplate> {

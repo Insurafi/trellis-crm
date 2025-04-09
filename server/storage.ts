@@ -9,7 +9,10 @@ import {
   pipelineStages, type PipelineStage, type InsertPipelineStage,
   pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity,
   commissions, type Commission, type InsertCommission,
-  communicationTemplates, type CommunicationTemplate, type InsertCommunicationTemplate
+  communicationTemplates, type CommunicationTemplate, type InsertCommunicationTemplate,
+  agents, type Agent, type InsertAgent,
+  leads, type Lead, type InsertLead,
+  policies, type Policy, type InsertPolicy
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
@@ -111,6 +114,33 @@ export interface IStorage {
   createCommunicationTemplate(template: InsertCommunicationTemplate): Promise<CommunicationTemplate>;
   updateCommunicationTemplate(id: number, template: Partial<InsertCommunicationTemplate>): Promise<CommunicationTemplate | undefined>;
   deleteCommunicationTemplate(id: number): Promise<boolean>;
+  
+  // Agents
+  getAgents(): Promise<Agent[]>;
+  getAgent(id: number): Promise<Agent | undefined>;
+  getAgentByUserId(userId: number): Promise<Agent | undefined>;
+  getAgentsByUpline(uplineAgentId: number): Promise<Agent[]>;
+  createAgent(agent: InsertAgent): Promise<Agent>;
+  updateAgent(id: number, agent: Partial<InsertAgent>): Promise<Agent | undefined>;
+  deleteAgent(id: number): Promise<boolean>;
+  
+  // Leads
+  getLeads(): Promise<Lead[]>;
+  getLeadsByAgent(agentId: number): Promise<Lead[]>;
+  getLead(id: number): Promise<Lead | undefined>;
+  createLead(lead: InsertLead): Promise<Lead>;
+  updateLead(id: number, lead: Partial<InsertLead>): Promise<Lead | undefined>;
+  deleteLead(id: number): Promise<boolean>;
+  
+  // Policies
+  getPolicies(): Promise<Policy[]>;
+  getPoliciesByClient(clientId: number): Promise<Policy[]>;
+  getPoliciesByLead(leadId: number): Promise<Policy[]>;
+  getPoliciesByAgent(agentId: number): Promise<Policy[]>;
+  getPolicy(id: number): Promise<Policy | undefined>;
+  createPolicy(policy: InsertPolicy): Promise<Policy>;
+  updatePolicy(id: number, policy: Partial<InsertPolicy>): Promise<Policy | undefined>;
+  deletePolicy(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
