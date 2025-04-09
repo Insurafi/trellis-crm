@@ -8,7 +8,8 @@ import {
   calendarEvents, type CalendarEvent, type InsertCalendarEvent,
   pipelineStages, type PipelineStage, type InsertPipelineStage,
   pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity,
-  commissions, type Commission, type InsertCommission
+  commissions, type Commission, type InsertCommission,
+  communicationTemplates, type CommunicationTemplate, type InsertCommunicationTemplate
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, gt, and, sql, count } from "drizzle-orm";
@@ -524,5 +525,53 @@ export class DatabaseStorage implements IStorage {
       paidAmount: formatter.format(paidTotal),
       commissionsByType,
     };
+  }
+
+  // Communication Template methods
+  async getCommunicationTemplates(): Promise<CommunicationTemplate[]> {
+    return db.select().from(communicationTemplates);
+  }
+
+  async getCommunicationTemplatesByCategory(category: string): Promise<CommunicationTemplate[]> {
+    return db
+      .select()
+      .from(communicationTemplates)
+      .where(eq(communicationTemplates.category, category));
+  }
+
+  async getCommunicationTemplate(id: number): Promise<CommunicationTemplate | undefined> {
+    const [template] = await db
+      .select()
+      .from(communicationTemplates)
+      .where(eq(communicationTemplates.id, id));
+    return template || undefined;
+  }
+
+  async createCommunicationTemplate(insertTemplate: InsertCommunicationTemplate): Promise<CommunicationTemplate> {
+    const [template] = await db
+      .insert(communicationTemplates)
+      .values(insertTemplate)
+      .returning();
+    return template;
+  }
+
+  async updateCommunicationTemplate(
+    id: number,
+    templateData: Partial<InsertCommunicationTemplate>
+  ): Promise<CommunicationTemplate | undefined> {
+    const [template] = await db
+      .update(communicationTemplates)
+      .set(templateData)
+      .where(eq(communicationTemplates.id, id))
+      .returning();
+    return template || undefined;
+  }
+
+  async deleteCommunicationTemplate(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(communicationTemplates)
+      .where(eq(communicationTemplates.id, id))
+      .returning();
+    return !!deleted;
   }
 }

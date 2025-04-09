@@ -11,10 +11,12 @@ import {
   insertCalendarEventSchema,
   insertPipelineStageSchema,
   insertPipelineOpportunitySchema,
-  insertCommissionSchema
+  insertCommissionSchema,
+  insertCommunicationTemplateSchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { sendEmail, processTemplate } from "./email-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Error handling middleware for validation errors
@@ -790,6 +792,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting commission:", error);
       res.status(500).json({ message: "Failed to delete commission" });
+    }
+  });
+
+  // Communication Templates
+  app.get("/api/communication/templates", async (req, res) => {
+    try {
+      const category = req.query.category as string | undefined;
+      
+      let templates;
+      if (category) {
+        templates = await storage.getCommunicationTemplatesByCategory(category);
+      } else {
+        templates = await storage.getCommunicationTemplates();
+      }
+      
+      res.json(templates);
+    } catch (error) {
+      console.error("Error fetching communication templates:", error);
+      res.status(500).json({ message: "Failed to fetch communication templates" });
+    }
+  });
+
+  app.get("/api/communication/templates/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid template ID" });
+      }
+
+      const template = await storage.getCommunicationTemplate(id);
+      if (!template) {
+        return res.status(404).json({ message: "Communication template not found" });
+      }
+
+      res.json(template);
+    } catch (error) {
+      console.error("Error fetching communication template:", error);
+      res.status(500).json({ message: "Failed to fetch communication template" });
+    }
+  });
+
+  app.post("/api/communication/templates", async (req, res) => {
+    try {
+      const templateData = insertCommunicationTemplateSchema.parse(req.body);
+      const newTemplate = await storage.createCommunicationTemplate(templateData);
+      res.status(201).json(newTemplate);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.patch("/api/communication/templates/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid template ID" });
+      }
+
+      const updateData = insertCommunicationTemplateSchema.partial().parse(req.body);
+      const updatedTemplate = await storage.updateCommunicationTemplate(id, updateData);
+      
+      if (!updatedTemplate) {
+        return res.status(404).json({ message: "Communication template not found" });
+      }
+
+      res.json(updatedTemplate);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.delete("/api/communication/templates/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid template ID" });
+      }
+
+      const success = await storage.deleteCommunicationTemplate(id);
+      if (!success) {
+        return res.status(404).json({ message: "Communication template not found" });
+      }
+
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error deleting communication template:", error);
+      res.status(500).json({ message: "Failed to delete communication template" });
+    }
+  });
+
+  // Email Sending API
+  app.post("/api/communication/send-email", async (req, res) => {
+    try {
+      // Validate the request body
+      const emailSchema = z.object({
+        to: z.string().email(),
+        from: z.string().email(), 
+        subject: z.string(),
+        templateId: z.number().optional(),
+        customText: z.string().optional(),
+        replacements: z.record(z.string()).optional(),
+      });
+      
+      const data = emailSchema.parse(req.body);
+      
+      // If a template ID is provided, fetch the template and use its content
+      let emailContent = data.customText || '';
+      let emailSubject = data.subject;
+      
+      if (data.templateId) {
+        const template = await storage.getCommunicationTemplate(data.templateId);
+        if (!template) {
+          return res.status(404).json({ message: "Email template not found" });
+        }
+        
+        emailContent = template.content;
+        
+        // Use template subject if available and not overridden
+        if (template.subject && !data.subject) {
+          emailSubject = template.subject;
+        }
+      }
+      
+      // Process the template with replacements if provided
+      if (data.replacements && Object.keys(data.replacements).length > 0) {
+        emailContent = processTemplate(emailContent, data.replacements);
+        emailSubject = processTemplate(emailSubject, data.replacements);
+      }
+      
+      // Check if SendGrid API key is set
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(503).json({ 
+          message: "Email service is not configured. Please provide a SendGrid API key.",
+          configRequired: true
+        });
+      }
+      
+      // Send the email
+      const result = await sendEmail({
+        to: data.to,
+        from: data.from,
+        subject: emailSubject,
+        text: emailContent,
+        html: emailContent.replace(/\n/g, '<br />'), // Simple HTML conversion
+      });
+      
+      if (result) {
+        res.json({ success: true, message: "Email sent successfully" });
+      } else {
+        res.status(500).json({ success: false, message: "Failed to send email" });
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      handleValidationError(error, res);
     }
   });
 

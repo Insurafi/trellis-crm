@@ -5,6 +5,9 @@ import {
   calendarEvents, quotes, marketingCampaigns 
 } from "@shared/schema";
 import { sql } from "drizzle-orm";
+import { initializePipelineData } from "./initialize-pipeline-data";
+import { initializeCommissionData } from "./initialize-commission-data";
+import { initializeCommunicationData } from "./initialize-communication-data";
 
 // Function to initialize sample data in the database
 export async function initializeData() {
@@ -189,6 +192,16 @@ export async function initializeData() {
     });
 
     console.log("Sample data initialization completed successfully");
+    
+    // Initialize pipeline data
+    await initializePipelineData();
+    
+    // Initialize commission data
+    await initializeCommissionData();
+    
+    // Initialize communication templates
+    await initializeCommunicationData();
+    
   } catch (error) {
     console.error("Error initializing sample data:", error);
   }

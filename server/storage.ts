@@ -7,7 +7,9 @@ import {
   marketingCampaigns, type MarketingCampaign, type InsertMarketingCampaign,
   calendarEvents, type CalendarEvent, type InsertCalendarEvent,
   pipelineStages, type PipelineStage, type InsertPipelineStage,
-  pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity
+  pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity,
+  commissions, type Commission, type InsertCommission,
+  communicationTemplates, type CommunicationTemplate, type InsertCommunicationTemplate
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
@@ -101,6 +103,14 @@ export interface IStorage {
     paidAmount: string;
     commissionsByType: Record<string, number>;
   }>;
+  
+  // Communication Templates
+  getCommunicationTemplates(): Promise<CommunicationTemplate[]>;
+  getCommunicationTemplatesByCategory(category: string): Promise<CommunicationTemplate[]>;
+  getCommunicationTemplate(id: number): Promise<CommunicationTemplate | undefined>;
+  createCommunicationTemplate(template: InsertCommunicationTemplate): Promise<CommunicationTemplate>;
+  updateCommunicationTemplate(id: number, template: Partial<InsertCommunicationTemplate>): Promise<CommunicationTemplate | undefined>;
+  deleteCommunicationTemplate(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -111,8 +121,10 @@ export class MemStorage implements IStorage {
   private quotes: Map<number, Quote>;
   private marketingCampaigns: Map<number, MarketingCampaign>;
   private calendarEvents: Map<number, CalendarEvent>;
-  private portfolioItems: Map<number, PortfolioItem>;
-  private reviews: Map<number, Review>;
+  private pipelineStages: Map<number, PipelineStage>;
+  private pipelineOpportunities: Map<number, PipelineOpportunity>;
+  private commissions: Map<number, Commission>;
+  private communicationTemplates: Map<number, CommunicationTemplate>;
   
   private userCurrentId: number;
   private clientCurrentId: number;
@@ -123,6 +135,10 @@ export class MemStorage implements IStorage {
   private calendarEventCurrentId: number;
   private portfolioItemCurrentId: number;
   private reviewCurrentId: number;
+  private pipelineStageCurrentId: number;
+  private pipelineOpportunityCurrentId: number;
+  private commissionCurrentId: number;
+  private communicationTemplateCurrentId: number;
 
   constructor() {
     this.users = new Map();
@@ -134,6 +150,10 @@ export class MemStorage implements IStorage {
     this.calendarEvents = new Map();
     this.portfolioItems = new Map();
     this.reviews = new Map();
+    this.pipelineStages = new Map();
+    this.pipelineOpportunities = new Map();
+    this.commissions = new Map();
+    this.communicationTemplates = new Map();
     
     this.userCurrentId = 1;
     this.clientCurrentId = 1;
@@ -144,8 +164,13 @@ export class MemStorage implements IStorage {
     this.calendarEventCurrentId = 1;
     this.portfolioItemCurrentId = 1;
     this.reviewCurrentId = 1;
+    this.pipelineStageCurrentId = 1;
+    this.pipelineOpportunityCurrentId = 1;
+    this.commissionCurrentId = 1;
+    this.communicationTemplateCurrentId = 1;
 
     this.initializeData();
+    this.initializeCommunicationTemplates();
   }
 
   private initializeData() {
@@ -624,9 +649,136 @@ export class MemStorage implements IStorage {
       upcomingMeetings
     };
   }
+  
+  // Communication Template initialization
+  private initializeCommunicationTemplates() {
+    // Call Script Templates
+    this.createCommunicationTemplate({
+      name: "Initial Client Consultation",
+      category: "call",
+      content: "Hello [Client Name], this is [Your Name] from [Your Agency]. I wanted to schedule some time to discuss your life insurance needs and how we can help protect your family's future. Are you available for a 30-minute consultation next week?",
+      tags: "initial, outreach, consultation",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    this.createCommunicationTemplate({
+      name: "Policy Renewal Reminder",
+      category: "call",
+      content: "Hello [Client Name], this is [Your Name] from [Your Agency]. I'm calling to remind you that your [Policy Type] insurance is up for renewal on [Renewal Date]. I'd like to schedule a quick review to make sure it still meets your needs.",
+      tags: "renewal, reminder",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    this.createCommunicationTemplate({
+      name: "Quote Follow-up",
+      category: "call",
+      content: "Hello [Client Name], this is [Your Name] from [Your Agency]. I'm following up on the life insurance quote I sent last week. Did you have any questions about the coverage options or pricing? I'd be happy to explain anything that wasn't clear.",
+      tags: "follow-up, quote",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    // Email Templates
+    this.createCommunicationTemplate({
+      name: "Welcome Email",
+      category: "email",
+      subject: "Welcome to [Agency Name] - Your Partner in Protection",
+      content: "Dear [Client Name],\n\nThank you for choosing [Agency Name] for your life insurance needs. We're committed to providing you with the highest level of service and finding the right protection for you and your loved ones.\n\nIn the coming days, I'll be reaching out to schedule our initial consultation. In the meantime, please feel free to contact me with any questions.\n\nBest regards,\n[Your Name]\n[Your Agency]\n[Contact Information]",
+      tags: "welcome, onboarding",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    this.createCommunicationTemplate({
+      name: "Policy Quote",
+      category: "email",
+      subject: "Your Customized Life Insurance Quote",
+      content: "Dear [Client Name],\n\nThank you for the opportunity to help secure your family's financial future. Based on our discussion, I've prepared the following life insurance quote customized to your needs:\n\n[Quote Details]\n\nThis plan offers [Key Benefits]. The premium is [Premium Amount] paid [Payment Frequency].\n\nPlease review this information, and feel free to contact me with any questions. I'm available to schedule a follow-up call to discuss this quote in more detail.\n\nBest regards,\n[Your Name]\n[Your Agency]\n[Contact Information]",
+      tags: "quote, proposal",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    this.createCommunicationTemplate({
+      name: "Policy Issue Confirmation",
+      category: "email",
+      subject: "Your Life Insurance Policy Has Been Issued",
+      content: "Dear [Client Name],\n\nGreat news! Your [Policy Type] insurance policy has been issued by [Insurance Carrier]. Your policy number is [Policy Number].\n\nI've attached a digital copy of your policy documents for your records. Physical copies will be mailed to you within 7-10 business days.\n\nHere's a quick summary of your coverage:\n- Policy Type: [Policy Type]\n- Coverage Amount: [Coverage Amount]\n- Premium: [Premium Amount] paid [Payment Frequency]\n- Effective Date: [Effective Date]\n\nPlease review all documents carefully. If you have any questions or notice any discrepancies, please contact me right away.\n\nThank you for trusting us with your insurance needs.\n\nBest regards,\n[Your Name]\n[Your Agency]\n[Contact Information]",
+      tags: "policy, confirmation",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    // SMS Templates
+    this.createCommunicationTemplate({
+      name: "Appointment Reminder",
+      category: "sms",
+      content: "Hi [Client Name], this is a reminder about your appointment with [Your Name] at [Your Agency] tomorrow at [Time]. Please call [Phone Number] if you need to reschedule.",
+      tags: "appointment, reminder",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    this.createCommunicationTemplate({
+      name: "Premium Payment Reminder",
+      category: "sms",
+      content: "Hi [Client Name], this is a friendly reminder that your [Policy Type] insurance premium payment of [Amount] is due on [Due Date]. Please contact us at [Phone Number] with any questions.",
+      tags: "payment, reminder",
+      isDefault: true,
+      createdBy: 1,
+    });
+
+    this.createCommunicationTemplate({
+      name: "Thank You Message",
+      category: "sms",
+      content: "Thank you for meeting with me today, [Client Name]. If you have any additional questions about your insurance options, please don't hesitate to reach out.",
+      tags: "thanks, follow-up",
+      isDefault: true,
+      createdBy: 1,
+    });
+  }
+
+  // Communication Template methods
+  async getCommunicationTemplates(): Promise<CommunicationTemplate[]> {
+    return Array.from(this.communicationTemplates.values());
+  }
+
+  async getCommunicationTemplatesByCategory(category: string): Promise<CommunicationTemplate[]> {
+    return Array.from(this.communicationTemplates.values()).filter(
+      (template) => template.category === category
+    );
+  }
+
+  async getCommunicationTemplate(id: number): Promise<CommunicationTemplate | undefined> {
+    return this.communicationTemplates.get(id);
+  }
+
+  async createCommunicationTemplate(insertTemplate: InsertCommunicationTemplate): Promise<CommunicationTemplate> {
+    const id = this.communicationTemplateCurrentId++;
+    const createdAt = new Date();
+    const updatedAt = new Date();
+    const template: CommunicationTemplate = { ...insertTemplate, id, createdAt, updatedAt };
+    this.communicationTemplates.set(id, template);
+    return template;
+  }
+
+  async updateCommunicationTemplate(id: number, templateData: Partial<InsertCommunicationTemplate>): Promise<CommunicationTemplate | undefined> {
+    const template = this.communicationTemplates.get(id);
+    if (!template) return undefined;
+    
+    const updatedAt = new Date();
+    const updatedTemplate = { ...template, ...templateData, updatedAt };
+    this.communicationTemplates.set(id, updatedTemplate);
+    return updatedTemplate;
+  }
+
+  async deleteCommunicationTemplate(id: number): Promise<boolean> {
+    return this.communicationTemplates.delete(id);
+  }
 }
 
-// Import the DatabaseStorage class
 import { DatabaseStorage } from "./database-storage";
 
 // Export the storage instance

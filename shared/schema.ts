@@ -357,3 +357,41 @@ export const usersCommissionsRelations = relations(users, ({ many }) => ({
 export const clientsCommissionsRelations = relations(clients, ({ many }) => ({
   commissions: many(commissions),
 }));
+
+// Communication Templates
+export const communicationTemplates = pgTable("communication_templates", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  category: text("category").notNull(), // 'call', 'email', 'sms'
+  subject: text("subject"), // For email templates
+  content: text("content").notNull(),
+  tags: text("tags"), // Comma-separated tags for filtering
+  isDefault: boolean("is_default").default(false),
+  createdBy: integer("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertCommunicationTemplateSchema = createInsertSchema(communicationTemplates).pick({
+  name: true,
+  category: true,
+  subject: true,
+  content: true,
+  tags: true,
+  isDefault: true,
+  createdBy: true,
+});
+
+export type InsertCommunicationTemplate = z.infer<typeof insertCommunicationTemplateSchema>;
+export type CommunicationTemplate = typeof communicationTemplates.$inferSelect;
+
+export const communicationTemplatesRelations = relations(communicationTemplates, ({ one }) => ({
+  creator: one(users, {
+    fields: [communicationTemplates.createdBy],
+    references: [users.id],
+  }),
+}));
+
+export const usersTemplatesRelations = relations(users, ({ many }) => ({
+  templates: many(communicationTemplates),
+}));
