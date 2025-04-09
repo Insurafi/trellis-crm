@@ -12,13 +12,14 @@ import {
   insertPipelineStageSchema,
   insertPipelineOpportunitySchema,
   insertCommissionSchema,
-  insertCommunicationTemplateSchema
+  insertCommunicationTemplateSchema,
+  insertUserSchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { sendEmail, processTemplate } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
-import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader } from "./auth";
+import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize authentication system
@@ -954,7 +955,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Register the agent, leads, and policy routes
-  // Users (for brokers/agents list)
+  // Users Management Routes
   app.get("/api/users", isAuthenticated, async (req, res) => {
     try {
       const users = await storage.getUsersByRole(req.query.role as string || "all");
@@ -962,6 +963,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching users:", error);
       res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  // Create new user (admin only)
+  app.post("/api/users", isAdmin, async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+      
+      // Hash the password before storing
+      userData.password = await hashPassword(userData.password);
+      
+      const newUser = await storage.createUser(userData);
+      
+      // Don't include password in response
+      const { password, ...userWithoutPassword } = newUser;
+      res.status(201).json(userWithoutPassword);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  // Update user (admin only)
+  app.patch("/api/users/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+
+      // Don't allow password changes through this endpoint
+      const { password, ...updateData } = insertUserSchema.partial().parse(req.body);
+      
+      // Check if username is being changed to one that already exists
+      if (updateData.username) {
+        const existingUser = await storage.getUserByUsername(updateData.username);
+        if (existingUser && existingUser.id !== id) {
+          return res.status(400).json({ message: "Username already exists" });
+        }
+      }
+
+      const updatedUser = await storage.updateUser(id, updateData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Don't include password in response
+      const { password: _, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      handleValidationError(error, res);
     }
   });
 

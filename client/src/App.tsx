@@ -50,6 +50,15 @@ const PoliciesPage = () => {
   );
 };
 
+const UsersPage = () => {
+  const Users = lazy(() => import("@/pages/users"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <Users />
+    </Suspense>
+  );
+};
+
 function Router() {
   return (
     <Switch>
@@ -66,6 +75,7 @@ function Router() {
       <ProtectedRoute path="/agents" component={AgentsPage} />
       <ProtectedRoute path="/leads" component={LeadsPage} />
       <ProtectedRoute path="/policies" component={PoliciesPage} />
+      <ProtectedRoute path="/users" component={UsersPage} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

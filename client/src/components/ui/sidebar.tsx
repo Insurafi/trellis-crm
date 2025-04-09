@@ -39,6 +39,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
     { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
     { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
+    { path: "/users", icon: <Settings className="mr-3 h-5 w-5" />, label: "Users Management" },
   ];
 
   // Handle clicking outside on mobile
