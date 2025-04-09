@@ -10,6 +10,7 @@ import Quotes from "@/pages/quotes";
 import Calendar from "@/pages/calendar";
 import Tasks from "@/pages/tasks";
 import Marketing from "@/pages/marketing";
+import Pipeline from "@/pages/pipeline";
 import Sidebar from "@/components/ui/sidebar";
 import MobileHeader from "@/components/ui/mobile-header";
 import { useState } from "react";
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/calendar" component={Calendar} />
       <Route path="/tasks" component={Tasks} />
       <Route path="/marketing" component={Marketing} />
+      <Route path="/pipeline" component={Pipeline} />
       <Route component={NotFound} />
     </Switch>
   );

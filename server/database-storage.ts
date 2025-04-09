@@ -5,7 +5,9 @@ import {
   tasks, type Task, type InsertTask,
   quotes, type Quote, type InsertQuote,
   marketingCampaigns, type MarketingCampaign, type InsertMarketingCampaign,
-  calendarEvents, type CalendarEvent, type InsertCalendarEvent
+  calendarEvents, type CalendarEvent, type InsertCalendarEvent,
+  pipelineStages, type PipelineStage, type InsertPipelineStage,
+  pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, gt, and, sql, count } from "drizzle-orm";
@@ -300,5 +302,101 @@ export class DatabaseStorage implements IStorage {
       activeTasks: Number(activeTasksCount?.count) || 0,
       upcomingMeetings: Number(upcomingMeetingsCount?.count) || 0,
     };
+  }
+  
+  // Pipeline Stage methods
+  async getPipelineStages(): Promise<PipelineStage[]> {
+    return db.select().from(pipelineStages).orderBy(pipelineStages.order);
+  }
+
+  async getPipelineStage(id: number): Promise<PipelineStage | undefined> {
+    const [stage] = await db
+      .select()
+      .from(pipelineStages)
+      .where(eq(pipelineStages.id, id));
+    return stage || undefined;
+  }
+
+  async createPipelineStage(insertStage: InsertPipelineStage): Promise<PipelineStage> {
+    const [stage] = await db
+      .insert(pipelineStages)
+      .values(insertStage)
+      .returning();
+    return stage;
+  }
+
+  async updatePipelineStage(
+    id: number,
+    stageData: Partial<InsertPipelineStage>
+  ): Promise<PipelineStage | undefined> {
+    const [stage] = await db
+      .update(pipelineStages)
+      .set(stageData)
+      .where(eq(pipelineStages.id, id))
+      .returning();
+    return stage || undefined;
+  }
+
+  async deletePipelineStage(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(pipelineStages)
+      .where(eq(pipelineStages.id, id))
+      .returning();
+    return !!deleted;
+  }
+
+  // Pipeline Opportunity methods
+  async getPipelineOpportunities(): Promise<PipelineOpportunity[]> {
+    return db.select().from(pipelineOpportunities);
+  }
+
+  async getPipelineOpportunitiesByClient(clientId: number): Promise<PipelineOpportunity[]> {
+    return db
+      .select()
+      .from(pipelineOpportunities)
+      .where(eq(pipelineOpportunities.clientId, clientId));
+  }
+
+  async getPipelineOpportunitiesByStage(stageId: number): Promise<PipelineOpportunity[]> {
+    return db
+      .select()
+      .from(pipelineOpportunities)
+      .where(eq(pipelineOpportunities.stageId, stageId));
+  }
+
+  async getPipelineOpportunity(id: number): Promise<PipelineOpportunity | undefined> {
+    const [opportunity] = await db
+      .select()
+      .from(pipelineOpportunities)
+      .where(eq(pipelineOpportunities.id, id));
+    return opportunity || undefined;
+  }
+
+  async createPipelineOpportunity(insertOpportunity: InsertPipelineOpportunity): Promise<PipelineOpportunity> {
+    const [opportunity] = await db
+      .insert(pipelineOpportunities)
+      .values(insertOpportunity)
+      .returning();
+    return opportunity;
+  }
+
+  async updatePipelineOpportunity(
+    id: number,
+    opportunityData: Partial<InsertPipelineOpportunity>
+  ): Promise<PipelineOpportunity | undefined> {
+    const [opportunity] = await db
+      .update(pipelineOpportunities)
+      .set(opportunityData)
+      .where(eq(pipelineOpportunities.id, id))
+      .returning();
+    return opportunity || undefined;
+  }
+
+  async deletePipelineOpportunity(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(pipelineOpportunities)
+      .where(eq(pipelineOpportunities.id, id))
+      .returning();
+    return !!deleted;
   }
 }

@@ -8,7 +8,9 @@ import {
   insertTaskSchema, 
   insertQuoteSchema,
   insertMarketingCampaignSchema,
-  insertCalendarEventSchema
+  insertCalendarEventSchema,
+  insertPipelineStageSchema,
+  insertPipelineOpportunitySchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -518,6 +520,175 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting calendar event:", error);
       res.status(500).json({ message: "Failed to delete calendar event" });
+    }
+  });
+
+  // Pipeline Stages
+  app.get("/api/pipeline/stages", async (req, res) => {
+    try {
+      const stages = await storage.getPipelineStages();
+      res.json(stages);
+    } catch (error) {
+      console.error("Error fetching pipeline stages:", error);
+      res.status(500).json({ message: "Failed to fetch pipeline stages" });
+    }
+  });
+
+  app.get("/api/pipeline/stages/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid stage ID" });
+      }
+
+      const stage = await storage.getPipelineStage(id);
+      if (!stage) {
+        return res.status(404).json({ message: "Pipeline stage not found" });
+      }
+
+      res.json(stage);
+    } catch (error) {
+      console.error("Error fetching pipeline stage:", error);
+      res.status(500).json({ message: "Failed to fetch pipeline stage" });
+    }
+  });
+
+  app.post("/api/pipeline/stages", async (req, res) => {
+    try {
+      const stageData = insertPipelineStageSchema.parse(req.body);
+      const newStage = await storage.createPipelineStage(stageData);
+      res.status(201).json(newStage);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.patch("/api/pipeline/stages/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid stage ID" });
+      }
+
+      const updateData = insertPipelineStageSchema.partial().parse(req.body);
+      const updatedStage = await storage.updatePipelineStage(id, updateData);
+      
+      if (!updatedStage) {
+        return res.status(404).json({ message: "Pipeline stage not found" });
+      }
+
+      res.json(updatedStage);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.delete("/api/pipeline/stages/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid stage ID" });
+      }
+
+      const success = await storage.deletePipelineStage(id);
+      if (!success) {
+        return res.status(404).json({ message: "Pipeline stage not found" });
+      }
+
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error deleting pipeline stage:", error);
+      res.status(500).json({ message: "Failed to delete pipeline stage" });
+    }
+  });
+
+  // Pipeline Opportunities
+  app.get("/api/pipeline/opportunities", async (req, res) => {
+    try {
+      const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
+      const stageId = req.query.stageId ? parseInt(req.query.stageId as string) : undefined;
+      
+      let opportunities;
+      if (clientId && !isNaN(clientId)) {
+        opportunities = await storage.getPipelineOpportunitiesByClient(clientId);
+      } else if (stageId && !isNaN(stageId)) {
+        opportunities = await storage.getPipelineOpportunitiesByStage(stageId);
+      } else {
+        opportunities = await storage.getPipelineOpportunities();
+      }
+      
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching pipeline opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch pipeline opportunities" });
+    }
+  });
+
+  app.get("/api/pipeline/opportunities/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid opportunity ID" });
+      }
+
+      const opportunity = await storage.getPipelineOpportunity(id);
+      if (!opportunity) {
+        return res.status(404).json({ message: "Pipeline opportunity not found" });
+      }
+
+      res.json(opportunity);
+    } catch (error) {
+      console.error("Error fetching pipeline opportunity:", error);
+      res.status(500).json({ message: "Failed to fetch pipeline opportunity" });
+    }
+  });
+
+  app.post("/api/pipeline/opportunities", async (req, res) => {
+    try {
+      const opportunityData = insertPipelineOpportunitySchema.parse(req.body);
+      const newOpportunity = await storage.createPipelineOpportunity(opportunityData);
+      res.status(201).json(newOpportunity);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.patch("/api/pipeline/opportunities/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid opportunity ID" });
+      }
+
+      const updateData = insertPipelineOpportunitySchema.partial().parse(req.body);
+      const updatedOpportunity = await storage.updatePipelineOpportunity(id, updateData);
+      
+      if (!updatedOpportunity) {
+        return res.status(404).json({ message: "Pipeline opportunity not found" });
+      }
+
+      res.json(updatedOpportunity);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.delete("/api/pipeline/opportunities/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid opportunity ID" });
+      }
+
+      const success = await storage.deletePipelineOpportunity(id);
+      if (!success) {
+        return res.status(404).json({ message: "Pipeline opportunity not found" });
+      }
+
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error deleting pipeline opportunity:", error);
+      res.status(500).json({ message: "Failed to delete pipeline opportunity" });
     }
   });
 

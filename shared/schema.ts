@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -219,4 +219,83 @@ export const calendarEventsRelations = relations(calendarEvents, ({ one }) => ({
     fields: [calendarEvents.createdBy],
     references: [users.id],
   }),
+}));
+
+// Pipeline Stages
+export const pipelineStages = pgTable("pipeline_stages", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  order: integer("order").notNull(),
+  color: text("color"),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPipelineStageSchema = createInsertSchema(pipelineStages).pick({
+  name: true,
+  order: true,
+  color: true,
+  description: true,
+});
+
+export type InsertPipelineStage = z.infer<typeof insertPipelineStageSchema>;
+export type PipelineStage = typeof pipelineStages.$inferSelect;
+
+// Pipeline Opportunities
+export const pipelineOpportunities = pgTable("pipeline_opportunities", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  clientId: integer("client_id").references(() => clients.id),
+  stageId: integer("stage_id").references(() => pipelineStages.id),
+  value: decimal("value", { precision: 10, scale: 2 }),
+  probability: integer("probability"),  // 0-100 percentage
+  expectedCloseDate: timestamp("expected_close_date"),
+  assignedTo: integer("assigned_to").references(() => users.id),
+  notes: text("notes"),
+  status: text("status").default("active"), // active, won, lost
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPipelineOpportunitySchema = createInsertSchema(pipelineOpportunities).pick({
+  title: true,
+  clientId: true,
+  stageId: true,
+  value: true,
+  probability: true,
+  expectedCloseDate: true,
+  assignedTo: true,
+  notes: true,
+  status: true,
+});
+
+export type InsertPipelineOpportunity = z.infer<typeof insertPipelineOpportunitySchema>;
+export type PipelineOpportunity = typeof pipelineOpportunities.$inferSelect;
+
+// Pipeline Relations
+export const pipelineStagesRelations = relations(pipelineStages, ({ many }) => ({
+  opportunities: many(pipelineOpportunities),
+}));
+
+export const pipelineOpportunitiesRelations = relations(pipelineOpportunities, ({ one }) => ({
+  client: one(clients, {
+    fields: [pipelineOpportunities.clientId],
+    references: [clients.id],
+  }),
+  stage: one(pipelineStages, {
+    fields: [pipelineOpportunities.stageId],
+    references: [pipelineStages.id],
+  }),
+  assignedUser: one(users, {
+    fields: [pipelineOpportunities.assignedTo],
+    references: [users.id],
+  }),
+}));
+
+export const clientsRelationsWithPipeline = relations(clients, ({ many }) => ({
+  documents: many(documents),
+  tasks: many(tasks),
+  quotes: many(quotes),
+  calendarEvents: many(calendarEvents),
+  opportunities: many(pipelineOpportunities),
 }));

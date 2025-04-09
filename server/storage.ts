@@ -5,7 +5,9 @@ import {
   tasks, type Task, type InsertTask,
   quotes, type Quote, type InsertQuote,
   marketingCampaigns, type MarketingCampaign, type InsertMarketingCampaign,
-  calendarEvents, type CalendarEvent, type InsertCalendarEvent
+  calendarEvents, type CalendarEvent, type InsertCalendarEvent,
+  pipelineStages, type PipelineStage, type InsertPipelineStage,
+  pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
@@ -68,6 +70,22 @@ export interface IStorage {
     activeTasks: number;
     upcomingMeetings: number;
   }>;
+  
+  // Pipeline Stages
+  getPipelineStages(): Promise<PipelineStage[]>;
+  getPipelineStage(id: number): Promise<PipelineStage | undefined>;
+  createPipelineStage(stage: InsertPipelineStage): Promise<PipelineStage>;
+  updatePipelineStage(id: number, stage: Partial<InsertPipelineStage>): Promise<PipelineStage | undefined>;
+  deletePipelineStage(id: number): Promise<boolean>;
+  
+  // Pipeline Opportunities
+  getPipelineOpportunities(): Promise<PipelineOpportunity[]>;
+  getPipelineOpportunitiesByClient(clientId: number): Promise<PipelineOpportunity[]>;
+  getPipelineOpportunitiesByStage(stageId: number): Promise<PipelineOpportunity[]>;
+  getPipelineOpportunity(id: number): Promise<PipelineOpportunity | undefined>;
+  createPipelineOpportunity(opportunity: InsertPipelineOpportunity): Promise<PipelineOpportunity>;
+  updatePipelineOpportunity(id: number, opportunity: Partial<InsertPipelineOpportunity>): Promise<PipelineOpportunity | undefined>;
+  deletePipelineOpportunity(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
