@@ -1,6 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 // Create a PostgreSQL client with your connection string for Drizzle
 const client = postgres(process.env.DATABASE_URL!);

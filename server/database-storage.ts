@@ -46,6 +46,9 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getUsersByRole(role: string): Promise<User[]> {
+    if (role === "all") {
+      return db.select().from(users);
+    }
     return db.select().from(users).where(eq(users.role, role));
   }
 

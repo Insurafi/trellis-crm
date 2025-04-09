@@ -386,7 +386,7 @@ const LeadsPage: React.FC = () => {
                       <FormItem>
                         <FormLabel>Height</FormLabel>
                         <FormControl>
-                          <Input placeholder="5'10\"" {...field} />
+                          <Input placeholder="5'10&quot;" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
