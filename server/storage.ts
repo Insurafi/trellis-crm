@@ -21,7 +21,12 @@ export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUsersByRole(role: string): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined>;
+  
+  // Session storage for authentication
+  sessionStore: any;
   
   // Clients
   getClients(): Promise<Client[]>;
@@ -395,12 +400,50 @@ export class MemStorage implements IStorage {
       (user) => user.username === username,
     );
   }
+  
+  async getUsersByRole(role: string): Promise<User[]> {
+    return Array.from(this.users.values()).filter(
+      (user) => user.role === role,
+    );
+  }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser,
+      id,
+      role: insertUser.role || 'agent', // Default role
+      active: insertUser.active !== undefined ? insertUser.active : true,
+      avatarUrl: insertUser.avatarUrl || null,
+      lastLogin: insertUser.lastLogin || null
+    };
     this.users.set(id, user);
     return user;
+  }
+  
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) {
+      return undefined;
+    }
+    
+    const updatedUser = { ...user, ...userData };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+  
+  // Session store property
+  get sessionStore() {
+    // Return a memory store for sessions in the MemStorage implementation
+    return {
+      get: async () => ({}),
+      set: async () => {},
+      destroy: async () => {},
+      touch: async () => {},
+      all: async () => ({}),
+      length: async () => 0,
+      clear: async () => {},
+    };
   }
 
   // Client methods

@@ -3,6 +3,7 @@ import { storage } from "./storage";
 import { insertAgentSchema, insertLeadSchema, insertPolicySchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { isAuthenticated, isAdmin, isAdminOrTeamLeader } from "./auth";
 
 export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Error handling middleware for validation errors
@@ -79,7 +80,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.post("/api/agents", async (req, res) => {
+  app.post("/api/agents", isAdminOrTeamLeader, async (req, res) => {
     try {
       const agentData = insertAgentSchema.parse(req.body);
       const newAgent = await storage.createAgent(agentData);
@@ -89,7 +90,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/agents/:id", async (req, res) => {
+  app.patch("/api/agents/:id", isAdminOrTeamLeader, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -109,7 +110,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.delete("/api/agents/:id", async (req, res) => {
+  app.delete("/api/agents/:id", isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -166,7 +167,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.post("/api/leads", async (req, res) => {
+  app.post("/api/leads", isAuthenticated, async (req, res) => {
     try {
       const leadData = insertLeadSchema.parse(req.body);
       const newLead = await storage.createLead(leadData);
@@ -176,7 +177,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/leads/:id", async (req, res) => {
+  app.patch("/api/leads/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -196,7 +197,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.delete("/api/leads/:id", async (req, res) => {
+  app.delete("/api/leads/:id", isAdminOrTeamLeader, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -259,7 +260,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.post("/api/policies", async (req, res) => {
+  app.post("/api/policies", isAuthenticated, async (req, res) => {
     try {
       const policyData = insertPolicySchema.parse(req.body);
       const newPolicy = await storage.createPolicy(policyData);
@@ -269,7 +270,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/policies/:id", async (req, res) => {
+  app.patch("/api/policies/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -289,7 +290,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.delete("/api/policies/:id", async (req, res) => {
+  app.delete("/api/policies/:id", isAdminOrTeamLeader, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {

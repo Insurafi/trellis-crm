@@ -18,34 +18,61 @@ import MobileHeader from "@/components/ui/mobile-header";
 import { useState } from "react";
 // Lazy load the new pages
 import { lazy, Suspense } from "react";
-const Agents = lazy(() => import("@/pages/agents"));
-const Leads = lazy(() => import("@/pages/leads"));
-const Policies = lazy(() => import("@/pages/policies"));
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "./lib/protected-route";
+import AuthPage from "@/pages/auth-page";
+
+// Use wrapper components to handle lazy loading
+const AgentsPage = () => {
+  const Agents = lazy(() => import("@/pages/agents"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <Agents />
+    </Suspense>
+  );
+};
+
+const LeadsPage = () => {
+  const Leads = lazy(() => import("@/pages/leads"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <Leads />
+    </Suspense>
+  );
+};
+
+const PoliciesPage = () => {
+  const Policies = lazy(() => import("@/pages/policies"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <Policies />
+    </Suspense>
+  );
+};
 
 function Router() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/clients" component={Clients} />
-        <Route path="/documents" component={Documents} />
-        <Route path="/quotes" component={Quotes} />
-        <Route path="/calendar" component={Calendar} />
-        <Route path="/tasks" component={Tasks} />
-        <Route path="/marketing" component={Marketing} />
-        <Route path="/pipeline" component={Pipeline} />
-        <Route path="/commissions" component={Commissions} />
-        <Route path="/communications" component={Communications} />
-        <Route path="/agents" component={Agents} />
-        <Route path="/leads" component={Leads} />
-        <Route path="/policies" component={Policies} />
-        <Route component={NotFound} />
-      </Switch>
-    </Suspense>
+    <Switch>
+      <ProtectedRoute path="/" component={Dashboard} />
+      <ProtectedRoute path="/clients" component={Clients} />
+      <ProtectedRoute path="/documents" component={Documents} />
+      <ProtectedRoute path="/quotes" component={Quotes} />
+      <ProtectedRoute path="/calendar" component={Calendar} />
+      <ProtectedRoute path="/tasks" component={Tasks} />
+      <ProtectedRoute path="/marketing" component={Marketing} />
+      <ProtectedRoute path="/pipeline" component={Pipeline} />
+      <ProtectedRoute path="/commissions" component={Commissions} />
+      <ProtectedRoute path="/communications" component={Communications} />
+      <ProtectedRoute path="/agents" component={AgentsPage} />
+      <ProtectedRoute path="/leads" component={LeadsPage} />
+      <ProtectedRoute path="/policies" component={PoliciesPage} />
+      <Route path="/auth" component={AuthPage} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
-function App() {
+function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -53,15 +80,23 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
-        <div className="flex-1 overflow-auto">
-          <MobileHeader onMenuClick={toggleMobileMenu} />
-          <Router />
-        </div>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
+      <div className="flex-1 overflow-auto">
+        <MobileHeader onMenuClick={toggleMobileMenu} />
+        <Router />
       </div>
-      <Toaster />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppLayout />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

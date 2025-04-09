@@ -18,8 +18,11 @@ import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { sendEmail, processTemplate } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
+import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize authentication system
+  setupAuth(app);
   // Error handling middleware for validation errors
   const handleValidationError = (error: unknown, res: Response) => {
     if (error instanceof ZodError) {
@@ -31,7 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Dashboard Stats
-  app.get("/api/dashboard/stats", async (req, res) => {
+  app.get("/api/dashboard/stats", isAuthenticated, async (req, res) => {
     try {
       const stats = await storage.getDashboardStats();
       res.json(stats);
@@ -42,7 +45,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Clients
-  app.get("/api/clients", async (req, res) => {
+  app.get("/api/clients", isAuthenticated, async (req, res) => {
     try {
       const clients = await storage.getClients();
       res.json(clients);
@@ -52,7 +55,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/clients/:id", async (req, res) => {
+  app.get("/api/clients/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -71,7 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/clients", async (req, res) => {
+  app.post("/api/clients", isAuthenticated, async (req, res) => {
     try {
       const clientData = insertClientSchema.parse(req.body);
       const newClient = await storage.createClient(clientData);
@@ -81,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/clients/:id", async (req, res) => {
+  app.patch("/api/clients/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -101,7 +104,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/clients/:id", async (req, res) => {
+  app.delete("/api/clients/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -951,6 +954,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Register the agent, leads, and policy routes
+  // Users (for brokers/agents list)
+  app.get("/api/users", isAuthenticated, async (req, res) => {
+    try {
+      const users = await storage.getUsersByRole(req.query.role as string || "all");
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
   registerAgentLeadsPolicyRoutes(app);
 
   const httpServer = createServer(app);

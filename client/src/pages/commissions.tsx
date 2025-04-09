@@ -111,7 +111,7 @@ export default function CommissionsPage() {
     queryKey: ['/api/users'],
     queryFn: async () => {
       try {
-        return await apiRequest('/api/users') as any;
+        return await apiRequest("GET", '/api/users');
       } catch (error) {
         // If there's no users endpoint yet, return a default broker
         return [{ id: 1, fullName: "Alex Johnson" }];
@@ -168,10 +168,7 @@ export default function CommissionsPage() {
   // Create commission mutation
   const createMutation = useMutation({
     mutationFn: (data: CommissionFormValues) => {
-      return apiRequest('/api/commissions', {
-        method: 'POST',
-        data,
-      } as any);
+      return apiRequest('POST', '/api/commissions', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/commissions'] });
@@ -196,10 +193,7 @@ export default function CommissionsPage() {
   // Update commission mutation
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number, data: CommissionFormValues }) => {
-      return apiRequest(`/api/commissions/${id}`, {
-        method: 'PATCH',
-        data,
-      } as any);
+      return apiRequest('PATCH', `/api/commissions/${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/commissions'] });
@@ -224,9 +218,7 @@ export default function CommissionsPage() {
   // Delete commission mutation
   const deleteMutation = useMutation({
     mutationFn: (id: number) => {
-      return apiRequest(`/api/commissions/${id}`, {
-        method: 'DELETE',
-      } as any);
+      return apiRequest('DELETE', `/api/commissions/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/commissions'] });

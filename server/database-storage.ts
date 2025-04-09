@@ -14,11 +14,26 @@ import {
   leads, type Lead, type InsertLead,
   policies, type Policy, type InsertPolicy
 } from "@shared/schema";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq, gt, and, sql, count } from "drizzle-orm";
 import { IStorage } from "./storage";
+import connectPg from "connect-pg-simple";
+import session from "express-session";
+
+// Create PostgreSQL session store
+const PostgresSessionStore = connectPg(session);
 
 export class DatabaseStorage implements IStorage {
+  // Session store property
+  sessionStore: session.Store;
+  
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      tableName: 'user_sessions',
+      createTableIfMissing: true
+    });
+  }
   // User methods
   async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
@@ -29,6 +44,10 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
+  
+  async getUsersByRole(role: string): Promise<User[]> {
+    return db.select().from(users).where(eq(users.role, role));
+  }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db
@@ -36,6 +55,15 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+  
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
   }
 
   // Client methods

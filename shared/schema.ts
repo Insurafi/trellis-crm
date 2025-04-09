@@ -3,15 +3,17 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
-// Users (brokers)
+// Users (brokers, agents, team leaders, and support staff)
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull(),
-  role: text("role").default("user"),
+  role: text("role").default("agent"), // Role can be: 'admin', 'agent', 'team_leader', or 'support'
   avatarUrl: text("avatar_url"),
+  active: boolean("active").default(true),
+  lastLogin: timestamp("last_login"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -21,6 +23,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   role: true,
   avatarUrl: true,
+  active: true,
+  lastLogin: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
