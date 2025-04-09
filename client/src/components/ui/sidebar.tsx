@@ -29,8 +29,6 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },
     { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
     { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
-    { path: "/portfolio", icon: <Image className="mr-3 h-5 w-5" />, label: "Portfolio" },
-    { path: "/reviews", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Reviews" },
   ];
 
   // Handle clicking outside on mobile

@@ -10,8 +10,6 @@ import Quotes from "@/pages/quotes";
 import Calendar from "@/pages/calendar";
 import Tasks from "@/pages/tasks";
 import Marketing from "@/pages/marketing";
-import Portfolio from "@/pages/portfolio";
-import Reviews from "@/pages/reviews";
 import Sidebar from "@/components/ui/sidebar";
 import MobileHeader from "@/components/ui/mobile-header";
 import { useState } from "react";
@@ -26,8 +24,6 @@ function Router() {
       <Route path="/calendar" component={Calendar} />
       <Route path="/tasks" component={Tasks} />
       <Route path="/marketing" component={Marketing} />
-      <Route path="/portfolio" component={Portfolio} />
-      <Route path="/reviews" component={Reviews} />
       <Route component={NotFound} />
     </Switch>
   );
