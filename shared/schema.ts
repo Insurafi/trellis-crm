@@ -1,6 +1,7 @@
 import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { relations } from "drizzle-orm";
 
 // Users (brokers)
 export const users = pgTable("users", {
@@ -171,40 +172,51 @@ export const insertCalendarEventSchema = createInsertSchema(calendarEvents).pick
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;
 export type CalendarEvent = typeof calendarEvents.$inferSelect;
 
-// Portfolio Items
-export const portfolioItems = pgTable("portfolio_items", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  description: text("description"),
-  imageUrl: text("image_url"),
-  category: text("category"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  tasks: many(tasks),
+  calendarEvents: many(calendarEvents),
+}));
 
-export const insertPortfolioItemSchema = createInsertSchema(portfolioItems).pick({
-  title: true,
-  description: true,
-  imageUrl: true,
-  category: true,
-});
+export const clientsRelations = relations(clients, ({ many }) => ({
+  documents: many(documents),
+  tasks: many(tasks),
+  quotes: many(quotes),
+  calendarEvents: many(calendarEvents),
+}));
 
-export type InsertPortfolioItem = z.infer<typeof insertPortfolioItemSchema>;
-export type PortfolioItem = typeof portfolioItems.$inferSelect;
+export const documentsRelations = relations(documents, ({ one }) => ({
+  client: one(clients, {
+    fields: [documents.clientId],
+    references: [clients.id],
+  }),
+}));
 
-// Reviews/Testimonials
-export const reviews = pgTable("reviews", {
-  id: serial("id").primaryKey(),
-  clientId: integer("client_id").references(() => clients.id),
-  content: text("content").notNull(),
-  rating: integer("rating").notNull(), // 1-5 stars
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const tasksRelations = relations(tasks, ({ one }) => ({
+  client: one(clients, {
+    fields: [tasks.clientId],
+    references: [clients.id],
+  }),
+  assignedUser: one(users, {
+    fields: [tasks.assignedTo],
+    references: [users.id],
+  }),
+}));
 
-export const insertReviewSchema = createInsertSchema(reviews).pick({
-  clientId: true,
-  content: true,
-  rating: true,
-});
+export const quotesRelations = relations(quotes, ({ one }) => ({
+  client: one(clients, {
+    fields: [quotes.clientId],
+    references: [clients.id],
+  }),
+}));
 
-export type InsertReview = z.infer<typeof insertReviewSchema>;
-export type Review = typeof reviews.$inferSelect;
+export const calendarEventsRelations = relations(calendarEvents, ({ one }) => ({
+  client: one(clients, {
+    fields: [calendarEvents.clientId],
+    references: [clients.id],
+  }),
+  creator: one(users, {
+    fields: [calendarEvents.createdBy],
+    references: [users.id],
+  }),
+}));

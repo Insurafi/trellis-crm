@@ -1,14 +1,14 @@
 import {
   users, type User, type InsertUser,
-  clients, type Client, type InsertClient,
+  clients, type Client, type InsertClient, 
   documents, type Document, type InsertDocument,
   tasks, type Task, type InsertTask,
   quotes, type Quote, type InsertQuote,
   marketingCampaigns, type MarketingCampaign, type InsertMarketingCampaign,
-  calendarEvents, type CalendarEvent, type InsertCalendarEvent,
-  portfolioItems, type PortfolioItem, type InsertPortfolioItem,
-  reviews, type Review, type InsertReview
+  calendarEvents, type CalendarEvent, type InsertCalendarEvent
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -60,20 +60,6 @@ export interface IStorage {
   createCalendarEvent(event: InsertCalendarEvent): Promise<CalendarEvent>;
   updateCalendarEvent(id: number, event: Partial<InsertCalendarEvent>): Promise<CalendarEvent | undefined>;
   deleteCalendarEvent(id: number): Promise<boolean>;
-
-  // Portfolio Items
-  getPortfolioItems(): Promise<PortfolioItem[]>;
-  getPortfolioItem(id: number): Promise<PortfolioItem | undefined>;
-  createPortfolioItem(item: InsertPortfolioItem): Promise<PortfolioItem>;
-  updatePortfolioItem(id: number, item: Partial<InsertPortfolioItem>): Promise<PortfolioItem | undefined>;
-  deletePortfolioItem(id: number): Promise<boolean>;
-
-  // Reviews
-  getReviews(): Promise<Review[]>;
-  getReviewsByClient(clientId: number): Promise<Review[]>;
-  getReview(id: number): Promise<Review | undefined>;
-  createReview(review: InsertReview): Promise<Review>;
-  deleteReview(id: number): Promise<boolean>;
 
   // Dashboard Statistics
   getDashboardStats(): Promise<{
@@ -607,4 +593,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Import the DatabaseStorage class
+import { DatabaseStorage } from "./database-storage";
+
+// Export the storage instance
+export const storage = new DatabaseStorage();
