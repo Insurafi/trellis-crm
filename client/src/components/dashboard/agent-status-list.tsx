@@ -8,41 +8,23 @@ import {
   CardTitle,
   CardFooter
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   UserCheck, 
   UserX, 
   Phone, 
   Mail, 
-  MessageSquare, 
-  Calendar, 
+  MessageSquare,
+  Calendar,
   BarChart2,
   UserPlus,
   Activity,
   Briefcase
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 
-interface Agent {
-  id: number;
-  name: string;
-  avatarUrl?: string | null;
-  specialties?: string | null;
-  uplineAgentId?: number | null;
-  isOnline?: boolean;
-  lastActive?: string;
-  currentStatus?: string;
-  productivity?: number;
-  leads?: number;
-  policies?: number;
-  commissions?: string;
-}
-
+// Simplified version
 export default function AgentStatusList() {
   const [view, setView] = useState<"online" | "offline" | "all">("all");
   const [showActivity, setShowActivity] = useState(false);
@@ -53,7 +35,7 @@ export default function AgentStatusList() {
   });
 
   // Generate enhanced agent data with random stats for demo
-  const agentsWithStatus: Agent[] = agents.map(agent => {
+  const agentsWithStatus = agents.map(agent => {
     const isOnline = Math.random() > 0.5;
     const lastActiveHours = Math.floor(Math.random() * 12);
     const productivity = Math.floor(Math.random() * 100);
@@ -83,34 +65,46 @@ export default function AgentStatusList() {
       : agentsWithStatus.filter(agent => !agent.isOnline);
 
   return (
-    <Card className="relative">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-base font-semibold">Agent Status</CardTitle>
           <div className="flex space-x-2">
-            <Badge 
-              variant={view === "all" ? "default" : "outline"} 
-              className="cursor-pointer"
+            <button 
+              className={cn(
+                "px-2 py-1 text-xs rounded-full", 
+                view === "all" 
+                  ? "bg-primary text-white" 
+                  : "bg-gray-100 text-gray-700"
+              )}
               onClick={() => setView("all")}
             >
               All
-            </Badge>
-            <Badge 
-              variant={view === "online" ? "default" : "outline"} 
-              className="cursor-pointer"
+            </button>
+            <button 
+              className={cn(
+                "px-2 py-1 text-xs rounded-full flex items-center", 
+                view === "online" 
+                  ? "bg-primary text-white" 
+                  : "bg-gray-100 text-gray-700"
+              )}
               onClick={() => setView("online")}
             >
               <UserCheck className="mr-1 h-3 w-3" />
               Online
-            </Badge>
-            <Badge 
-              variant={view === "offline" ? "default" : "outline"} 
-              className="cursor-pointer"
+            </button>
+            <button 
+              className={cn(
+                "px-2 py-1 text-xs rounded-full flex items-center", 
+                view === "offline" 
+                  ? "bg-primary text-white" 
+                  : "bg-gray-100 text-gray-700"
+              )}
               onClick={() => setView("offline")}
             >
               <UserX className="mr-1 h-3 w-3" />
               Offline
-            </Badge>
+            </button>
           </div>
         </div>
         <div className="flex justify-between">
@@ -119,11 +113,15 @@ export default function AgentStatusList() {
           </CardDescription>
           <div className="flex items-center gap-2 text-xs">
             <span>Show Activity</span>
-            <Switch 
-              checked={showActivity}
-              onCheckedChange={setShowActivity}
-              className="h-4 w-7"
-            />
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={showActivity} 
+                onChange={() => setShowActivity(!showActivity)} 
+                className="sr-only peer"
+              />
+              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
           </div>
         </div>
       </CardHeader>
@@ -139,18 +137,18 @@ export default function AgentStatusList() {
         ) : (
           <ul className="space-y-4">
             {filteredAgents.map((agent) => (
-              <li key={agent.id} className={cn(
-                "p-3 rounded-lg transition-all", 
-                showActivity ? "bg-neutral-50" : ""
-              )}>
+              <li 
+                key={agent.id} 
+                className={cn(
+                  "p-3 rounded-lg transition-all", 
+                  showActivity ? "bg-neutral-50 border border-neutral-100" : ""
+                )}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={agent.avatarUrl || ""} />
-                      <AvatarFallback className="bg-primary/10 text-primary">
-                        {agent.name?.charAt(0) || "A"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
+                      {agent.name?.charAt(0) || "A"}
+                    </div>
                     <div>
                       <div className="font-medium">{agent.name}</div>
                       <div className="text-xs text-neutral-500 flex items-center gap-1">
@@ -199,57 +197,33 @@ export default function AgentStatusList() {
                     </div>
                     
                     <div className="mt-2 flex gap-1 justify-end">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
-                              <Mail className="h-3.5 w-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Send Email</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <button 
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                        title="Send Email"
+                      >
+                        <Mail className="h-3.5 w-3.5" />
+                      </button>
                       
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
-                              <Phone className="h-3.5 w-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Call Agent</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <button 
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                        title="Call Agent"
+                      >
+                        <Phone className="h-3.5 w-3.5" />
+                      </button>
                       
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
-                              <MessageSquare className="h-3.5 w-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Send Message</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <button 
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                        title="Send Message"
+                      >
+                        <MessageSquare className="h-3.5 w-3.5" />
+                      </button>
                       
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7">
-                              <Calendar className="h-3.5 w-3.5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Schedule Meeting</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <button 
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                        title="Schedule Meeting"
+                      >
+                        <Calendar className="h-3.5 w-3.5" />
+                      </button>
                     </div>
                   </div>
                 )}
