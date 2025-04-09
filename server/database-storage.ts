@@ -7,7 +7,8 @@ import {
   marketingCampaigns, type MarketingCampaign, type InsertMarketingCampaign,
   calendarEvents, type CalendarEvent, type InsertCalendarEvent,
   pipelineStages, type PipelineStage, type InsertPipelineStage,
-  pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity
+  pipelineOpportunities, type PipelineOpportunity, type InsertPipelineOpportunity,
+  commissions, type Commission, type InsertCommission
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, gt, and, sql, count } from "drizzle-orm";
@@ -398,5 +399,130 @@ export class DatabaseStorage implements IStorage {
       .where(eq(pipelineOpportunities.id, id))
       .returning();
     return !!deleted;
+  }
+
+  // Commission methods
+  async getCommissions(): Promise<Commission[]> {
+    return db.select().from(commissions);
+  }
+
+  async getCommissionsByClient(clientId: number): Promise<Commission[]> {
+    return db
+      .select()
+      .from(commissions)
+      .where(eq(commissions.clientId, clientId));
+  }
+
+  async getCommissionsByBroker(brokerId: number): Promise<Commission[]> {
+    return db
+      .select()
+      .from(commissions)
+      .where(eq(commissions.brokerId, brokerId));
+  }
+
+  async getCommission(id: number): Promise<Commission | undefined> {
+    const [commission] = await db
+      .select()
+      .from(commissions)
+      .where(eq(commissions.id, id));
+    return commission || undefined;
+  }
+
+  async createCommission(insertCommission: InsertCommission): Promise<Commission> {
+    const [commission] = await db
+      .insert(commissions)
+      .values(insertCommission)
+      .returning();
+    return commission;
+  }
+
+  async updateCommission(
+    id: number,
+    commissionData: Partial<InsertCommission>
+  ): Promise<Commission | undefined> {
+    const [commission] = await db
+      .update(commissions)
+      .set(commissionData)
+      .where(eq(commissions.id, id))
+      .returning();
+    return commission || undefined;
+  }
+
+  async deleteCommission(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(commissions)
+      .where(eq(commissions.id, id))
+      .returning();
+    return !!deleted;
+  }
+
+  async getCommissionsStats(): Promise<{
+    totalCommissions: number;
+    pendingAmount: string;
+    paidAmount: string;
+    commissionsByType: Record<string, number>;
+  }> {
+    // Get total count of commissions
+    const [commissionCount] = await db
+      .select({ count: sql`count(*)` })
+      .from(commissions);
+
+    // Calculate total pending commissions
+    const pendingCommissions = await db
+      .select({ amount: commissions.amount })
+      .from(commissions)
+      .where(eq(commissions.status, "pending"));
+
+    // Calculate total paid commissions
+    const paidCommissions = await db
+      .select({ amount: commissions.amount })
+      .from(commissions)
+      .where(eq(commissions.status, "paid"));
+
+    // Get commissions by type
+    const typeResults = await db
+      .select({
+        type: commissions.type,
+        count: sql`count(*)`,
+      })
+      .from(commissions)
+      .groupBy(commissions.type);
+
+    // Calculate total amount of pending and paid commissions
+    let pendingTotal = 0;
+    let paidTotal = 0;
+
+    pendingCommissions.forEach(commission => {
+      const amount = parseFloat(commission.amount.replace(/[$,]/g, ''));
+      if (!isNaN(amount)) {
+        pendingTotal += amount;
+      }
+    });
+
+    paidCommissions.forEach(commission => {
+      const amount = parseFloat(commission.amount.replace(/[$,]/g, ''));
+      if (!isNaN(amount)) {
+        paidTotal += amount;
+      }
+    });
+
+    // Format the amounts as currency strings
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
+    // Build the commissions by type object
+    const commissionsByType: Record<string, number> = {};
+    typeResults.forEach(result => {
+      commissionsByType[result.type] = Number(result.count);
+    });
+
+    return {
+      totalCommissions: Number(commissionCount?.count) || 0,
+      pendingAmount: formatter.format(pendingTotal),
+      paidAmount: formatter.format(paidTotal),
+      commissionsByType,
+    };
   }
 }

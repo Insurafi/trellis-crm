@@ -298,4 +298,62 @@ export const clientsRelationsWithPipeline = relations(clients, ({ many }) => ({
   quotes: many(quotes),
   calendarEvents: many(calendarEvents),
   opportunities: many(pipelineOpportunities),
+  commissions: many(commissions),
+}));
+
+// Commissions
+export const commissions = pgTable("commissions", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  policyNumber: text("policy_number").notNull(),
+  clientId: integer("client_id").references(() => clients.id),
+  brokerId: integer("broker_id").references(() => users.id),
+  amount: text("amount").notNull(),
+  status: text("status").default("pending"),
+  type: text("type").notNull(), // Initial, Renewal, etc.
+  paymentDate: timestamp("payment_date"),
+  policyStartDate: timestamp("policy_start_date"),
+  policyEndDate: timestamp("policy_end_date"),
+  carrier: text("carrier"),
+  policyType: text("policy_type"), // Life, Health, Auto, etc.
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCommissionSchema = createInsertSchema(commissions).pick({
+  name: true,
+  policyNumber: true,
+  clientId: true,
+  brokerId: true,
+  amount: true,
+  status: true,
+  type: true,
+  paymentDate: true,
+  policyStartDate: true,
+  policyEndDate: true,
+  carrier: true,
+  policyType: true,
+  notes: true,
+});
+
+export type InsertCommission = z.infer<typeof insertCommissionSchema>;
+export type Commission = typeof commissions.$inferSelect;
+
+export const commissionsRelations = relations(commissions, ({ one }) => ({
+  client: one(clients, {
+    fields: [commissions.clientId],
+    references: [clients.id],
+  }),
+  broker: one(users, {
+    fields: [commissions.brokerId],
+    references: [users.id],
+  }),
+}));
+
+export const usersCommissionsRelations = relations(users, ({ many }) => ({
+  commissions: many(commissions),
+}));
+
+export const clientsCommissionsRelations = relations(clients, ({ many }) => ({
+  commissions: many(commissions),
 }));

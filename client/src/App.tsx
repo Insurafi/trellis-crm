@@ -11,6 +11,7 @@ import Calendar from "@/pages/calendar";
 import Tasks from "@/pages/tasks";
 import Marketing from "@/pages/marketing";
 import Pipeline from "@/pages/pipeline";
+import Commissions from "@/pages/commissions";
 import Sidebar from "@/components/ui/sidebar";
 import MobileHeader from "@/components/ui/mobile-header";
 import { useState } from "react";
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/tasks" component={Tasks} />
       <Route path="/marketing" component={Marketing} />
       <Route path="/pipeline" component={Pipeline} />
+      <Route path="/commissions" component={Commissions} />
       <Route component={NotFound} />
     </Switch>
   );

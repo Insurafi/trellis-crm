@@ -86,6 +86,21 @@ export interface IStorage {
   createPipelineOpportunity(opportunity: InsertPipelineOpportunity): Promise<PipelineOpportunity>;
   updatePipelineOpportunity(id: number, opportunity: Partial<InsertPipelineOpportunity>): Promise<PipelineOpportunity | undefined>;
   deletePipelineOpportunity(id: number): Promise<boolean>;
+  
+  // Commissions
+  getCommissions(): Promise<Commission[]>;
+  getCommissionsByClient(clientId: number): Promise<Commission[]>;
+  getCommissionsByBroker(brokerId: number): Promise<Commission[]>;
+  getCommission(id: number): Promise<Commission | undefined>;
+  createCommission(commission: InsertCommission): Promise<Commission>;
+  updateCommission(id: number, commission: Partial<InsertCommission>): Promise<Commission | undefined>;
+  deleteCommission(id: number): Promise<boolean>;
+  getCommissionsStats(): Promise<{
+    totalCommissions: number;
+    pendingAmount: string;
+    paidAmount: string;
+    commissionsByType: Record<string, number>;
+  }>;
 }
 
 export class MemStorage implements IStorage {

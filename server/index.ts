@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeData } from "./initialize-data";
 import { initializePipelineData } from "./initialize-pipeline-data";
+import { initializeCommissionData } from "./initialize-commission-data";
 
 const app = express();
 app.use(express.json());
@@ -74,6 +75,8 @@ app.use((req, res, next) => {
       await initializeData();
       // Initialize pipeline data after basic data is loaded
       await initializePipelineData();
+      // Initialize commission data
+      await initializeCommissionData();
     } catch (error) {
       log(`Error initializing data: ${error}`);
     }

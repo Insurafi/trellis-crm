@@ -10,7 +10,8 @@ import {
   insertMarketingCampaignSchema,
   insertCalendarEventSchema,
   insertPipelineStageSchema,
-  insertPipelineOpportunitySchema
+  insertPipelineOpportunitySchema,
+  insertCommissionSchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -689,6 +690,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting pipeline opportunity:", error);
       res.status(500).json({ message: "Failed to delete pipeline opportunity" });
+    }
+  });
+
+  // Commissions
+  app.get("/api/commissions/stats", async (req, res) => {
+    try {
+      const stats = await storage.getCommissionsStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching commissions stats:", error);
+      res.status(500).json({ message: "Failed to fetch commissions statistics" });
+    }
+  });
+
+  app.get("/api/commissions", async (req, res) => {
+    try {
+      const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
+      const brokerId = req.query.brokerId ? parseInt(req.query.brokerId as string) : undefined;
+      
+      let commissions;
+      if (clientId && !isNaN(clientId)) {
+        commissions = await storage.getCommissionsByClient(clientId);
+      } else if (brokerId && !isNaN(brokerId)) {
+        commissions = await storage.getCommissionsByBroker(brokerId);
+      } else {
+        commissions = await storage.getCommissions();
+      }
+      
+      res.json(commissions);
+    } catch (error) {
+      console.error("Error fetching commissions:", error);
+      res.status(500).json({ message: "Failed to fetch commissions" });
+    }
+  });
+
+  app.get("/api/commissions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid commission ID" });
+      }
+
+      const commission = await storage.getCommission(id);
+      if (!commission) {
+        return res.status(404).json({ message: "Commission not found" });
+      }
+
+      res.json(commission);
+    } catch (error) {
+      console.error("Error fetching commission:", error);
+      res.status(500).json({ message: "Failed to fetch commission" });
+    }
+  });
+
+  app.post("/api/commissions", async (req, res) => {
+    try {
+      const commissionData = insertCommissionSchema.parse(req.body);
+      const newCommission = await storage.createCommission(commissionData);
+      res.status(201).json(newCommission);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.patch("/api/commissions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid commission ID" });
+      }
+
+      const updateData = insertCommissionSchema.partial().parse(req.body);
+      const updatedCommission = await storage.updateCommission(id, updateData);
+      
+      if (!updatedCommission) {
+        return res.status(404).json({ message: "Commission not found" });
+      }
+
+      res.json(updatedCommission);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+
+  app.delete("/api/commissions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid commission ID" });
+      }
+
+      const success = await storage.deleteCommission(id);
+      if (!success) {
+        return res.status(404).json({ message: "Commission not found" });
+      }
+
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error deleting commission:", error);
+      res.status(500).json({ message: "Failed to delete commission" });
     }
   });
 
