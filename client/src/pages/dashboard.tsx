@@ -1,9 +1,8 @@
 import DashboardMetrics from "@/components/ui/dashboard-metrics";
 import TaskManagement from "@/components/dashboard/task-management";
-import RecentDocuments from "@/components/dashboard/recent-documents";
 import PortfolioShowcase from "@/components/ui/portfolio-showcase";
 import CalendarCard from "@/components/ui/calendar-card";
-import ClientList from "@/components/ui/client-list";
+import AgentStatusList from "@/components/dashboard/agent-status-list";
 import ClientReviews from "@/components/ui/client-reviews";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter } from "lucide-react";
@@ -37,14 +36,13 @@ export default function Dashboard() {
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
           <TaskManagement />
-          <RecentDocuments />
           <PortfolioShowcase />
         </div>
         
         {/* Right Column (1/3 width) */}
         <div className="space-y-6">
           <CalendarCard />
-          <ClientList />
+          <AgentStatusList />
           <ClientReviews />
         </div>
       </div>
