@@ -145,9 +145,11 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                       : "Support"}
               </p>
             </div>
-            <button className="ml-auto text-neutral-400 hover:text-neutral-600">
-              <Settings className="h-5 w-5" />
-            </button>
+            <div className="ml-auto flex">
+              <Link href="/auth" className="text-sm text-blue-600 hover:text-blue-800 px-2">
+                Logout
+              </Link>
+            </div>
           </div>
         </div>
       </div>
