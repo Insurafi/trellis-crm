@@ -676,8 +676,12 @@ const LeadsPage: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           {lead.assignedAgentId ? 
-                            agents?.find((a: any) => a.id === lead.assignedAgentId)?.licenseNumber || 
-                            `Agent #${lead.assignedAgentId}` 
+                            (() => {
+                              const agent = agents?.find((a: any) => a.id === lead.assignedAgentId);
+                              return agent ? 
+                                (agent.fullName || agent.name || `${agent.firstName} ${agent.lastName}`) : 
+                                `Agent #${lead.assignedAgentId}`;
+                            })()
                             : 
                             "Unassigned"
                           }
@@ -977,7 +981,8 @@ const LeadsPage: React.FC = () => {
                         <SelectItem value="">No agent assigned</SelectItem>
                         {agents?.map((agent: any) => (
                           <SelectItem key={agent.id} value={agent.id.toString()}>
-                            Agent {agent.licenseNumber}
+                            {agent.fullName || agent.name || `${agent.firstName || ''} ${agent.lastName || ''}`}
+                            {agent.licenseNumber ? ` (${agent.licenseNumber})` : ''}
                           </SelectItem>
                         ))}
                       </SelectContent>
