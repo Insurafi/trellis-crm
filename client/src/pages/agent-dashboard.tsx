@@ -271,21 +271,20 @@ export default function AgentDashboard() {
             </Card>
           </div>
 
-          {/* Modern Quote Button */}
-          <div className="mb-6 flex justify-center">
-            <Button 
-              className="font-semibold px-10 py-3 text-xl h-auto bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl border-0 animate-pulse"
-              asChild
-            >
-              <Link href="/quotes">
-                <FileText className="mr-3 h-6 w-6" />
-                GET QUOTE
-              </Link>
-            </Button>
-          </div>
-
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4">
+            <Card className="col-span-4 relative">
+              {/* Modern Quote Button - positioned above but inside the card */}
+              <div className="absolute -top-12 w-full flex justify-center">
+                <Button 
+                  className="font-semibold px-10 py-3 text-lg h-auto bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full border-0"
+                  asChild
+                >
+                  <Link href="/quotes">
+                    <FileText className="mr-2 h-5 w-5" />
+                    GET QUOTE
+                  </Link>
+                </Button>
+              </div>
               <CardHeader>
                 <CardTitle>Commissions Overview</CardTitle>
               </CardHeader>
