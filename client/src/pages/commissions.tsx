@@ -425,7 +425,9 @@ export default function CommissionsPage() {
     // Extract data for the chart
     const chartData = Object.entries(stats.commissionsByType || {}).map(([key, value]) => ({
       name: key.charAt(0).toUpperCase() + key.slice(1),
-      value: parseFloat((value as string).replace(/[^0-9.-]+/g, '')),
+      value: typeof value === 'string' 
+        ? parseFloat(value.replace(/[^0-9.-]+/g, ''))
+        : typeof value === 'number' ? value : 0,
     }));
 
     if (chartData.length === 0) {
