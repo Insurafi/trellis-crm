@@ -52,6 +52,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     // Admin/TeamLeader/Support navigation
     navItems = [
       { path: "/dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
+      { path: "/agent-dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Agent View (Testing)" },
       { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
       { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
       ...baseNavItems,
