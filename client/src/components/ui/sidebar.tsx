@@ -16,7 +16,8 @@ import {
   UserCheck,
   UserSearch,
   Shield,
-  GraduationCap
+  GraduationCap,
+  LineChart
 } from "lucide-react";
 
 interface SidebarProps {
@@ -60,6 +61,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
       ...baseNavItems,
       { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
+      { path: "/analytics", icon: <LineChart className="mr-3 h-5 w-5" />, label: "Analytics" },
     ];
     
     // Add Users Management only for admin or team leader

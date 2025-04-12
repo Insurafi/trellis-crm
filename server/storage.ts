@@ -17,6 +17,42 @@ import {
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
+// Define analytics type interfaces
+interface SalesAnalytics {
+  date: string;
+  policies: number;
+  premium: number;
+  commissions: number;
+}
+
+interface ConversionAnalytics {
+  name: string;
+  value: number;
+}
+
+interface PolicyTypeAnalytics {
+  name: string;
+  value: number;
+}
+
+interface AgentPerformanceAnalytics {
+  name: string;
+  id: number;
+  policies: number;
+  premium: number;
+  commissions: number;
+  conversion: number;
+}
+
+interface DashboardSummaryStats {
+  totalPolicies: number;
+  totalPremium: number;
+  totalCommissions: number;
+  conversionRate: number;
+  avgPolicyValue: number;
+  periodDescription: string;
+}
+
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
@@ -147,6 +183,18 @@ export interface IStorage {
   createPolicy(policy: InsertPolicy): Promise<Policy>;
   updatePolicy(id: number, policy: Partial<InsertPolicy>): Promise<Policy | undefined>;
   deletePolicy(id: number): Promise<boolean>;
+  
+  // Analytics
+  getSalesAnalytics(from: Date, to: Date): Promise<SalesAnalytics[]>;
+  getSalesAnalyticsByAgent(agentId: number, from: Date, to: Date): Promise<SalesAnalytics[]>;
+  getConversionAnalytics(from: Date, to: Date): Promise<ConversionAnalytics[]>;
+  getConversionAnalyticsByAgent(agentId: number, from: Date, to: Date): Promise<ConversionAnalytics[]>;
+  getPolicyTypeAnalytics(from: Date, to: Date): Promise<PolicyTypeAnalytics[]>;
+  getPolicyTypeAnalyticsByAgent(agentId: number, from: Date, to: Date): Promise<PolicyTypeAnalytics[]>;
+  getAgentPerformanceAnalytics(from: Date, to: Date): Promise<AgentPerformanceAnalytics[]>;
+  getAgentPerformanceAnalyticsByTeam(teamLeaderId: number, from: Date, to: Date): Promise<AgentPerformanceAnalytics[]>;
+  getDashboardSummaryStats(from: Date, to: Date): Promise<DashboardSummaryStats>;
+  getDashboardSummaryStatsByAgent(agentId: number, from: Date, to: Date): Promise<DashboardSummaryStats>;
 }
 
 export class MemStorage implements IStorage {

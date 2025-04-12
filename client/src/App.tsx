@@ -23,6 +23,7 @@ import { ProtectedRoute } from "./lib/protected-route";
 import AuthPage from "@/pages/auth-page";
 import HomeRedirect from "@/components/home-redirect";
 import Training from "@/pages/training";
+import Analytics from "@/pages/analytics";
 
 // Use wrapper components to handle lazy loading
 const AgentsPage = () => {
@@ -90,6 +91,7 @@ function Router() {
       <ProtectedRoute path="/users" component={UsersPage} />
       <ProtectedRoute path="/agent-dashboard" component={AgentDashboardPage} />
       <ProtectedRoute path="/training" component={Training} />
+      <ProtectedRoute path="/analytics" component={Analytics} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
