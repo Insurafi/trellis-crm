@@ -334,6 +334,155 @@ export default function CommissionsPage() {
     );
   };
 
+  // Function to render commission stats dashboard
+  const renderCommissionDashboard = () => {
+    if (isLoadingStats) {
+      return (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="h-[120px] animate-pulse">
+              <CardContent className="p-6">
+                <div className="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
+                <div className="h-6 w-3/4 bg-gray-200 rounded"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Total Commissions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalCommissions || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Across all policies and agents
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Pending Commissions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.pendingAmount || "$0.00"}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              <Clock className="inline h-3 w-3 mr-1" />
+              Awaiting payment
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Paid Commissions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.paidAmount || "$0.00"}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              <CheckCircle className="inline h-3 w-3 mr-1" />
+              Already paid out
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              This Month
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.thisMonthAmount || "$0.00"}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              <Calendar className="inline h-3 w-3 mr-1" />
+              {format(new Date(), "MMMM yyyy")}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  // Function to render commission chart
+  const renderCommissionChart = () => {
+    if (isLoadingStats || !stats.commissionsByType) {
+      return (
+        <div className="h-[300px] flex items-center justify-center">
+          <p className="text-muted-foreground">Loading chart data...</p>
+        </div>
+      );
+    }
+
+    // Extract data for the chart
+    const chartData = Object.entries(stats.commissionsByType || {}).map(([key, value]) => ({
+      name: key.charAt(0).toUpperCase() + key.slice(1),
+      value: parseFloat((value as string).replace(/[^0-9.-]+/g, '')),
+    }));
+
+    if (chartData.length === 0) {
+      return (
+        <div className="h-[300px] flex items-center justify-center">
+          <p className="text-muted-foreground">No commission data available to display.</p>
+        </div>
+      );
+    }
+
+    // Calculate total value for percentage display
+    const total = chartData.reduce((sum, item) => sum + item.value, 0);
+
+    return (
+      <div className="h-[300px] w-full">
+        <div className="flex items-center justify-center h-full">
+          <div className="w-full max-w-md">
+            <h3 className="text-base font-medium mb-4 text-center">Commission Breakdown by Type</h3>
+            <div className="space-y-2">
+              {chartData.map((entry, index) => {
+                const percentage = ((entry.value / total) * 100).toFixed(1);
+                const colors = [
+                  'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500', 
+                  'bg-red-500', 'bg-indigo-500', 'bg-pink-500', 'bg-teal-500'
+                ];
+                const color = colors[index % colors.length];
+                
+                return (
+                  <div key={entry.name} className="relative pt-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <div>
+                        <span className="text-sm font-medium inline-block">
+                          {entry.name}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-sm font-medium inline-block">
+                          {formatCurrency(entry.value.toString())} ({percentage}%)
+                        </span>
+                      </div>
+                    </div>
+                    <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+                      <div 
+                        style={{ width: `${percentage}%` }} 
+                        className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${color}`}
+                      ></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
