@@ -35,6 +35,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { path: "/quotes", icon: <Tag className="mr-3 h-5 w-5" />, label: "Quotes" },
     { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },
     { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
+    { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
     { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
     { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
   ];
@@ -57,7 +58,6 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
       ...baseNavItems,
       { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
-      { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
     ];
     
     // Add Users Management only for admin or team leader
