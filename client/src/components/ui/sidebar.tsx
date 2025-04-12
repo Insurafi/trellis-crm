@@ -25,7 +25,7 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const [location] = useLocation();
-  const { user, isAdmin, isAgent, isTeamLeader } = useAuth();
+  const { user, isAdmin, isAgent, isTeamLeader, logoutMutation } = useAuth();
 
   // Base navigation items for all authenticated users
   const baseNavItems = [
@@ -146,9 +146,13 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
               </p>
             </div>
             <div className="ml-auto flex">
-              <Link href="/auth" className="text-sm text-blue-600 hover:text-blue-800 px-2">
-                Logout
-              </Link>
+              <button
+                onClick={() => logoutMutation.mutate()}
+                className="text-sm text-blue-600 hover:text-blue-800 px-2"
+                disabled={logoutMutation.isPending}
+              >
+                {logoutMutation.isPending ? "Logging out..." : "Logout"}
+              </button>
             </div>
           </div>
         </div>
