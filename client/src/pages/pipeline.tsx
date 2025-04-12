@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -75,9 +76,11 @@ interface Client {
 
 const Pipeline = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isOpportunityDialogOpen, setIsOpportunityDialogOpen] = useState(false);
   const [selectedStage, setSelectedStage] = useState<number | null>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<PipelineOpportunity | null>(null);
+  const [currentAgentId, setCurrentAgentId] = useState<number | null>(null);
   const [opportunityForm, setOpportunityForm] = useState({
     title: "",
     clientId: "",
@@ -86,7 +89,27 @@ const Pipeline = () => {
     probability: "0",
     expectedCloseDate: "",
     notes: "",
+    assignedTo: "",
   });
+  
+  // Fetch current agent ID if user is of role 'agent'
+  useEffect(() => {
+    const fetchAgentId = async () => {
+      if (user && user.id && (user.role === 'agent' || user.role === 'team_leader')) {
+        try {
+          const response = await fetch(`/api/agents/by-user/${user.id}`);
+          if (response.ok) {
+            const agent = await response.json();
+            setCurrentAgentId(agent.id);
+          }
+        } catch (error) {
+          console.error("Failed to fetch agent data:", error);
+        }
+      }
+    };
+    
+    fetchAgentId();
+  }, [user]);
 
   // Fetch pipeline stages
   const { 
@@ -103,17 +126,35 @@ const Pipeline = () => {
     isLoading: opportunitiesLoading,
     error: opportunitiesError
   } = useQuery<PipelineOpportunity[]>({
-    queryKey: ["/api/pipeline/opportunities", selectedStage],
+    queryKey: ["/api/pipeline/opportunities", selectedStage, currentAgentId],
     queryFn: async () => {
-      const url = selectedStage 
-        ? `/api/pipeline/opportunities?stageId=${selectedStage}` 
-        : '/api/pipeline/opportunities';
+      // Construct the URL based on user role and filters
+      let url = '/api/pipeline/opportunities';
+      
+      const params = new URLSearchParams();
+      
+      // Add stage filter if selected
+      if (selectedStage) {
+        params.append('stageId', selectedStage.toString());
+      }
+      
+      // Filter by agent if user is an agent
+      if (user?.role === 'agent' && currentAgentId) {
+        params.append('agentId', currentAgentId.toString());
+      }
+      
+      // Append params to URL if any exist
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+      
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch opportunities');
       }
       return response.json();
     },
+    enabled: user !== null, // Only run query when user data is available
   });
   
   // Fetch clients for select dropdown
@@ -122,6 +163,15 @@ const Pipeline = () => {
     isLoading: clientsLoading
   } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
+  });
+  
+  // Fetch agents for assignment dropdown (for admin/team leader)
+  const { 
+    data: agents = [],
+    isLoading: agentsLoading
+  } = useQuery<any[]>({
+    queryKey: ["/api/agents"],
+    enabled: user?.role === 'admin' || user?.role === 'team_leader', // Only fetch if user is admin or team leader
   });
 
   const addOpportunityMutation = useMutation({
@@ -230,6 +280,7 @@ const Pipeline = () => {
       probability: "0",
       expectedCloseDate: "",
       notes: "",
+      assignedTo: "",
     });
     setSelectedOpportunity(null);
   };
@@ -246,6 +297,8 @@ const Pipeline = () => {
         : null,
       notes: opportunityForm.notes || null,
       status: "active",
+      assignedTo: opportunityForm.assignedTo ? parseInt(opportunityForm.assignedTo) : 
+                  (user?.role === 'agent' && currentAgentId ? currentAgentId : null),
     };
 
     if (selectedOpportunity) {
@@ -268,6 +321,7 @@ const Pipeline = () => {
       probability: opportunity.probability.toString(),
       expectedCloseDate: opportunity.expectedCloseDate || "",
       notes: opportunity.notes || "",
+      assignedTo: opportunity.assignedTo?.toString() || "",
     });
     setIsOpportunityDialogOpen(true);
   };
@@ -406,6 +460,28 @@ const Pipeline = () => {
                     onChange={(e) => setOpportunityForm({ ...opportunityForm, expectedCloseDate: e.target.value })}
                   />
                 </div>
+                {/* Agent assignment dropdown - visible only for admin or team leader */}
+                {(user?.role === 'admin' || user?.role === 'team_leader') && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="assignedTo">Assigned Agent</Label>
+                    <Select 
+                      value={opportunityForm.assignedTo}
+                      onValueChange={(value) => setOpportunityForm({ ...opportunityForm, assignedTo: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Agent" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {agents.map((agent) => (
+                          <SelectItem key={agent.id} value={agent.id.toString()}>
+                            {agent.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                
                 <div className="grid gap-2">
                   <Label htmlFor="notes">Notes</Label>
                   <Textarea
@@ -494,6 +570,9 @@ const Pipeline = () => {
                 <TableHead>Value</TableHead>
                 <TableHead>Probability</TableHead>
                 <TableHead>Expected Close</TableHead>
+                {(user?.role === 'admin' || user?.role === 'team_leader') && (
+                  <TableHead>Assigned Agent</TableHead>
+                )}
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
