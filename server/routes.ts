@@ -611,18 +611,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Pipeline Opportunities
-  app.get("/api/pipeline/opportunities", async (req, res) => {
+  app.get("/api/pipeline/opportunities", isAuthenticated, async (req, res) => {
     try {
       const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
       const stageId = req.query.stageId ? parseInt(req.query.stageId as string) : undefined;
+      const agentId = req.query.agentId ? parseInt(req.query.agentId as string) : undefined;
       
       let opportunities;
       if (clientId && !isNaN(clientId)) {
         opportunities = await storage.getPipelineOpportunitiesByClient(clientId);
       } else if (stageId && !isNaN(stageId)) {
         opportunities = await storage.getPipelineOpportunitiesByStage(stageId);
+      } else if (agentId && !isNaN(agentId)) {
+        // Filter by assigned agent
+        opportunities = await storage.getPipelineOpportunitiesByAgent(agentId);
       } else {
-        opportunities = await storage.getPipelineOpportunities();
+        // For admin/broker, show all opportunities
+        if (req.user && (req.user.role === 'admin' || req.user.role === 'team_leader')) {
+          opportunities = await storage.getPipelineOpportunities();
+        } else {
+          // For other roles, only show opportunities assigned to them
+          opportunities = await storage.getPipelineOpportunitiesByAgent(req.user.id);
+        }
       }
       
       res.json(opportunities);
