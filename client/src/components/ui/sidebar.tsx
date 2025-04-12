@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 import {
   LayoutDashboard,
   Users,
@@ -24,23 +25,43 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const [location] = useLocation();
+  const { user, isAdmin, isAgent, isTeamLeader } = useAuth();
 
-  const navItems = [
-    { path: "/", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
-    { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
-    { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
-    { path: "/leads", icon: <UserSearch className="mr-3 h-5 w-5" />, label: "Leads" },
-    { path: "/policies", icon: <Shield className="mr-3 h-5 w-5" />, label: "Policies" },
-    { path: "/documents", icon: <FileText className="mr-3 h-5 w-5" />, label: "Documents" },
-    { path: "/quotes", icon: <Tag className="mr-3 h-5 w-5" />, label: "Quotes" },
-    { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },
-    { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
-    { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
-    { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
-    { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
-    { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
-    { path: "/users", icon: <Settings className="mr-3 h-5 w-5" />, label: "Users Management" },
-  ];
+  // Define navigation items based on user role
+  const getNavItems = () => {
+    // Base navigation items for all authenticated users
+    const baseNavItems = [
+      { path: "/leads", icon: <UserSearch className="mr-3 h-5 w-5" />, label: "Leads" },
+      { path: "/policies", icon: <Shield className="mr-3 h-5 w-5" />, label: "Policies" },
+      { path: "/documents", icon: <FileText className="mr-3 h-5 w-5" />, label: "Documents" },
+      { path: "/quotes", icon: <Tag className="mr-3 h-5 w-5" />, label: "Quotes" },
+      { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },
+      { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
+      { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
+      { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
+    ];
+
+    if (isAgent) {
+      // Agent-specific navigation
+      return [
+        { path: "/agent-dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
+        ...baseNavItems
+      ];
+    } else {
+      // Admin/TeamLeader/Support navigation
+      return [
+        { path: "/dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
+        { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
+        { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
+        ...baseNavItems,
+        { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
+        { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
+        ...(isAdmin || isTeamLeader ? [{ path: "/users", icon: <Settings className="mr-3 h-5 w-5" />, label: "Users Management" }] : []),
+      ];
+    }
+  };
+
+  const navItems = getNavItems();
 
   // Handle clicking outside on mobile
   const handleOutsideClick = () => {
