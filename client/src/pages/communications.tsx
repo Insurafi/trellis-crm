@@ -106,14 +106,14 @@ function CommunicationsPage() {
       const url = activeTab === "all" 
         ? '/api/communication/templates' 
         : `/api/communication/templates?category=${activeTab}`;
-      return apiRequest(url, { method: 'GET' });
+      return apiRequest('GET', url);
     }
   });
 
   // Create template mutation
   const createTemplateMutation = useMutation({
     mutationFn: (newTemplate: TemplateFormValues) => 
-      apiRequest('/api/communication/templates', { method: 'POST', body: newTemplate }),
+      apiRequest('POST', '/api/communication/templates', newTemplate),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/communication/templates'] });
       toast({
@@ -134,7 +134,7 @@ function CommunicationsPage() {
   // Update template mutation
   const updateTemplateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<TemplateFormValues> }) => 
-      apiRequest(`/api/communication/templates/${id}`, { method: 'PATCH', body: data }),
+      apiRequest('PATCH', `/api/communication/templates/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/communication/templates'] });
       toast({
@@ -155,7 +155,7 @@ function CommunicationsPage() {
   // Delete template mutation
   const deleteTemplateMutation = useMutation({
     mutationFn: (id: number) => 
-      apiRequest(`/api/communication/templates/${id}`, { method: 'DELETE' }),
+      apiRequest('DELETE', `/api/communication/templates/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/communication/templates'] });
       toast({
@@ -270,7 +270,7 @@ function CommunicationsPage() {
   // Send email mutation
   const sendEmailMutation = useMutation({
     mutationFn: (emailData: EmailFormValues) => 
-      apiRequest('/api/communication/send-email', { method: 'POST', body: emailData }),
+      apiRequest('POST', '/api/communication/send-email', emailData),
     onSuccess: () => {
       toast({
         title: "Email sent",
