@@ -190,6 +190,19 @@ export default function AgentDashboard() {
         </div>
       </div>
 
+      {/* Modern Quote Button */}
+      <div className="my-6 flex justify-center">
+        <Button 
+          className="font-semibold px-10 py-3 text-lg h-auto bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full border-0"
+          asChild
+        >
+          <Link href="/quotes">
+            <FileText className="mr-2 h-5 w-5" />
+            GET QUOTE
+          </Link>
+        </Button>
+      </div>
+
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -272,19 +285,7 @@ export default function AgentDashboard() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4 relative">
-              {/* Modern Quote Button - positioned above but inside the card */}
-              <div className="absolute -top-12 w-full flex justify-center">
-                <Button 
-                  className="font-semibold px-10 py-3 text-lg h-auto bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full border-0"
-                  asChild
-                >
-                  <Link href="/quotes">
-                    <FileText className="mr-2 h-5 w-5" />
-                    GET QUOTE
-                  </Link>
-                </Button>
-              </div>
+            <Card className="col-span-4">
               <CardHeader>
                 <CardTitle>Commissions Overview</CardTitle>
               </CardHeader>
