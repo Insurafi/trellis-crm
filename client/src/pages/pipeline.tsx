@@ -580,7 +580,7 @@ const Pipeline = () => {
             <TableBody>
               {opportunities.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-6">
+                  <TableCell colSpan={(user?.role === 'admin' || user?.role === 'team_leader') ? 9 : 8} className="text-center py-6">
                     No opportunities found. Click 'New Opportunity' to create one.
                   </TableCell>
                 </TableRow>
@@ -607,6 +607,11 @@ const Pipeline = () => {
                           ? new Date(opportunity.expectedCloseDate).toLocaleDateString() 
                           : 'N/A'}
                       </TableCell>
+                      {(user?.role === 'admin' || user?.role === 'team_leader') && (
+                        <TableCell>
+                          {agents.find(a => a.id === opportunity.assignedTo)?.name || 'Unassigned'}
+                        </TableCell>
+                      )}
                       <TableCell>
                         {opportunity.status === 'won' && (
                           <Badge className="bg-green-100 text-green-800">Won</Badge>
