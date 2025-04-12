@@ -143,21 +143,41 @@ export default function AgentDashboard() {
            policyDate.getFullYear() === currentDate.getFullYear();
   }).length;
 
+  // Show loading state if data is still loading
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin h-12 w-12 border-t-2 border-primary rounded-full mb-4"></div>
+          <p className="text-lg text-muted-foreground">Loading your agent dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">
-          Agent Dashboard
-        </h2>
-        <div className="flex items-center space-x-2">
-          <Button>
-            <ClipboardList className="mr-2 h-4 w-4" />
-            New Task
-          </Button>
-          <Button>
-            <Users className="mr-2 h-4 w-4" />
-            New Lead
-          </Button>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 bg-gradient-to-b from-blue-50 to-white">
+      {/* Agent profile banner */}
+      <div className="bg-primary p-6 rounded-lg shadow-md text-white mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">
+              Agent Dashboard
+            </h2>
+            <p className="mt-2 text-white/90">
+              Welcome back, {user?.fullName || "Agent"}! Here's your performance summary.
+            </p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Button variant="secondary">
+              <ClipboardList className="mr-2 h-4 w-4" />
+              New Task
+            </Button>
+            <Button variant="secondary">
+              <Users className="mr-2 h-4 w-4" />
+              New Lead
+            </Button>
+          </div>
         </div>
       </div>
 
