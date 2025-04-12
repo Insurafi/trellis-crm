@@ -1023,6 +1023,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AGENT-SPECIFIC API ROUTES
+  
+  // Get agent for a specific user
+  app.get("/api/agents/by-user/:userId", isAuthenticated, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const agent = await storage.getAgentByUserId(userId);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      return res.json(agent);
+    } catch (error) {
+      console.error("Error fetching agent by user ID:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get leads for a specific agent
+  app.get("/api/leads/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const leads = await storage.getLeadsByAgent(agentId);
+      return res.json(leads);
+    } catch (error) {
+      console.error("Error fetching leads by agent:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get policies for a specific agent
+  app.get("/api/policies/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const policies = await storage.getPoliciesByAgent(agentId);
+      return res.json(policies);
+    } catch (error) {
+      console.error("Error fetching policies by agent:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get commissions for a specific agent/broker
+  app.get("/api/commissions/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const commissions = await storage.getCommissionsByBroker(agentId);
+      return res.json(commissions);
+    } catch (error) {
+      console.error("Error fetching commissions by agent:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   registerAgentLeadsPolicyRoutes(app);
 
   const httpServer = createServer(app);
