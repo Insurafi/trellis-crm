@@ -177,6 +177,12 @@ export default function AgentDashboard() {
               <Users className="mr-2 h-4 w-4" />
               New Lead
             </Button>
+            <Button variant="secondary" className="font-semibold px-5 py-2 text-base" asChild>
+              <Link href="/quotes">
+                <FileText className="mr-2 h-5 w-5" />
+                Quote
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

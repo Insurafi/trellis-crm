@@ -71,7 +71,8 @@ import {
   Clock, 
   CheckCircle, 
   XCircle,
-  Copy
+  Copy,
+  ExternalLink
 } from "lucide-react";
 
 export default function Quotes() {
@@ -235,6 +236,15 @@ export default function Quotes() {
           <p className="mt-1 text-sm text-neutral-600">Generate and manage insurance quotes for clients</p>
         </div>
         <div className="mt-4 md:mt-0 flex flex-col md:flex-row gap-3">
+          <Button 
+            variant="default" 
+            size="lg" 
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-2 text-base h-auto"
+            onClick={() => window.open('https://www.ninjaquoter.com', '_blank')}
+          >
+            <ExternalLink className="mr-2 h-5 w-5" />
+            Get Quote with NinjaQuoters
+          </Button>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-400" />
             <Input
@@ -381,6 +391,58 @@ export default function Quotes() {
           </Dialog>
         </div>
       </div>
+
+      {/* NinjaQuoters Integration */}
+      <Card className="mb-6 border-blue-200 bg-gradient-to-r from-blue-50 to-white">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <ExternalLink className="mr-2 h-5 w-5 text-blue-600" />
+            NinjaQuoters Integration
+          </CardTitle>
+          <CardDescription>
+            Generate fast and accurate life insurance quotes for your clients through our partner, NinjaQuoters.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-medium mb-2">Benefits of NinjaQuoters</h3>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Instant quotes from 40+ top-rated insurance carriers</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Compare rates and coverage options side-by-side</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Save time with real-time pricing updates</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Streamlined application process for faster client approvals</span>
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col justify-center">
+              <Button 
+                variant="default" 
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 text-base h-auto"
+                onClick={() => window.open('https://www.ninjaquoter.com', '_blank')}
+              >
+                <ExternalLink className="mr-2 h-5 w-5" />
+                Go to NinjaQuoters Quote Engine
+              </Button>
+              <p className="text-sm text-neutral-500 mt-3 text-center">
+                Opens in a new window for a seamless quoting experience
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Quotes List */}
       <Card>
