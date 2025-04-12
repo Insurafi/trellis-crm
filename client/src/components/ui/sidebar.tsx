@@ -147,7 +147,11 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             </div>
             <div className="ml-auto flex">
               <button
-                onClick={() => logoutMutation.mutate()}
+                onClick={() => {
+                  if (confirm('Are you sure you want to log out?')) {
+                    logoutMutation.mutate();
+                  }
+                }}
                 className="text-sm text-blue-600 hover:text-blue-800 px-2"
                 disabled={logoutMutation.isPending}
               >
