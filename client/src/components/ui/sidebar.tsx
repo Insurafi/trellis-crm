@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
     { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
     { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
-    { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
+    { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Scripts" },
   ];
 
   // Specific navigation items based on user role

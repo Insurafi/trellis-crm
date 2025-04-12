@@ -106,7 +106,7 @@ function CommunicationsPage() {
       const url = activeTab === "all" 
         ? '/api/communication/templates' 
         : `/api/communication/templates?category=${activeTab}`;
-      return apiRequest(url);
+      return apiRequest(url, { method: 'GET' });
     }
   });
 
@@ -305,9 +305,9 @@ function CommunicationsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Communication Templates</h1>
+          <h1 className="text-3xl font-bold">Scripts & Templates</h1>
           <p className="text-gray-500 mt-1">
-            Manage templates for client communications via emails, calls, and text messages
+            Manage scripts and templates for client communications via emails, calls, and text messages
           </p>
         </div>
         <div className="flex gap-2">
@@ -595,10 +595,10 @@ function CommunicationsPage() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="all">All Templates</TabsTrigger>
-          <TabsTrigger value="email">Email</TabsTrigger>
+          <TabsTrigger value="all">All Scripts</TabsTrigger>
+          <TabsTrigger value="email">Email Templates</TabsTrigger>
           <TabsTrigger value="call">Call Scripts</TabsTrigger>
-          <TabsTrigger value="sms">SMS</TabsTrigger>
+          <TabsTrigger value="sms">SMS Templates</TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="space-y-4">
