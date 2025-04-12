@@ -15,7 +15,8 @@ import {
   Settings,
   UserCheck,
   UserSearch,
-  Shield
+  Shield,
+  GraduationCap
 } from "lucide-react";
 
 interface SidebarProps {
@@ -38,6 +39,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
     { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
     { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Scripts" },
+    { path: "/training", icon: <GraduationCap className="mr-3 h-5 w-5" />, label: "Training" },
   ];
 
   // Specific navigation items based on user role
