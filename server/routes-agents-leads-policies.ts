@@ -250,7 +250,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   });
 
   // Policies
-  app.get("/api/policies", async (req, res) => {
+  app.get("/api/policies", isAuthenticated, async (req, res) => {
     try {
       const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
       const leadId = req.query.leadId ? parseInt(req.query.leadId as string) : undefined;
@@ -271,6 +271,21 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     } catch (error) {
       console.error("Error fetching policies:", error);
       res.status(500).json({ message: "Failed to fetch policies" });
+    }
+  });
+
+  app.get("/api/policies/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      const policies = await storage.getPoliciesByAgent(agentId);
+      res.json(policies);
+    } catch (error) {
+      console.error("Error fetching policies by agent:", error);
+      res.status(500).json({ message: "Failed to fetch policies by agent" });
     }
   });
 
