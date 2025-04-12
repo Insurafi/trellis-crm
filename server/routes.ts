@@ -629,9 +629,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // For admin/broker, show all opportunities
         if (req.user && (req.user.role === 'admin' || req.user.role === 'team_leader')) {
           opportunities = await storage.getPipelineOpportunities();
-        } else {
+        } else if (req.user) {
           // For other roles, only show opportunities assigned to them
           opportunities = await storage.getPipelineOpportunitiesByAgent(req.user.id);
+        } else {
+          // If not authenticated properly, return empty array
+          opportunities = [];
         }
       }
       

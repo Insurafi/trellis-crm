@@ -400,6 +400,13 @@ export class DatabaseStorage implements IStorage {
       .where(eq(pipelineOpportunities.stageId, stageId));
   }
 
+  async getPipelineOpportunitiesByAgent(agentId: number): Promise<PipelineOpportunity[]> {
+    return db
+      .select()
+      .from(pipelineOpportunities)
+      .where(eq(pipelineOpportunities.assignedTo, agentId));
+  }
+
   async getPipelineOpportunity(id: number): Promise<PipelineOpportunity | undefined> {
     const [opportunity] = await db
       .select()

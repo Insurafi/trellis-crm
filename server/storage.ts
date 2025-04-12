@@ -92,6 +92,7 @@ export interface IStorage {
   getPipelineOpportunities(): Promise<PipelineOpportunity[]>;
   getPipelineOpportunitiesByClient(clientId: number): Promise<PipelineOpportunity[]>;
   getPipelineOpportunitiesByStage(stageId: number): Promise<PipelineOpportunity[]>;
+  getPipelineOpportunitiesByAgent(agentId: number): Promise<PipelineOpportunity[]>;
   getPipelineOpportunity(id: number): Promise<PipelineOpportunity | undefined>;
   createPipelineOpportunity(opportunity: InsertPipelineOpportunity): Promise<PipelineOpportunity>;
   updatePipelineOpportunity(id: number, opportunity: Partial<InsertPipelineOpportunity>): Promise<PipelineOpportunity | undefined>;
