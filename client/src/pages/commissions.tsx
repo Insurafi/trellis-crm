@@ -784,7 +784,24 @@ export default function CommissionsPage() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {renderCommissionDashboard()}
+      
+      <div className="mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Commission Distribution</CardTitle>
+            <CardDescription>
+              Breakdown of commissions by type
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {renderCommissionChart()}
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Original cards kept for reference */}
+      <div className="hidden">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
