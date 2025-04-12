@@ -21,6 +21,7 @@ import { lazy, Suspense } from "react";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "./lib/protected-route";
 import AuthPage from "@/pages/auth-page";
+import HomeRedirect from "@/components/home-redirect";
 
 // Use wrapper components to handle lazy loading
 const AgentsPage = () => {
@@ -71,7 +72,8 @@ const AgentDashboardPage = () => {
 function Router() {
   return (
     <Switch>
-      <ProtectedRoute path="/" component={Dashboard} />
+      <Route path="/" component={HomeRedirect} />
+      <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/clients" component={Clients} />
       <ProtectedRoute path="/documents" component={Documents} />
       <ProtectedRoute path="/quotes" component={Quotes} />

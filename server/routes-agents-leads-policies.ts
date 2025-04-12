@@ -46,7 +46,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.get("/api/agents/user/:userId", async (req, res) => {
+  app.get("/api/agents/user/:userId", isAuthenticated, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       if (isNaN(userId)) {
@@ -62,6 +62,24 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     } catch (error) {
       console.error("Error fetching agent by user ID:", error);
       res.status(500).json({ message: "Failed to fetch agent by user ID" });
+    }
+  });
+  
+  app.get("/api/agents/by-user", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+      
+      const agent = await storage.getAgentByUserId(req.user.id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found for the current user" });
+      }
+      
+      res.json(agent);
+    } catch (error) {
+      console.error("Error fetching agent for current user:", error);
+      res.status(500).json({ message: "Failed to fetch agent data" });
     }
   });
 
@@ -130,7 +148,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   });
 
   // Leads
-  app.get("/api/leads", async (req, res) => {
+  app.get("/api/leads", isAuthenticated, async (req, res) => {
     try {
       const agentId = req.query.agentId ? parseInt(req.query.agentId as string) : undefined;
       
@@ -145,6 +163,21 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     } catch (error) {
       console.error("Error fetching leads:", error);
       res.status(500).json({ message: "Failed to fetch leads" });
+    }
+  });
+
+  app.get("/api/leads/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      const leads = await storage.getLeadsByAgent(agentId);
+      res.json(leads);
+    } catch (error) {
+      console.error("Error fetching leads by agent:", error);
+      res.status(500).json({ message: "Failed to fetch leads by agent" });
     }
   });
 

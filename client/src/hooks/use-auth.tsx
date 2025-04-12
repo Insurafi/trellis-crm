@@ -35,6 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: getQueryFn({ on401: "returnNull" }),
   });
 
+  // Determine role flags
+  const isAdmin = user?.role === "admin";
+  const isAgent = user?.role === "agent";
+  const isTeamLeader = user?.role === "team_leader";
+  const isSupport = user?.role === "support";
+
   const loginMutation = useMutation<SelectUser, Error, LoginData>({
     mutationFn: async (credentials: LoginData) => {
       const response = await apiRequest("POST", "/api/login", credentials);
@@ -104,6 +110,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user: user ?? null,
         isLoading,
         error,
+        isAdmin,
+        isAgent,
+        isTeamLeader,
+        isSupport,
         loginMutation,
         logoutMutation,
         registerMutation,
