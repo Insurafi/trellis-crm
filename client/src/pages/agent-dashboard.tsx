@@ -167,15 +167,6 @@ export default function AgentDashboard() {
             <p className="mt-2 text-white/90">
               Welcome back, {user?.fullName || "Agent"}! Here's your performance summary.
             </p>
-            <Button 
-              className="mt-4 font-semibold px-8 py-2.5 text-lg h-auto bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl border-0"
-              asChild
-            >
-              <Link href="/quotes">
-                <FileText className="mr-2 h-5 w-5" />
-                GET QUOTE
-              </Link>
-            </Button>
           </div>
           <div className="flex items-center space-x-3">
             <Button variant="secondary">
