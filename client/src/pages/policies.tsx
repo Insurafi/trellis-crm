@@ -549,7 +549,8 @@ const PoliciesPage: React.FC = () => {
                             <SelectItem value="">No agent selected</SelectItem>
                             {agents?.map((agent: any) => (
                               <SelectItem key={agent.id} value={agent.id.toString()}>
-                                Agent {agent.licenseNumber}
+                                {agent.fullName || agent.name || `${agent.firstName || ''} ${agent.lastName || ''}`}
+                                {agent.licenseNumber ? ` (${agent.licenseNumber})` : ''}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -967,7 +968,8 @@ const PoliciesPage: React.FC = () => {
                           <SelectItem value="">No agent selected</SelectItem>
                           {agents?.map((agent: any) => (
                             <SelectItem key={agent.id} value={agent.id.toString()}>
-                              Agent {agent.licenseNumber}
+                              {agent.fullName || agent.name || `${agent.firstName || ''} ${agent.lastName || ''}`}
+                              {agent.licenseNumber ? ` (${agent.licenseNumber})` : ''}
                             </SelectItem>
                           ))}
                         </SelectContent>

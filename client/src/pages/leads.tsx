@@ -583,7 +583,8 @@ const LeadsPage: React.FC = () => {
                           <SelectItem value="">No agent assigned</SelectItem>
                           {agents?.map((agent: any) => (
                             <SelectItem key={agent.id} value={agent.id.toString()}>
-                              Agent {agent.licenseNumber}
+                              {agent.fullName || agent.name || `${agent.firstName || ''} ${agent.lastName || ''}`}
+                              {agent.licenseNumber ? ` (${agent.licenseNumber})` : ''}
                             </SelectItem>
                           ))}
                         </SelectContent>
