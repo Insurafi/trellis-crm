@@ -47,36 +47,44 @@ export default function AgentDashboard() {
   const { user } = useAuth();
   const [monthlyQuota, setMonthlyQuota] = useState(85);
   const [yearlyQuota, setYearlyQuota] = useState(62);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch agent details for the current user
-  const { data: agentData } = useQuery<any>({
+  const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
     queryKey: ["/api/agents/by-user", user?.id],
     enabled: !!user?.id,
   });
 
   // Fetch leads for this agent
-  const { data: agentLeads = [] } = useQuery<any[]>({
+  const { data: agentLeads = [], isLoading: isLeadsLoading } = useQuery<any[]>({
     queryKey: ["/api/leads/by-agent", agentData?.id],
     enabled: !!agentData?.id,
   });
   
   // Fetch policies for this agent
-  const { data: agentPolicies = [] } = useQuery<any[]>({
+  const { data: agentPolicies = [], isLoading: isPoliciesLoading } = useQuery<any[]>({
     queryKey: ["/api/policies/by-agent", agentData?.id],
     enabled: !!agentData?.id,
   });
 
   // Fetch commissions for this agent
-  const { data: agentCommissions = [] } = useQuery<any[]>({
+  const { data: agentCommissions = [], isLoading: isCommissionsLoading } = useQuery<any[]>({
     queryKey: ["/api/commissions/by-agent", agentData?.id],
     enabled: !!agentData?.id,
   });
 
   // Fetch calendar events
-  const { data: calendarEvents = [] } = useQuery<any[]>({
+  const { data: calendarEvents = [], isLoading: isEventsLoading } = useQuery<any[]>({
     queryKey: ["/api/calendar/events"],
     enabled: !!user?.id,
   });
+
+  // Update loading state when data is fetched
+  useEffect(() => {
+    if (!isAgentLoading && !isLeadsLoading && !isPoliciesLoading && !isCommissionsLoading && !isEventsLoading) {
+      setIsLoading(false);
+    }
+  }, [isAgentLoading, isLeadsLoading, isPoliciesLoading, isCommissionsLoading, isEventsLoading]);
 
   // Filter for today's events
   const today = new Date();

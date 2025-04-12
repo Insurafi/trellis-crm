@@ -27,41 +27,43 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const [location] = useLocation();
   const { user, isAdmin, isAgent, isTeamLeader } = useAuth();
 
-  // Define navigation items based on user role
-  const getNavItems = () => {
-    // Base navigation items for all authenticated users
-    const baseNavItems = [
-      { path: "/leads", icon: <UserSearch className="mr-3 h-5 w-5" />, label: "Leads" },
-      { path: "/policies", icon: <Shield className="mr-3 h-5 w-5" />, label: "Policies" },
-      { path: "/documents", icon: <FileText className="mr-3 h-5 w-5" />, label: "Documents" },
-      { path: "/quotes", icon: <Tag className="mr-3 h-5 w-5" />, label: "Quotes" },
-      { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },
-      { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
-      { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
-      { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
+  // Base navigation items for all authenticated users
+  const baseNavItems = [
+    { path: "/leads", icon: <UserSearch className="mr-3 h-5 w-5" />, label: "Leads" },
+    { path: "/policies", icon: <Shield className="mr-3 h-5 w-5" />, label: "Policies" },
+    { path: "/documents", icon: <FileText className="mr-3 h-5 w-5" />, label: "Documents" },
+    { path: "/quotes", icon: <Tag className="mr-3 h-5 w-5" />, label: "Quotes" },
+    { path: "/calendar", icon: <Calendar className="mr-3 h-5 w-5" />, label: "Calendar" },
+    { path: "/tasks", icon: <CheckSquare className="mr-3 h-5 w-5" />, label: "Tasks" },
+    { path: "/commissions", icon: <DollarSign className="mr-3 h-5 w-5" />, label: "Commissions" },
+    { path: "/communications", icon: <MessageSquare className="mr-3 h-5 w-5" />, label: "Communications" },
+  ];
+
+  // Specific navigation items based on user role
+  let navItems = [];
+  
+  if (isAgent) {
+    // Agent-specific navigation
+    navItems = [
+      { path: "/agent-dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
+      ...baseNavItems
     ];
-
-    if (isAgent) {
-      // Agent-specific navigation
-      return [
-        { path: "/agent-dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
-        ...baseNavItems
-      ];
-    } else {
-      // Admin/TeamLeader/Support navigation
-      return [
-        { path: "/dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
-        { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
-        { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
-        ...baseNavItems,
-        { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
-        { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
-        ...(isAdmin || isTeamLeader ? [{ path: "/users", icon: <Settings className="mr-3 h-5 w-5" />, label: "Users Management" }] : []),
-      ];
+  } else {
+    // Admin/TeamLeader/Support navigation
+    navItems = [
+      { path: "/dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
+      { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
+      { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
+      ...baseNavItems,
+      { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
+      { path: "/pipeline", icon: <BarChart2 className="mr-3 h-5 w-5" />, label: "Pipeline" },
+    ];
+    
+    // Add Users Management only for admin or team leader
+    if (isAdmin || isTeamLeader) {
+      navItems.push({ path: "/users", icon: <Settings className="mr-3 h-5 w-5" />, label: "Users Management" });
     }
-  };
-
-  const navItems = getNavItems();
+  }
 
   // Handle clicking outside on mobile
   const handleOutsideClick = () => {
@@ -126,13 +128,21 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             <div className="flex-shrink-0">
               <img 
                 className="h-8 w-8 rounded-full" 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                src={user?.avatarUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} 
                 alt="User avatar" 
               />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-neutral-800">Alex Johnson</p>
-              <p className="text-xs font-medium text-neutral-500">Administrator</p>
+              <p className="text-sm font-medium text-neutral-800">{user?.fullName || "User"}</p>
+              <p className="text-xs font-medium text-neutral-500">
+                {isAdmin 
+                  ? "Administrator" 
+                  : isTeamLeader 
+                    ? "Team Leader" 
+                    : isAgent 
+                      ? "Agent" 
+                      : "Support"}
+              </p>
             </div>
             <button className="ml-auto text-neutral-400 hover:text-neutral-600">
               <Settings className="h-5 w-5" />
