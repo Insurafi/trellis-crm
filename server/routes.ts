@@ -28,9 +28,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
   setupClientAuth(app);
   
-  // Serve static HTML file for pure login test 
+  // Serve static HTML files
   app.get("/pure-client-login", (req, res) => {
     res.sendFile("client-login-test.html", { root: "./client" });
+  });
+  
+  // Serve the client portal HTML directly 
+  app.get("/client-portal.html", (req, res) => {
+    res.sendFile("client-portal.html", { root: "./client" });
+  });
+  
+  // Also serve client portal HTML for direct dashboard and login routes
+  app.get("/client-login-new", (req, res) => {
+    res.sendFile("client-portal.html", { root: "./client" });
+  });
+  
+  app.get("/client-dashboard-new", (req, res) => {
+    res.sendFile("client-portal.html", { root: "./client" });
   });
   
   // Direct client login API endpoint that doesn't go through auth middleware
