@@ -31,6 +31,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
 
   // Base navigation items for all authenticated users
   const baseNavItems = [
+    { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
     { path: "/leads", icon: <UserSearch className="mr-3 h-5 w-5" />, label: "Leads" },
     { path: "/policies", icon: <Shield className="mr-3 h-5 w-5" />, label: "Policies" },
     { path: "/documents", icon: <FileText className="mr-3 h-5 w-5" />, label: "Documents" },
@@ -57,7 +58,6 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     navItems = [
       { path: "/dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
       { path: "/agent-dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Agent View (Testing)" },
-      { path: "/clients", icon: <Users className="mr-3 h-5 w-5" />, label: "Clients" },
       { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
       ...baseNavItems,
       { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
