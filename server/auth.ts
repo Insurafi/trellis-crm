@@ -13,7 +13,18 @@ const PostgresSessionStore = connectPg(session);
 
 declare global {
   namespace Express {
-    interface User extends SelectUser {}
+    // Use Partial to make all properties optional, allowing both user and client auth to work
+    interface User {
+      id: number;
+      username: string;
+      email: string;
+      name?: string;
+      fullName?: string;
+      role?: string;
+      active?: boolean;
+      isClient?: boolean;
+      [key: string]: any; // Allow other properties for both User and Client objects
+    }
   }
 }
 

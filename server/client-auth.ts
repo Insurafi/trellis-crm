@@ -11,6 +11,10 @@ declare global {
   namespace Express {
     interface User {
       isClient?: boolean;
+      // Add required User properties for client objects
+      role?: string;
+      active?: boolean;
+      fullName?: string;
     }
   }
 }
@@ -44,7 +48,18 @@ export function setupClientAuth(app: Express) {
         if (!client || !client.password || !(await comparePasswords(password, client.password))) {
           return done(null, false, { message: "Invalid username or password" });
         } else {
-          return done(null, { ...client, isClient: true });
+          // Ensure username isn't null to satisfy the User interface
+          const clientUsername = client.username || username;
+          
+          // Add required User interface properties for the client
+          return done(null, { 
+            ...client, 
+            username: clientUsername, // Ensure username is not null
+            isClient: true,
+            role: 'client',  // Add role property to satisfy User interface
+            active: true,    // Add active property to satisfy User interface
+            fullName: client.name // Use name as fullName to satisfy User interface
+          });
         }
       } catch (error) {
         return done(error);
