@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getQueryFn } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { useClientAuth } from "@/hooks/use-client-auth";
 
 interface ClientInfo {
   id: number;
@@ -46,38 +47,8 @@ export default function ClientDashboard() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   
-  // Get client info using a direct fetch approach with debugging
-  const [client, setClient] = useState<ClientInfo | null>(null);
-  const [isLoadingClientInfo, setIsLoadingClientInfo] = useState(true);
-  
-  useEffect(() => {
-    async function fetchClientInfo() {
-      try {
-        console.log("Fetching client info...");
-        const response = await fetch("/api/client/info", {
-          credentials: "include" // Important for cookies
-        });
-        
-        console.log("Client info response status:", response.status);
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Client info data:", data);
-          setClient(data);
-        } else {
-          console.error("Failed to fetch client info:", response.statusText);
-          navigate("/client-login");
-        }
-      } catch (err) {
-        console.error("Error fetching client info:", err);
-        navigate("/client-login");
-      } finally {
-        setIsLoadingClientInfo(false);
-      }
-    }
-    
-    fetchClientInfo();
-  }, [navigate]);
+  // Use client authentication hook
+  const { client, isLoading: isLoadingClientInfo } = useClientAuth();
   
   // Redirect to login page if not authenticated
   useEffect(() => {
@@ -119,26 +90,16 @@ export default function ClientDashboard() {
     );
   }
 
+  // Get logoutMutation from client auth hook
+  const { logoutMutation } = useClientAuth();
+  
   const handleLogout = async () => {
     try {
       console.log("Logging out...");
-      const response = await fetch("/api/client/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include"
-      });
+      await logoutMutation.mutateAsync();
       
-      console.log("Logout response status:", response.status);
-      
-      // Even if logout fails, redirect to login page
+      // Redirect to login page
       navigate("/client-login");
-      
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out.",
-      });
     } catch (err) {
       console.error("Logout error:", err);
       toast({

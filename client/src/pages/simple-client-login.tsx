@@ -4,48 +4,42 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { useClientAuth } from "@/hooks/use-client-auth";
+import { useEffect } from "react";
 
 export default function SimpleClientLogin() {
   const [, navigate] = useLocation();
   const [username, setUsername] = useState("client");
   const [password, setPassword] = useState("password");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Use the client auth hook
+  const { client, loginMutation } = useClientAuth();
+  const isLoading = loginMutation.isPending;
+  
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (client) {
+      navigate("/client-dashboard");
+    }
+  }, [client, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
 
     try {
-      console.log(`Sending login request to /api/client/login with username: ${username}, password: ${password}`);
+      console.log(`Attempting login with username: ${username}`);
       
-      const response = await fetch("/api/client/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-        credentials: "include"
+      await loginMutation.mutateAsync({ 
+        username, 
+        password 
       });
       
-      console.log("Login response status:", response.status);
-      
-      const data = await response.json();
-      console.log("Login response data:", data);
-      
-      if (response.ok) {
-        console.log("Login successful, navigating to dashboard");
-        navigate("/client-dashboard");
-      } else {
-        console.error("Login failed:", data.message);
-        setError(data.message || "Login failed");
-      }
-    } catch (err) {
+      // The redirect will happen automatically in the useEffect
+    } catch (err: any) {
       console.error("Login error:", err);
-      setError("An error occurred during login");
-    } finally {
-      setIsLoading(false);
+      setError(err?.message || "An error occurred during login");
     }
   };
 

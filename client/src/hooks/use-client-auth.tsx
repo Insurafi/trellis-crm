@@ -76,7 +76,7 @@ export function ClientAuthProvider({ children }: { children: ReactNode }) {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       // Use direct fetch instead of apiRequest
-      const response = await fetch("/api/logout", {
+      const response = await fetch("/api/client/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

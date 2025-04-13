@@ -108,12 +108,27 @@ function Router() {
 
 import { ClientAuthProvider } from "@/hooks/use-client-auth";
 
+// Client portal router
+function ClientRouter() {
+  return (
+    <Switch>
+      <Route path="/client-login" component={SimpleClientLogin} />
+      <Route path="/client-api-test" component={DirectClientLogin} />
+      <Route path="/final-client-test" component={FinalClientTest} />
+      <Route path="/client-dashboard" component={ClientDashboard} />
+      <Route path="/simple-client-login" component={SimpleClientLogin} />
+      <Route path="/direct-client-login" component={DirectClientLogin} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 // Component for the client portal pages
 function ClientPortalLayout() {
   return (
     <ClientAuthProvider>
       <div className="h-screen overflow-auto">
-        <Router />
+        <ClientRouter />
       </div>
     </ClientAuthProvider>
   );
@@ -145,7 +160,8 @@ function AppLayout() {
   
   // Check if current page is client portal page
   const isClientPortalPage = location === '/client-login' || location === '/client-dashboard' || 
-    location === '/client-api-test' || location === '/final-client-test';
+    location === '/client-api-test' || location === '/final-client-test' || 
+    location === '/simple-client-login' || location === '/direct-client-login';
 
   return isClientPortalPage ? <ClientPortalLayout /> : <MainAppLayout />;
 }
