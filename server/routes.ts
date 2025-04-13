@@ -21,7 +21,7 @@ import { sendEmail, processTemplate, replaceAgentName } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
-import { setupClientAuth, isAuthenticatedClient } from "./client-auth";
+import { setupClientAuth, isAuthenticatedClient, comparePasswords } from "./client-auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize authentication systems
@@ -31,6 +31,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve static HTML file for pure login test 
   app.get("/pure-client-login", (req, res) => {
     res.sendFile("client-login-test.html", { root: "./client" });
+  });
+  
+  // Direct client login API endpoint that doesn't go through auth middleware
+  app.post("/direct-client-login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      console.log("Received direct client login request for:", username);
+      
+      // Validate input
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // Get client by username
+      const client = await storage.getClientByUsername(username);
+      if (!client || !client.password) {
+        console.log("Client not found or no password set");
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+      
+      // Verify password using the imported function
+      const passwordValid = await comparePasswords(password, client.password);
+      if (!passwordValid) {
+        console.log("Password invalid");
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+      
+      // Password is valid, update last login time
+      await storage.updateClientLastLogin(client.id);
+      
+      // Remove password from response
+      const { password: _, ...clientWithoutPassword } = client;
+      
+      // Return client info
+      console.log("Direct client login successful for:", username);
+      res.status(200).json({ 
+        ...clientWithoutPassword,
+        isClient: true,
+        role: 'client',
+        active: true,
+        fullName: client.name
+      });
+    } catch (error) {
+      console.error("Direct client login error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
   
   // Error handling middleware for validation errors

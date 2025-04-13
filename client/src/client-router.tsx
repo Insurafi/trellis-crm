@@ -13,19 +13,22 @@ function ClientDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchClientData = async () => {
+    // Get client data from localStorage
+    const storedData = localStorage.getItem('clientData');
+    if (storedData) {
       try {
-        const response = await axios.get("/api/client/info", { withCredentials: true });
-        setClientData(response.data);
+        const parsedData = JSON.parse(storedData);
+        setClientData(parsedData);
         setIsLoading(false);
-      } catch (err: any) {
-        console.error("Error fetching client data:", err);
-        setError(err.message || "Failed to load client data");
+      } catch (err) {
+        console.error("Error parsing stored client data:", err);
+        setError("Invalid client data. Please log in again.");
         setIsLoading(false);
       }
-    };
-    
-    fetchClientData();
+    } else {
+      setError("No client data found. Please log in again.");
+      setIsLoading(false);
+    }
   }, []);
 
   if (isLoading) {
@@ -65,13 +68,10 @@ function ClientDashboard() {
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-600">Welcome, {clientData?.name}</span>
             <button 
-              onClick={async () => {
-                try {
-                  await axios.post("/api/client/logout", {}, { withCredentials: true });
-                  window.location.href = "/client-login-new";
-                } catch (err) {
-                  console.error("Logout error:", err);
-                }
+              onClick={() => {
+                // Just clear localStorage and redirect
+                localStorage.removeItem('clientData');
+                window.location.href = "/client-login-new";
               }}
               className="text-sm text-red-600 hover:text-red-800"
             >
@@ -142,19 +142,20 @@ function ClientLoginNew() {
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
-    // Check if already logged in
-    const checkLoginStatus = async () => {
+    // Check if already logged in via localStorage
+    const storedData = localStorage.getItem('clientData');
+    if (storedData) {
       try {
-        const response = await axios.get("/api/client/info", { withCredentials: true });
-        if (response.status === 200) {
+        const parsedData = JSON.parse(storedData);
+        if (parsedData && parsedData.id) {
+          // Already logged in
           navigate("/client-dashboard-new");
         }
       } catch (err) {
-        // Not logged in, stay on login page
+        // Invalid data in localStorage, stay on login page
+        localStorage.removeItem('clientData');
       }
-    };
-    
-    checkLoginStatus();
+    }
   }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -165,13 +166,18 @@ function ClientLoginNew() {
     try {
       console.log(`Attempting login with username: ${username}`);
       
+      // Use our direct client login endpoint instead
       const response = await axios.post(
-        "/api/client/login", 
+        "/direct-client-login", 
         { username, password },
         { withCredentials: true }
       );
       
       console.log("Login successful:", response.data);
+      
+      // Store client data in localStorage for dashboard access
+      localStorage.setItem('clientData', JSON.stringify(response.data));
+      
       navigate("/client-dashboard-new");
     } catch (err: any) {
       console.error("Login error:", err);
