@@ -63,3 +63,16 @@ export function processTemplate(template: string, replacements: Record<string, s
   
   return result;
 }
+
+/**
+ * Replace [AGENT_NAME] placeholder with the actual agent's full name
+ * @param template The template string with [AGENT_NAME] placeholder
+ * @param agentFullName The agent's full name to use as replacement
+ * @returns The processed string with [AGENT_NAME] replaced
+ */
+export function replaceAgentName(template: string, agentFullName: string): string {
+  if (!template) return '';
+  
+  // Replace all occurrences of [AGENT_NAME] with the agent's full name
+  return template.replace(/\[AGENT_NAME\]/g, agentFullName);
+}

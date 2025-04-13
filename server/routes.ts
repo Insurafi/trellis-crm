@@ -17,7 +17,7 @@ import {
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { sendEmail, processTemplate } from "./email-service";
+import { sendEmail, processTemplate, replaceAgentName } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
@@ -934,7 +934,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Process the template with replacements if provided
+      // Get the agent's full name for [AGENT_NAME] replacement
+      const agentFullName = req.user?.fullName || '';
+      
+      // Replace [AGENT_NAME] placeholder with the logged-in agent's full name
+      emailContent = replaceAgentName(emailContent, agentFullName);
+      emailSubject = replaceAgentName(emailSubject, agentFullName);
+      
+      // Process the template with other replacements if provided
       if (data.replacements && Object.keys(data.replacements).length > 0) {
         emailContent = processTemplate(emailContent, data.replacements);
         emailSubject = processTemplate(emailSubject, data.replacements);
