@@ -47,6 +47,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.sendFile("client-portal.html", { root: "./client" });
   });
   
+  // Serve the direct client login HTML (no framework)
+  app.get("/direct-client-login.html", (req, res) => {
+    res.sendFile("direct-client-login.html", { root: "./client" });
+  });
+  
+  // Serve the direct client dashboard HTML (no framework)
+  app.get("/direct-client-dashboard.html", (req, res) => {
+    res.sendFile("direct-client-dashboard.html", { root: "./client" });
+  });
+  
   // Direct client login API endpoint that doesn't go through auth middleware
   app.post("/direct-client-login", async (req, res) => {
     try {
