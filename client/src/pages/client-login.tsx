@@ -3,12 +3,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation } from "wouter";
+import { useDirectClientAuth } from "@/hooks/use-direct-client-auth";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -18,30 +18,22 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function ClientLogin() {
-  const { toast } = useToast();
-  const [location, navigate] = useLocation();
-  const [error, setError] = useState<string | null>(null);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [, navigate] = useLocation();
+  const [localError, setLocalError] = useState<string | null>(null);
+  const { login, error, isLoading, checkLoginStatus } = useDirectClientAuth();
   
   // Check if already logged in by trying to fetch client info
   useEffect(() => {
     async function checkLogin() {
-      try {
-        const response = await fetch("/api/client/info", {
-          credentials: "include"
-        });
-        
-        if (response.ok) {
-          // Already logged in, redirect to dashboard
-          navigate("/client-dashboard");
-        }
-      } catch (err) {
-        console.error("Error checking login status:", err);
+      const isLoggedIn = await checkLoginStatus();
+      if (isLoggedIn) {
+        // Already logged in, redirect to dashboard
+        navigate("/client-dashboard");
       }
     }
     
     checkLogin();
-  }, [navigate]);
+  }, [navigate, checkLoginStatus]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -52,50 +44,12 @@ export default function ClientLogin() {
   });
 
   async function onSubmit(values: LoginFormValues) {
-    setError(null);
-    setIsLoggingIn(true);
+    setLocalError(null);
     console.log("Submitting login form with values:", values);
     
-    try {
-      // Direct fetch implementation for debugging
-      const response = await fetch("/api/client/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-        credentials: "include" // Important for cookies
-      });
-      
-      console.log("Login response status:", response.status);
-      
-      const data = await response.json();
-      console.log("Login response data:", data);
-      
-      if (response.ok) {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully logged in.",
-        });
-        navigate("/client-dashboard");
-      } else {
-        setError(data.message || "Login failed");
-        toast({
-          variant: "destructive",
-          title: "Login failed",
-          description: data.message || "Please check your credentials and try again",
-        });
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("An error occurred during login. Please try again.");
-      toast({
-        variant: "destructive",
-        title: "Login error",
-        description: "An unexpected error occurred. Please try again.",
-      });
-    } finally {
-      setIsLoggingIn(false);
+    const success = await login(values.username, values.password);
+    if (success) {
+      navigate("/client-dashboard");
     }
   }
 
