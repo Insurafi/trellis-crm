@@ -19,6 +19,7 @@ import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { sendEmail, processTemplate } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
+import { registerAnalyticsRoutes } from "./routes-analytics";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1090,6 +1091,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   registerAgentLeadsPolicyRoutes(app);
+  registerAnalyticsRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
