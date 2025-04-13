@@ -132,9 +132,9 @@ export default function ClientLogin() {
                   <Button 
                     type="submit" 
                     className="w-full"
-                    disabled={isLoggingIn}
+                    disabled={isLoading}
                   >
-                    {isLoggingIn ? (
+                    {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Logging in...
