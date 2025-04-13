@@ -108,6 +108,9 @@ function Router() {
 
 import { ClientAuthProvider } from "@/hooks/use-client-auth";
 
+// Import our new test component
+import TestClientLogin from "@/pages/test-client-login";
+
 // Client portal router
 function ClientRouter() {
   return (
@@ -118,6 +121,7 @@ function ClientRouter() {
       <Route path="/client-dashboard" component={ClientDashboard} />
       <Route path="/simple-client-login" component={SimpleClientLogin} />
       <Route path="/direct-client-login" component={DirectClientLogin} />
+      <Route path="/test-client-login" component={TestClientLogin} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -161,7 +165,8 @@ function AppLayout() {
   // Check if current page is client portal page
   const isClientPortalPage = location === '/client-login' || location === '/client-dashboard' || 
     location === '/client-api-test' || location === '/final-client-test' || 
-    location === '/simple-client-login' || location === '/direct-client-login';
+    location === '/simple-client-login' || location === '/direct-client-login' ||
+    location === '/test-client-login';
 
   return isClientPortalPage ? <ClientPortalLayout /> : <MainAppLayout />;
 }
