@@ -108,8 +108,9 @@ function Router() {
 
 import { ClientAuthProvider } from "@/hooks/use-client-auth";
 
-// Import our new test component
+// Import our test components
 import TestClientLogin from "@/pages/test-client-login";
+import BypassLogin from "@/pages/bypass-login";
 
 // Client portal router
 function ClientRouter() {
@@ -122,6 +123,7 @@ function ClientRouter() {
       <Route path="/simple-client-login" component={SimpleClientLogin} />
       <Route path="/direct-client-login" component={DirectClientLogin} />
       <Route path="/test-client-login" component={TestClientLogin} />
+      <Route path="/bypass-login" component={BypassLogin} />
       <Route component={NotFound} />
     </Switch>
   );
