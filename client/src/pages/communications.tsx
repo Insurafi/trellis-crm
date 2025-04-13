@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
 
 import { 
   Tabs, 
@@ -91,11 +92,18 @@ type TemplateFormValues = z.infer<typeof templateSchema>;
 function CommunicationsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isSendEmailDialogOpen, setIsSendEmailDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+  
+  // Function to replace [AGENT_NAME] with the current user's name
+  const replaceAgentName = (content: string) => {
+    if (!user) return content;
+    return content.replace(/\[AGENT_NAME\]/g, user.fullName);
+  };
 
   // Fetch templates based on the active tab
   const { data: templates, isLoading } = useQuery({
@@ -393,7 +401,7 @@ function CommunicationsPage() {
                     <div className="space-y-4">
                       <div className="p-4 border rounded-md bg-gray-50">
                         <h4 className="font-medium mb-2">Template Preview</h4>
-                        <p className="text-sm whitespace-pre-line">{selectedTemplate.content}</p>
+                        <p className="text-sm whitespace-pre-line">{replaceAgentName(selectedTemplate.content)}</p>
                       </div>
                       
                       <div>
@@ -684,7 +692,7 @@ function CommunicationsPage() {
                     </CardHeader>
                     <CardContent className="pb-2 flex-grow">
                       <ScrollArea className="h-28">
-                        <p className="text-sm whitespace-pre-line">{template.content}</p>
+                        <p className="text-sm whitespace-pre-line">{replaceAgentName(template.content)}</p>
                       </ScrollArea>
                     </CardContent>
                     <CardFooter className="pt-2 text-xs text-gray-500">
