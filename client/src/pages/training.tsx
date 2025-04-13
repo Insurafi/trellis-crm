@@ -1410,6 +1410,1257 @@ export default function TrainingPage() {
           correctAnswer: 2
         }
       ]
+    },
+    {
+      id: "termbusiness",
+      title: "Term Business Life Insurance",
+      description: "Learn how term life insurance can protect businesses and provide valuable continuity planning.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Business Term Life Insurance</h3>
+            <p className="mt-2 text-muted-foreground">
+              Term business life insurance provides temporary death benefit protection for key stakeholders 
+              in a business for a specified period. This coverage helps businesses manage risk and ensure 
+              continuity when an essential team member passes away unexpectedly.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Key Business Applications
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Business Continuation:</span> Funds buy-sell agreements and business succession plans.</li>
+              <li><span className="font-medium">Key Person Protection:</span> Compensates for lost revenue and replacement costs.</li>
+              <li><span className="font-medium">Debt Protection:</span> Covers business loans and obligations if an owner dies.</li>
+              <li><span className="font-medium">Executive Benefits:</span> Used in executive bonus plans and retention strategies.</li>
+              <li><span className="font-medium">Partner Insurance:</span> Provides funds for surviving partners to buy deceased partner's share.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="advantages">
+              <AccordionTrigger className="px-4">Advantages for Business Applications</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Lower premiums compared to permanent insurance, allowing for higher face amounts</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Can match term length to expected business needs (e.g., loan duration)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Simplified underwriting options for business cases in many situations</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Potential tax deductions when used for certain business purposes</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="implementation">
+              <AccordionTrigger className="px-4">Implementation Strategies</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">When implementing term business life insurance:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Business Valuation:</strong> Determine accurate coverage amounts based on business value</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Legal Structure:</strong> Ensure proper ownership structure based on intended purpose</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Agreement Documentation:</strong> Create proper legal documentation for buy-sell agreements</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Premium Payment:</strong> Determine who pays premiums and potential tax implications</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="sales-tips">
+              <AccordionTrigger className="px-4">Sales Approach</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Focus on business continuity and protecting the company's future</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Emphasize financial protection for partners, stakeholders, and employees</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Quantify the financial impact of losing a key person</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Highlight the cost-effectiveness of term insurance for achieving business goals</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Important consideration</AlertTitle>
+            <AlertDescription>
+              Always work with the business's legal and tax advisors when implementing business life insurance strategies. 
+              Business insurance arrangements often have complex tax and legal implications that require specialized expertise 
+              beyond insurance knowledge alone.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "Which of the following is a primary business application for term life insurance?",
+          options: [
+            "Building cash value as a business investment",
+            "Funding retirement plans for all employees",
+            "Funding buy-sell agreements for business succession",
+            "Providing tax-free income to the business"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What makes term life insurance particularly suitable for business debt protection?",
+          options: [
+            "Its cash value growth potential",
+            "Its ability to match the term length with loan duration",
+            "Its complex ownership structure",
+            "Its permanent coverage guarantee"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "When implementing business term life insurance, what should be determined first?",
+          options: [
+            "The insured's retirement goals",
+            "The accurate business valuation for proper coverage amounts",
+            "The insured's personal estate planning needs",
+            "The insured's health history only"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "In business insurance planning, who should typically be consulted along with the insurance agent?",
+          options: [
+            "The business's competitors",
+            "The insured's family members only",
+            "The business's legal and tax advisors",
+            "Only the business's sales team"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "How can term life insurance benefit a business upon a key person's death?",
+          options: [
+            "By providing permanent coverage for all employees",
+            "By compensating for lost revenue and replacement costs",
+            "By automatically transferring ownership to the deceased's family",
+            "By eliminating all business tax obligations"
+          ],
+          correctAnswer: 1
+        }
+      ]
+    },
+    {
+      id: "grouplife",
+      title: "Group Life for Employees",
+      description: "Learn about implementing group life insurance as an employee benefit and retention tool.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Group Life Insurance for Employees</h3>
+            <p className="mt-2 text-muted-foreground">
+              Group life insurance provides coverage for multiple employees under a single policy, typically 
+              offered as an employee benefit. It serves as both a valuable benefit for employees and their 
+              families and a powerful recruitment and retention tool for employers.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Key Features
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Simplified Issue:</span> Limited or no medical underwriting required.</li>
+              <li><span className="font-medium">Employer-Paid or Contributory:</span> Employers can pay all or share costs with employees.</li>
+              <li><span className="font-medium">Guaranteed Issue:</span> Usually guaranteed acceptance up to certain limits.</li>
+              <li><span className="font-medium">Benefit Design:</span> Typically 1-3x annual salary as base benefit.</li>
+              <li><span className="font-medium">Supplemental Options:</span> Employees can often purchase additional coverage.</li>
+              <li><span className="font-medium">Portability:</span> Some plans allow employees to continue coverage if they leave the company.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="employer-benefits">
+              <AccordionTrigger className="px-4">Benefits for Employers</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Enhances employee recruitment and retention</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Tax-deductible business expense for employer-paid premiums</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Improves overall benefits package without significant cost</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Demonstrates employer care for employee families' financial security</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Volume discounts make coverage more affordable than individual policies</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="employee-benefits">
+              <AccordionTrigger className="px-4">Benefits for Employees</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Guaranteed coverage regardless of health status (up to certain limits)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Lower rates than individual policies due to group purchasing power</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Convenience of payroll-deducted premiums</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Option to purchase additional coverage at group rates</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Employer-paid coverage is usually a tax-free benefit to employees</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="implementation">
+              <AccordionTrigger className="px-4">Implementation Considerations</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">Key factors when implementing a group life plan:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Eligibility:</strong> Define which employees qualify (e.g., full-time, tenure requirements)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Benefit Structure:</strong> Determine base coverage amounts and optional supplemental tiers</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Cost Allocation:</strong> Decide employer/employee premium split</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Additional Features:</strong> Consider AD&D riders, dependent coverage, portability</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Enrollment Process:</strong> Plan for initial and ongoing enrollment periods</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Sales approach tip</AlertTitle>
+            <AlertDescription>
+              When presenting group life options to employers, focus on the total value proposition rather than just price. 
+              Emphasize employee financial security, productivity benefits from reduced financial stress, and the role of 
+              life insurance in a competitive benefits package for attracting and retaining quality employees.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What is typically the minimum number of employees required for a group life insurance plan?",
+          options: [
+            "1 employee",
+            "2-10 employees (varies by carrier)",
+            "At least 25 employees",
+            "At least 100 employees"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which is a key advantage of group life insurance for employees?",
+          options: [
+            "It provides higher death benefits than individual policies",
+            "It builds significant cash value over time",
+            "It often requires no medical underwriting up to certain limits",
+            "It allows employees to select any beneficiary including non-family members"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "How are employer-paid group life insurance premiums typically treated for tax purposes?",
+          options: [
+            "They are not tax-deductible for the business",
+            "They are a taxable benefit to employees in all cases",
+            "They are a tax-deductible business expense for the employer",
+            "They must be paid with after-tax dollars"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What is typically the standard basic coverage amount in group life insurance plans?",
+          options: [
+            "A flat $10,000 for all employees",
+            "1-3 times the employee's annual salary",
+            "10 times the employee's annual salary",
+            "The employee's expected lifetime earnings"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which statement about supplemental group life coverage is correct?",
+          options: [
+            "It is always provided at no cost to the employee",
+            "It allows employees to purchase additional coverage beyond the basic benefit",
+            "It can only be offered to executives",
+            "It requires no underwriting regardless of the amount"
+          ],
+          correctAnswer: 1
+        }
+      ]
+    },
+    {
+      id: "keyperson",
+      title: "Key Person Life Insurance",
+      description: "Master strategies for protecting businesses against the loss of essential team members.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Key Person Life Insurance</h3>
+            <p className="mt-2 text-muted-foreground">
+              Key person life insurance protects a business against financial losses resulting from the death 
+              of an individual who is crucial to the company's operations or success. The business owns the policy, 
+              pays the premiums, and is the beneficiary, using the proceeds to stabilize the business following 
+              the loss of the key person.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Who Qualifies as a Key Person?
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Business Owners/Partners:</span> Those with specialized knowledge or abilities.</li>
+              <li><span className="font-medium">C-Suite Executives:</span> CEOs, CFOs, CTOs who drive company vision and operations.</li>
+              <li><span className="font-medium">Sales Leaders:</span> Those responsible for significant revenue generation.</li>
+              <li><span className="font-medium">Technical Experts:</span> Employees with specialized skills difficult to replace.</li>
+              <li><span className="font-medium">Relationship Managers:</span> Those with valuable client or supplier relationships.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="business-protection">
+              <AccordionTrigger className="px-4">Business Protection Strategy</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">Key person insurance proceeds can help the business:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Offset lost revenue during the transition period</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Cover costs of recruiting and training a replacement</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Pay off business debts or buy out the deceased's ownership interest</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Provide liquidity to stabilize business operations</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Reassure stakeholders (creditors, clients, employees) about business continuity</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="coverage-amount">
+              <AccordionTrigger className="px-4">Determining Coverage Amount</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">Calculating appropriate coverage involves several methods:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Multiple of Compensation:</strong> 5-10 times the key person's annual compensation</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Contribution to Earnings:</strong> Estimate of the key person's contribution to company profits</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Cost to Replace:</strong> Recruitment, training, and revenue loss during replacement</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Business Valuation Impact:</strong> Potential decrease in company value without the key person</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="policy-types">
+              <AccordionTrigger className="px-4">Policy Type Selection</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Term Life Insurance:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Best for temporary needs or when budget is a primary concern</li>
+                      <li>Lower initial premiums allow for higher coverage amounts</li>
+                      <li>Good for covering specific financial obligations (loans, projects)</li>
+                      <li>Typically used for younger key persons</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Permanent Life Insurance:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Provides lifelong protection for long-term key persons</li>
+                      <li>Builds cash value that can be accessed by the business</li>
+                      <li>Can be used for executive benefits or eventual retirement funding</li>
+                      <li>Useful for business succession planning</li>
+                    </ul>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Important tax consideration</AlertTitle>
+            <AlertDescription>
+              Premiums paid by the business for key person insurance are generally not tax-deductible because 
+              the business is the beneficiary. However, death benefit proceeds are typically received income 
+              tax-free by the business. Always consult with tax advisors when implementing key person insurance 
+              strategies, as tax treatment can be complex.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "In a key person life insurance arrangement, who typically owns the policy?",
+          options: [
+            "The key person (insured)",
+            "The key person's family",
+            "The business",
+            "The business's creditors"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Which of the following would MOST likely qualify as a key person in a small business?",
+          options: [
+            "A part-time receptionist",
+            "A sales director who generates 40% of company revenue",
+            "A recently hired entry-level employee",
+            "An external consultant who works with the company occasionally"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is a common method for determining an appropriate key person insurance coverage amount?",
+          options: [
+            "The combined salaries of all employees",
+            "The business's gross annual revenue",
+            "A multiple of the key person's annual compensation (e.g., 5-10x)",
+            "The amount of the company's accounts receivable"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "How are premiums for key person insurance typically treated for tax purposes?",
+          options: [
+            "They are tax-deductible business expenses",
+            "They are generally not tax-deductible because the business is the beneficiary",
+            "They are partially tax-deductible (50%)",
+            "They are tax-deductible only for S corporations"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which is a primary purpose of key person life insurance?",
+          options: [
+            "To provide retirement benefits to all employees",
+            "To fund the personal expenses of the business owner",
+            "To protect the business against financial losses resulting from the death of a crucial individual",
+            "To provide liability protection against customer lawsuits"
+          ],
+          correctAnswer: 2
+        }
+      ]
+    },
+    {
+      id: "executivebonus",
+      title: "Executive Bonus Plans",
+      description: "Learn how life insurance can be structured as a tax-advantaged executive benefit.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Executive Bonus Plans (Section 162 Bonus)</h3>
+            <p className="mt-2 text-muted-foreground">
+              An executive bonus plan is a benefit arrangement where a company selectively provides compensation 
+              to key executives in the form of premium payments for personally-owned life insurance. These plans, 
+              also known as Section 162 plans (after the relevant tax code), provide valuable benefits to executives 
+              while offering tax advantages and simplicity compared to other executive benefit structures.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              How Executive Bonus Plans Work
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Policy Ownership:</span> The executive owns the life insurance policy.</li>
+              <li><span className="font-medium">Premium Payment:</span> The company pays the premiums as a bonus to the executive.</li>
+              <li><span className="font-medium">Tax Treatment:</span> Premium payments are tax-deductible to the business as compensation.</li>
+              <li><span className="font-medium">Executive Taxes:</span> The executive pays income tax on the bonus amount.</li>
+              <li><span className="font-medium">Double Bonus:</span> Some plans include an additional bonus to cover the executive's tax liability.</li>
+              <li><span className="font-medium">Benefits Access:</span> The executive has access to policy cash values and controls the death benefit.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="employer-benefits">
+              <AccordionTrigger className="px-4">Employer Benefits</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Tax-deductible method to provide valuable executive benefits</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Simple to implement with minimal administrative complexity</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Selective availability—can offer to specific key employees without discrimination testing</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Powerful retention tool with potential "golden handcuffs" through policy endorsements</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>No ERISA compliance requirements as with qualified plans</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="executive-benefits">
+              <AccordionTrigger className="px-4">Executive Benefits</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Immediate life insurance protection for family security</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Tax-deferred cash value accumulation for supplemental retirement funding</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Access to cash values through tax-advantaged loans and withdrawals</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Full portability if the executive leaves the company</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Death benefits generally received income tax-free by beneficiaries</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="implementation">
+              <AccordionTrigger className="px-4">Implementation Considerations</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">When implementing executive bonus plans:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Policy Selection:</strong> Choose the right type of permanent insurance (whole, universal, IUL, VUL)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Bonus Structure:</strong> Determine single or double bonus approach based on tax implications</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Restrictive Endorsements:</strong> Consider adding restrictions to enhance retention effect</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Documentation:</strong> Create proper plan documents and corporate resolutions</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Accounting:</strong> Ensure proper payroll treatment of bonuses</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Sales strategy tip</AlertTitle>
+            <AlertDescription>
+              When presenting executive bonus plans, highlight the simplicity compared to other executive benefit options. 
+              Position the plan as a way for businesses to reward and retain key executives with minimal administrative 
+              burden while providing executives with a valuable asset they own and control. Focus on the customizable 
+              nature of the benefit—companies can vary bonus amounts by executive based on performance or position.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "In an executive bonus plan, who owns the life insurance policy?",
+          options: [
+            "The business",
+            "The executive",
+            "The executive's family",
+            "A third-party trustee"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "How are premium payments in an executive bonus plan typically treated for the business's tax purposes?",
+          options: [
+            "As non-deductible expenses",
+            "As tax-deductible compensation expenses",
+            "As tax-deferred investments",
+            "As tax-free benefits"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is a 'double bonus' in the context of an executive bonus plan?",
+          options: [
+            "When the executive receives twice the normal salary",
+            "When the company provides a bonus to cover both the premium and the executive's tax liability on the bonus",
+            "When the death benefit is doubled",
+            "When the premium is paid twice annually"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which is NOT an advantage of executive bonus plans compared to other executive benefits?",
+          options: [
+            "Simplicity of implementation",
+            "Selective availability to chosen executives",
+            "Tax-qualified status under ERISA",
+            "Full tax deductibility for the business"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What happens to the executive bonus plan policy if the executive leaves the company?",
+          options: [
+            "The policy must be surrendered",
+            "The company automatically becomes the owner",
+            "The policy remains owned by the executive (it's portable)",
+            "The policy must be transferred to the new employer"
+          ],
+          correctAnswer: 2
+        }
+      ]
+    },
+    {
+      id: "buysell",
+      title: "Buy-Sell Agreement Funding",
+      description: "Learn how to use life insurance to fund business succession plans and ownership transfers.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Buy-Sell Agreement Funding with Life Insurance</h3>
+            <p className="mt-2 text-muted-foreground">
+              A buy-sell agreement is a legally binding contract that establishes what happens to a business owner's 
+              interest when a triggering event occurs, such as death, disability, retirement, or voluntary departure. 
+              Life insurance is often the most efficient funding method for buy-sell agreements, providing immediate 
+              liquidity to purchase the deceased owner's interest.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Types of Buy-Sell Arrangements
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Cross-Purchase:</span> Each owner purchases insurance on other owners' lives.</li>
+              <li><span className="font-medium">Entity Purchase (Stock Redemption):</span> The business owns policies on each owner's life.</li>
+              <li><span className="font-medium">Wait-and-See:</span> Flexible approach combining entity and cross-purchase features.</li>
+              <li><span className="font-medium">One-Way:</span> Used when only one owner will buy out another (e.g., key employee buying from owner).</li>
+              <li><span className="font-medium">Trusteed:</span> Trust owns policies and administers buy-sell arrangement.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="cross-purchase">
+              <AccordionTrigger className="px-4">Cross-Purchase Agreements</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Structure:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Each owner purchases life insurance on the other owners</li>
+                      <li>Upon death, surviving owners receive death benefits</li>
+                      <li>Proceeds used to purchase deceased owner's interest from estate</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Advantages:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Surviving owners receive beneficial step-up in basis</li>
+                      <li>Policies protected from business creditors</li>
+                      <li>Death proceeds received income tax-free</li>
+                      <li>Works well for pass-through entities</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Challenges:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Multiple policies needed with many owners (n × (n-1) policies)</li>
+                      <li>Premium disparity if owners vary in age/health</li>
+                      <li>Administrative complexity with multiple policies</li>
+                    </ul>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="entity-purchase">
+              <AccordionTrigger className="px-4">Entity Purchase Agreements</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Structure:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>The business owns and is beneficiary of policies on each owner</li>
+                      <li>Business uses death proceeds to purchase deceased owner's interest</li>
+                      <li>Simpler structure requiring fewer policies</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Advantages:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Fewer policies needed (one per owner)</li>
+                      <li>Business pays premiums (potentially more efficient)</li>
+                      <li>Equal cost regardless of owner age/health differences</li>
+                      <li>Simpler to administer with multiple owners</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Challenges:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Potential transfer-for-value issues with C corporations</li>
+                      <li>No step-up in basis for remaining shareholders</li>
+                      <li>Policies subject to business creditors</li>
+                      <li>Potential AMT issues with C corporations</li>
+                    </ul>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="implementation">
+              <AccordionTrigger className="px-4">Implementation Process</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">Essential steps for implementing life insurance-funded buy-sell agreements:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Business Valuation:</strong> Establish method for valuing the business</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Structure Selection:</strong> Choose appropriate arrangement (cross-purchase, entity, etc.)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Coverage Design:</strong> Determine appropriate insurance amount and type</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Agreement Drafting:</strong> Work with attorneys to create legal documents</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Regular Review:</strong> Plan periodic updates of valuation and coverage</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Professional coordination</AlertTitle>
+            <AlertDescription>
+              Implementing a buy-sell agreement requires a team approach. Work closely with the client's attorney 
+              to draft the legal agreement, accountant to address tax implications, and potentially a business 
+              valuation expert. The insurance agent's role is to recommend appropriate funding solutions that align 
+              with the legal structure. Never provide legal or tax advice beyond your insurance expertise.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What is the primary purpose of a buy-sell agreement funded with life insurance?",
+          options: [
+            "To increase the business's profitability",
+            "To provide retirement income for business owners",
+            "To ensure business continuity by providing funds to purchase a deceased owner's interest",
+            "To reduce the business's tax liability"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "In a cross-purchase buy-sell arrangement, who owns the life insurance policies?",
+          options: [
+            "The business entity",
+            "The individual business owners (on each other's lives)",
+            "A third-party trustee",
+            "The deceased owner's estate"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is a key advantage of an entity purchase (stock redemption) arrangement?",
+          options: [
+            "It always provides better tax treatment",
+            "It requires fewer policies when there are multiple owners",
+            "It guarantees a higher business valuation",
+            "It eliminates the need for a formal business valuation"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which of the following is NOT typically addressed in a buy-sell agreement?",
+          options: [
+            "Business valuation method",
+            "Triggering events (death, disability, retirement)",
+            "The daily management responsibilities of owners",
+            "Payment terms for purchasing the business interest"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What can happen if a business lacks a properly funded buy-sell agreement when an owner dies?",
+          options: [
+            "The government automatically takes ownership of the business share",
+            "Remaining owners may lack funds to purchase the deceased's interest, potentially leading to heirs becoming unwanted business partners",
+            "The business is automatically dissolved",
+            "Remaining owners receive automatic tax benefits"
+          ],
+          correctAnswer: 1
+        }
+      ]
+    },
+    {
+      id: "splitdollar",
+      title: "Split-Dollar Life Insurance",
+      description: "Understand the complex arrangements that split life insurance costs and benefits between parties.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Split-Dollar Life Insurance Arrangements</h3>
+            <p className="mt-2 text-muted-foreground">
+              Split-dollar life insurance is not a specific type of policy but rather an arrangement where 
+              the premiums, ownership rights, and benefits of a life insurance policy are shared between two 
+              parties—typically an employer and employee, or a business and key executive. These sophisticated 
+              arrangements provide tax-advantaged benefits while sharing costs.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Types of Split-Dollar Arrangements
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Economic Benefit Regime:</span> Employer owns the policy; employee receives death benefit.</li>
+              <li><span className="font-medium">Loan Regime:</span> Employee owns the policy; employer makes premium loans.</li>
+              <li><span className="font-medium">Endorsement Method:</span> Employer owns policy but endorses certain benefits to employee.</li>
+              <li><span className="font-medium">Collateral Assignment:</span> Employee owns policy but assigns certain rights to employer as collateral.</li>
+              <li><span className="font-medium">Private Split-Dollar:</span> Between individuals (often family members) rather than employer-employee.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="economic-benefit">
+              <AccordionTrigger className="px-4">Economic Benefit Regime</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">Key characteristics:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employer owns policy and pays all or most premiums</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employee receives death benefit (or portion) via endorsement</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employee taxed annually on "economic benefit" (cost of term coverage)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employer typically retains rights to cash value</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Often used for key employees and executive benefits</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="loan-regime">
+              <AccordionTrigger className="px-4">Loan Regime</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <p className="mb-3">Key characteristics:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employee owns the policy</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employer makes premium payments structured as loans to employee</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Loans can be interest-free, below-market, or market-rate</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Employee may be taxed on imputed interest if below-market loan</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Loan typically repaid from policy death benefit or cash value</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="business-applications">
+              <AccordionTrigger className="px-4">Business Applications</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Supplemental Executive Benefits:</strong> Cost-effective way to provide additional compensation</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Golden Handcuffs:</strong> Retention tool with vesting schedules for ownership rights</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Key Person Protection:</strong> Business protection with benefit-sharing</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Death Benefit Only Plans:</strong> Promised benefit to executive's family</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Retirement Supplements:</strong> Cash value access for future income</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Complex arrangements</AlertTitle>
+            <AlertDescription>
+              Split-dollar arrangements are among the most complex life insurance strategies and are subject 
+              to specific IRS regulations (including Treasury Regulations 1.61-22 and 1.7872-15). Always engage 
+              specialized tax and legal advisors when implementing these plans. The regulations have changed 
+              significantly over time, so ensure you're working with advisors who have current expertise in this area.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What is a split-dollar life insurance arrangement?",
+          options: [
+            "A type of term life insurance policy",
+            "A specific insurance carrier's proprietary product",
+            "An arrangement where premiums, rights, and benefits of a life policy are shared between two parties",
+            "A policy that automatically splits benefits between the insured's beneficiaries"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Under the economic benefit regime, who typically owns the life insurance policy?",
+          options: [
+            "The employee",
+            "The employer",
+            "A third-party trust",
+            "Both employer and employee jointly"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "In a loan regime split-dollar arrangement, how are the employer's premium payments structured?",
+          options: [
+            "As taxable income to the employee",
+            "As loans to the employee",
+            "As direct gifts to the employee",
+            "As business expenses with no employee impact"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is typically the tax treatment of the economic benefit (cost of term insurance) received by the employee?",
+          options: [
+            "It is tax-free to the employee in all cases",
+            "It is taxable income to the employee annually",
+            "It is deferred until retirement",
+            "It is only taxed when the policy pays a death benefit"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which of the following is a common business application of split-dollar arrangements?",
+          options: [
+            "Providing benefits to all employees at all levels",
+            "Reducing the company's overall tax liability",
+            "Creating 'golden handcuffs' to retain key executives",
+            "Funding health insurance for employees"
+          ],
+          correctAnswer: 2
+        }
+      ]
+    },
+    {
+      id: "businessloan",
+      title: "Business Loan Protection",
+      description: "Learn how life insurance can protect businesses against loan default due to owner death.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">Business Loan Protection</h3>
+            <p className="mt-2 text-muted-foreground">
+              Business loan protection uses life insurance to ensure that a business can repay outstanding 
+              loans and financing obligations if a business owner or key person dies unexpectedly. This strategy 
+              protects both the business from potential foreclosure and personal guarantors from liability.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Common Business Loans Requiring Protection
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">SBA Loans:</span> Small Business Administration loans often requiring personal guarantees.</li>
+              <li><span className="font-medium">Commercial Mortgages:</span> Loans for business property purchases.</li>
+              <li><span className="font-medium">Equipment Financing:</span> Loans for major equipment and machinery purchases.</li>
+              <li><span className="font-medium">Business Expansion Loans:</span> Financing for growth, new locations, or acquisitions.</li>
+              <li><span className="font-medium">Working Capital Lines of Credit:</span> Revolving credit for operational needs.</li>
+              <li><span className="font-medium">Start-up Loans:</span> Initial funding that often carries higher interest and personal guarantees.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="implementation">
+              <AccordionTrigger className="px-4">Implementation Approaches</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Business-Owned Coverage:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Business purchases and owns the life insurance policy</li>
+                      <li>Business is the beneficiary of the death benefit</li>
+                      <li>Upon owner's death, business uses proceeds to pay off the loan</li>
+                      <li>Best for situations where the business is the primary borrower</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-medium">Collateral Assignment:</p>
+                    <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                      <li>Individual owns the policy (often matching the loan guarantor)</li>
+                      <li>Policy is assigned to the lender as collateral for the loan</li>
+                      <li>Upon death, lender receives the outstanding loan balance directly</li>
+                      <li>Any excess death benefit goes to the policy owner's beneficiaries</li>
+                      <li>Often required by lenders for personally guaranteed loans</li>
+                    </ul>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="policy-design">
+              <AccordionTrigger className="px-4">Policy Design Considerations</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Coverage Amount:</strong> Match or exceed the loan principal amount</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Term Length:</strong> Align with the loan repayment period</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Policy Type:</strong> Term insurance for most loans; permanent for long-term/revolving debt</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Decreasing Term:</strong> Consider for amortizing loans with decreasing balances</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Info className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span><strong>Premium Structure:</strong> Level vs. decreasing based on loan structure</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="benefits">
+              <AccordionTrigger className="px-4">Benefits of Loan Protection</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Protects business from foreclosure or asset seizure after owner death</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Shields personal guarantors' estates from liability</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Preserves business credit rating and banking relationships</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Provides continuity during transition after owner death</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>May improve loan terms or approval odds when presented to lenders</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Lender requirements</AlertTitle>
+            <AlertDescription>
+              Some lenders specifically require loan protection insurance as a condition of financing, especially 
+              for SBA loans and larger commercial loans. In these cases, the lender may require specific documentation, 
+              collateral assignment forms, and minimum coverage amounts. Always check with the lender for their specific 
+              requirements before implementing a business loan protection strategy.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What is the primary purpose of business loan protection life insurance?",
+          options: [
+            "To provide retirement income for business owners",
+            "To ensure the business can repay loans if an owner or key person dies",
+            "To fund employee benefits for all staff members",
+            "To provide key employees with bonus compensation"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "In a collateral assignment arrangement for loan protection, who is typically the owner of the life insurance policy?",
+          options: [
+            "The lender (bank)",
+            "The business entity",
+            "The individual business owner/guarantor",
+            "A third-party trustee"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Which of the following loans would typically be MOST appropriate for protection with decreasing term life insurance?",
+          options: [
+            "An interest-only loan with a balloon payment",
+            "A revolving line of credit",
+            "A standard amortizing loan with declining balance over time",
+            "A short-term bridge loan"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What typically happens to any excess death benefit above the loan balance in a collateral assignment arrangement?",
+          options: [
+            "It's retained by the lender",
+            "It goes to the policy owner's named beneficiaries",
+            "It must be paid to the business",
+            "It's forfeited to the insurance company"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which loan type often specifically requires loan protection insurance as a condition of financing?",
+          options: [
+            "Personal credit card debt used for business",
+            "SBA (Small Business Administration) loans",
+            "Short-term inventory financing",
+            "Trade credit from suppliers"
+          ],
+          correctAnswer: 1
+        }
+      ]
     }
   ];
   
