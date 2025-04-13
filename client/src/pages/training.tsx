@@ -2859,6 +2859,26 @@ export default function TrainingPage() {
             "Trade credit from suppliers"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "What is a key benefit of using permanent life insurance (rather than term) for business loan protection?",
+          options: [
+            "It's always less expensive than term insurance",
+            "The cash value can be accessed to help make loan payments during business downturns",
+            "It eliminates the need for collateral assignment",
+            "It's the only type accepted by commercial lenders"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "When determining the appropriate coverage amount for business loan protection, what approach is generally recommended?",
+          options: [
+            "Match the exact loan balance amount",
+            "Cover 50% of the loan balance to reduce premium costs",
+            "Match or slightly exceed the loan amount to account for potential interest and fees",
+            "Double the loan amount to ensure adequate coverage in all scenarios"
+          ],
+          correctAnswer: 2
         }
       ]
     }
