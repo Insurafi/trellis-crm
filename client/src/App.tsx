@@ -105,9 +105,11 @@ function Router() {
 // Component for the client portal pages
 function ClientPortalLayout() {
   return (
-    <div className="h-screen overflow-auto">
-      <Router />
-    </div>
+    <AuthProvider>
+      <div className="h-screen overflow-auto">
+        <Router />
+      </div>
+    </AuthProvider>
   );
 }
 
