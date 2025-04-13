@@ -368,7 +368,7 @@ export default function AnalyticsPage() {
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
-                    data={mockSalesData}
+                    data={salesData.length > 0 ? salesData : mockSalesData}
                     margin={{
                       top: 10,
                       right: 30,
@@ -396,7 +396,7 @@ export default function AnalyticsPage() {
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
-                    data={mockSalesData}
+                    data={salesData.length > 0 ? salesData : mockSalesData}
                     margin={{
                       top: 10,
                       right: 30,
@@ -673,7 +673,7 @@ export default function AnalyticsPage() {
               <CardContent className="h-96">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={mockAgentData}
+                    data={agentPerformanceData.length > 0 ? agentPerformanceData : mockAgentData}
                     margin={{
                       top: 20,
                       right: 30,
@@ -710,7 +710,7 @@ export default function AnalyticsPage() {
                 <CardContent className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                      data={mockAgentData}
+                      data={agentPerformanceData.length > 0 ? agentPerformanceData : mockAgentData}
                       margin={{
                         top: 20,
                         right: 30,
@@ -737,7 +737,7 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    {mockAgentData
+                    {(agentPerformanceData.length > 0 ? agentPerformanceData : mockAgentData)
                       .sort((a, b) => b.premium - a.premium)
                       .slice(0, 3)
                       .map((agent, index) => (
