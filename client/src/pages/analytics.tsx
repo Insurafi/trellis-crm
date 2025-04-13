@@ -76,6 +76,12 @@ export default function AnalyticsPage() {
     queryKey: ["/api/analytics/agent-performance", dateRange],
     enabled: (isAdmin || isTeamLeader) && (businessMetric === "agent-performance" || businessMetric === "all"),
   });
+  
+  // Fetch dashboard summary stats
+  const { data: dashboardSummary, isLoading: isLoadingSummary } = useQuery({
+    queryKey: ["/api/analytics/dashboard-summary", dateRange],
+    enabled: true,
+  });
 
   // Mock data for visualization until the API endpoints are implemented
   const mockSalesData = [
@@ -160,12 +166,12 @@ export default function AnalyticsPage() {
     return `${value}%`;
   };
 
-  // Business metrics for this period
-  const totalPolicies = mockSalesData.reduce((acc, curr) => acc + curr.policies, 0);
-  const totalPremium = mockSalesData.reduce((acc, curr) => acc + curr.premium, 0);
-  const totalCommissions = mockSalesData.reduce((acc, curr) => acc + curr.commissions, 0);
-  const avgPremiumPerPolicy = totalPolicies > 0 ? totalPremium / totalPolicies : 0;
-  const conversionRate = 12.5; // Mock conversion rate
+  // Business metrics for this period - use real data if available, fallback to calculated values if not
+  const totalPolicies = dashboardSummary?.totalPolicies || 0;
+  const totalPremium = dashboardSummary?.totalPremium || 0;
+  const totalCommissions = dashboardSummary?.totalCommissions || 0;
+  const avgPremiumPerPolicy = dashboardSummary?.avgPolicyValue || 0;
+  const conversionRate = dashboardSummary?.conversionRate || 0;
   
   // Calculate period description based on dateRange
   const getPeriodDescription = () => {
@@ -324,7 +330,7 @@ export default function AnalyticsPage() {
               <CardContent className="h-96">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={mockSalesData}
+                    data={salesData.length > 0 ? salesData : mockSalesData}
                     margin={{
                       top: 20,
                       right: 30,
