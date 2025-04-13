@@ -26,6 +26,7 @@ import Training from "@/pages/training";
 import Analytics from "@/pages/analytics";
 import SimpleClientLogin from "@/pages/simple-client-login";
 import DirectClientLogin from "@/pages/direct-client-login";
+import FinalClientTest from "@/pages/final-client-test";
 import ClientDashboard from "@/pages/client-dashboard";
 
 // Use wrapper components to handle lazy loading
@@ -98,6 +99,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/client-login" component={SimpleClientLogin} />
       <Route path="/client-api-test" component={DirectClientLogin} />
+      <Route path="/final-client-test" component={FinalClientTest} />
       <Route path="/client-dashboard" component={ClientDashboard} />
       <Route component={NotFound} />
     </Switch>
@@ -140,7 +142,8 @@ function AppLayout() {
   const [location] = useLocation();
   
   // Check if current page is client portal page
-  const isClientPortalPage = location === '/client-login' || location === '/client-dashboard' || location === '/client-api-test';
+  const isClientPortalPage = location === '/client-login' || location === '/client-dashboard' || 
+    location === '/client-api-test' || location === '/final-client-test';
 
   return isClientPortalPage ? <ClientPortalLayout /> : <MainAppLayout />;
 }
