@@ -1694,6 +1694,26 @@ export default function TrainingPage() {
             "By eliminating all business tax obligations"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "When might business term life insurance be preferable to permanent life insurance?",
+          options: [
+            "When the business only needs coverage for a specific time period, such as a loan term",
+            "When cash value accumulation is the primary objective",
+            "When the business wants to provide lifetime coverage for employees",
+            "When the business plans to use the policy as a tax-advantaged investment vehicle"
+          ],
+          correctAnswer: 0
+        },
+        {
+          question: "What is a common structure for using term life insurance in a buy-sell agreement?",
+          options: [
+            "Each partner owns a policy on themselves with the company as beneficiary",
+            "The company owns separate policies on each partner with remaining partners as beneficiaries",
+            "Each partner owns policies on the other partners with themselves as beneficiaries",
+            "A third-party trustee owns the policies with the partners as joint beneficiaries"
+          ],
+          correctAnswer: 2
         }
       ]
     },
@@ -1873,6 +1893,26 @@ export default function TrainingPage() {
             "It requires no underwriting regardless of the amount"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "What is a key advantage of group life insurance for employers?",
+          options: [
+            "It transfers all liability from the employer to the insurance company",
+            "It provides unlimited coverage options for all employees regardless of health",
+            "It's a tax-deductible business expense that can enhance employee recruitment and retention",
+            "It requires employers to contribute to employee retirement accounts"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What feature of group life insurance makes it particularly valuable for employees with health issues?",
+          options: [
+            "Higher death benefits than individual policies",
+            "Guaranteed coverage with limited or no medical underwriting",
+            "The ability to choose any insurance carrier",
+            "Premiums that decrease over time"
+          ],
+          correctAnswer: 1
         }
       ]
     },
@@ -2048,6 +2088,26 @@ export default function TrainingPage() {
             "To provide liability protection against customer lawsuits"
           ],
           correctAnswer: 2
+        },
+        {
+          question: "Which policy type would be most appropriate for a key person who plans to retire in five years?",
+          options: [
+            "Whole life insurance with high cash value accumulation",
+            "Term life insurance with a five-year term matching the retirement timeframe",
+            "Universal life insurance with a lifetime benefit",
+            "Variable life insurance with maximum investment options"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What happens to the key person insurance policy if the key person leaves the company?",
+          options: [
+            "It automatically transfers to the key person for personal use",
+            "It can be maintained, surrendered for cash value, or transferred to a new key person, depending on policy type",
+            "It must be cancelled with all premiums returned to the business",
+            "It automatically converts to a retirement plan for the key person"
+          ],
+          correctAnswer: 1
         }
       ]
     },
@@ -2418,6 +2478,26 @@ export default function TrainingPage() {
             "Remaining owners may lack funds to purchase the deceased's interest, potentially leading to heirs becoming unwanted business partners",
             "The business is automatically dissolved",
             "Remaining owners receive automatic tax benefits"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "In a 'wait-and-see' buy-sell arrangement, what is the primary advantage?",
+          options: [
+            "It eliminates the need for life insurance funding",
+            "It provides flexibility to determine the best tax approach (entity or cross-purchase) after a triggering event",
+            "It always results in lower premium costs",
+            "It prevents business partners from becoming owners"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "For businesses with multiple owners of varying ages and health conditions, which buy-sell structure might be most advantageous?",
+          options: [
+            "Cross-purchase, because each owner can directly control their policies",
+            "Entity purchase, because it equalizes the premium burden regardless of age/health differences",
+            "Split-dollar arrangement, because it removes the need for buy-sell planning",
+            "One-way agreement, because it simplifies the ownership structure"
           ],
           correctAnswer: 1
         }
