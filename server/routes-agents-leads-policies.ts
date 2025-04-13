@@ -79,11 +79,18 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         console.log("No agent found for user ID:", req.user.id, "Creating one...");
         
         try {
+          // Create a license expiration date 2 years from now
+          const licenseExpirationDate = new Date();
+          licenseExpirationDate.setFullYear(licenseExpirationDate.getFullYear() + 2);
+          const licenseExpiration = licenseExpirationDate.toISOString().split('T')[0];
+
           agent = await storage.createAgent({
             userId: req.user.id,
             licenseNumber: `AG${100000 + req.user.id}`,
-            phoneNumber: "",
+            licenseExpiration: licenseExpiration,
+            phoneNumber: "(555) 555-5555", // Default phone number
             address: "",
+            carrierAppointments: "",
             commissionPercentage: "70.00",
             specialties: "",
             notes: "Auto-generated agent record"
@@ -96,7 +103,15 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             id: 0, // Use 0 instead of null to prevent invalid ID errors
             userId: req.user.id, 
             fullName: req.user.fullName || "",
-        });
+            licenseNumber: "",
+            licenseExpiration: "",
+            phoneNumber: "",
+            address: "",
+            commissionPercentage: "0.00",
+            specialties: "",
+            notes: "Default agent record"
+          });
+        }
       }
       
       res.json(agent);
