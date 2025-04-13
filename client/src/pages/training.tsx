@@ -1321,6 +1321,26 @@ export default function TrainingPage() {
             "Stacking multiple policy riders for comprehensive coverage"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "What is a child rider on a parent's life insurance policy?",
+          options: [
+            "A policy feature that increases coverage when a child is born",
+            "A separate policy that the child can take over when they turn 18",
+            "A low-cost addition that provides small death benefits for children",
+            "A beneficiary designation that ensures funds go directly to children"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Which life event often triggers parents to reconsider or increase their life insurance coverage?",
+          options: [
+            "Changing jobs",
+            "The birth of a child",
+            "Moving to a new home",
+            "A child starting school"
+          ],
+          correctAnswer: 1
         }
       ]
     },
