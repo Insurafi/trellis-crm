@@ -21,10 +21,12 @@ import { sendEmail, processTemplate, replaceAgentName } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
+import { setupClientAuth } from "./client-auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Initialize authentication system
+  // Initialize authentication systems
   setupAuth(app);
+  setupClientAuth(app);
   // Error handling middleware for validation errors
   const handleValidationError = (error: unknown, res: Response) => {
     if (error instanceof ZodError) {
