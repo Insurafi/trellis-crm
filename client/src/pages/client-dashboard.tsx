@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getQueryFn } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { useClientAuth } from "@/hooks/use-client-auth";
 
 interface ClientInfo {
   id: number;
@@ -45,29 +46,14 @@ export default function ClientDashboard() {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
-
-  // Fetch client info
-  const { 
-    data: client, 
-    isLoading: isLoadingClientInfo, 
-    isError: isClientError 
-  } = useQuery<ClientInfo>({
-    queryKey: ["/api/client/info"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
-    retry: false
-  });
-
-  // Redirect to login if not authenticated
+  const { client, isLoading: isLoadingClientInfo, logoutMutation } = useClientAuth();
+  
+  // Redirect to login page if not authenticated
   useEffect(() => {
-    if (isClientError) {
-      toast({
-        variant: "destructive",
-        title: "Unable to load your information",
-        description: "Please try logging in again",
-      });
+    if (!isLoadingClientInfo && !client) {
       navigate("/client-login");
     }
-  }, [isClientError, toast, navigate]);
+  }, [isLoadingClientInfo, client, navigate]);
 
   // Fetch client documents
   const { 
@@ -93,13 +79,6 @@ export default function ClientDashboard() {
     retry: false
   });
 
-  // Redirect to login page if not authenticated
-  useEffect(() => {
-    if (!isLoadingClientInfo && !client) {
-      navigate("/client-login");
-    }
-  }, [isLoadingClientInfo, client, navigate]);
-
   if (isLoadingClientInfo) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -109,29 +88,19 @@ export default function ClientDashboard() {
     );
   }
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      
-      if (response.ok) {
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
         navigate("/client-login");
-      } else {
+      },
+      onError: () => {
         toast({
           variant: "destructive",
           title: "Logout failed",
           description: "Please try again",
         });
       }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Logout failed",
-        description: "Please try again",
-      });
-    }
+    });
   };
 
   const getDocumentIcon = (docType: string) => {

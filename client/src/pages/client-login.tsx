@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,8 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { queryClient } from "../lib/queryClient";
+import { useClientAuth } from "@/hooks/use-client-auth";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -23,47 +22,20 @@ export default function ClientLogin() {
   const { toast } = useToast();
   const [location, navigate] = useLocation();
   const [error, setError] = useState<string | null>(null);
+  const { client, isLoading, loginMutation } = useClientAuth();
+  
+  // Redirect to client dashboard if already logged in
+  useEffect(() => {
+    if (client) {
+      navigate("/client-dashboard");
+    }
+  }, [client, navigate]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
-    },
-  });
-
-  const loginMutation = useMutation({
-    mutationFn: async (values: LoginFormValues) => {
-      const response = await fetch("/api/client/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Login failed");
-      }
-
-      return await response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
-      queryClient.setQueryData(["/api/client/info"], data);
-      navigate("/client-dashboard");
-    },
-    onError: (error: Error) => {
-      setError(error.message || "Invalid username or password");
-      toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: error.message || "Please check your credentials and try again.",
-      });
     },
   });
 
