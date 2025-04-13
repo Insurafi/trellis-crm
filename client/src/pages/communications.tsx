@@ -60,7 +60,8 @@ import {
   FormField, 
   FormItem, 
   FormLabel, 
-  FormMessage 
+  FormMessage,
+  FormDescription
 } from "@/components/ui/form";
 import { PencilIcon, PlusCircle, Trash2, Send, Mail } from "lucide-react";
 
