@@ -112,7 +112,9 @@ export function setupClientAuth(app: Express) {
 
   // Client info route
   app.get("/api/client/info", (req, res) => {
-    if (!req.isAuthenticated() || !req.user.isClient) {
+    console.log("Client info route hit, user:", req.user);
+    console.log("isAuthenticated:", req.isAuthenticated());
+    if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     
@@ -148,7 +150,9 @@ export function setupClientAuth(app: Express) {
 
 // Middleware to check if user is an authenticated client
 export function isAuthenticatedClient(req: any, res: any, next: any) {
-  if (req.isAuthenticated() && req.user && req.user.isClient) {
+  console.log("isAuthenticatedClient middleware, user:", req.user);
+  console.log("isAuthenticated:", req.isAuthenticated());
+  if (req.isAuthenticated()) {
     return next();
   }
   res.status(401).json({ message: "Unauthorized" });

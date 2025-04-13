@@ -39,9 +39,49 @@ export default function ClientLogin() {
     },
   });
 
-  function onSubmit(values: LoginFormValues) {
+  async function onSubmit(values: LoginFormValues) {
     setError(null);
-    loginMutation.mutate(values);
+    console.log("Submitting login form with values:", values);
+    
+    try {
+      // Direct fetch implementation for debugging
+      const response = await fetch("/api/client/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+        credentials: "include" // Important for cookies
+      });
+      
+      console.log("Login response status:", response.status);
+      
+      const data = await response.json();
+      console.log("Login response data:", data);
+      
+      if (response.ok) {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in.",
+        });
+        navigate("/client-dashboard");
+      } else {
+        setError(data.message || "Login failed");
+        toast({
+          variant: "destructive",
+          title: "Login failed",
+          description: data.message || "Please check your credentials and try again",
+        });
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An error occurred during login. Please try again.");
+      toast({
+        variant: "destructive",
+        title: "Login error",
+        description: "An unexpected error occurred. Please try again.",
+      });
+    }
   }
 
   return (

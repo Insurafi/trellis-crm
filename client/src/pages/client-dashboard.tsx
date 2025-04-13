@@ -46,7 +46,39 @@ export default function ClientDashboard() {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
-  const { client, isLoading: isLoadingClientInfo, logoutMutation } = useClientAuth();
+  
+  // Get client info using a direct fetch approach with debugging
+  const [client, setClient] = useState<ClientInfo | null>(null);
+  const [isLoadingClientInfo, setIsLoadingClientInfo] = useState(true);
+  
+  useEffect(() => {
+    async function fetchClientInfo() {
+      try {
+        console.log("Fetching client info...");
+        const response = await fetch("/api/client/info", {
+          credentials: "include" // Important for cookies
+        });
+        
+        console.log("Client info response status:", response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Client info data:", data);
+          setClient(data);
+        } else {
+          console.error("Failed to fetch client info:", response.statusText);
+          navigate("/client-login");
+        }
+      } catch (err) {
+        console.error("Error fetching client info:", err);
+        navigate("/client-login");
+      } finally {
+        setIsLoadingClientInfo(false);
+      }
+    }
+    
+    fetchClientInfo();
+  }, [navigate]);
   
   // Redirect to login page if not authenticated
   useEffect(() => {
@@ -88,19 +120,36 @@ export default function ClientDashboard() {
     );
   }
 
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        navigate("/client-login");
-      },
-      onError: () => {
-        toast({
-          variant: "destructive",
-          title: "Logout failed",
-          description: "Please try again",
-        });
-      }
-    });
+  const handleLogout = async () => {
+    try {
+      console.log("Logging out...");
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include"
+      });
+      
+      console.log("Logout response status:", response.status);
+      
+      // Even if logout fails, redirect to login page
+      navigate("/client-login");
+      
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast({
+        variant: "destructive",
+        title: "Logout error",
+        description: "An error occurred during logout.",
+      });
+      // Still redirect to login page
+      navigate("/client-login");
+    }
   };
 
   const getDocumentIcon = (docType: string) => {
