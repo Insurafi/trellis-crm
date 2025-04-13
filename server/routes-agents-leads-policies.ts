@@ -71,9 +71,17 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(401).json({ message: "User not authenticated" });
       }
       
+      console.log("Attempting to find agent for user ID:", req.user.id);
       const agent = await storage.getAgentByUserId(req.user.id);
+      
       if (!agent) {
-        return res.status(404).json({ message: "Agent not found for the current user" });
+        // If no agent found for this user, create a default response with empty values
+        // This prevents errors in the frontend when an agent record doesn't exist yet
+        return res.status(200).json({ 
+          id: null,
+          userId: req.user.id, 
+          fullName: req.user.fullName || "",
+        });
       }
       
       res.json(agent);

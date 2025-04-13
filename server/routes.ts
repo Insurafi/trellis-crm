@@ -49,11 +49,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Clients
   app.get("/api/clients", isAuthenticated, async (req, res) => {
     try {
+      // If user is an agent, only show clients they've interacted with through policies
+      const user = req.user;
+      const userRole = user?.role;
+      const userId = user?.id;
+      
+      if (userRole === 'agent' && userId) {
+        // Get agent record first
+        console.log("Finding agent for user ID:", userId);
+        const agent = await storage.getAgentByUserId(userId);
+        
+        if (agent) {
+          console.log("Found agent with ID:", agent.id);
+          const agentClients = await storage.getClientsByAgent(agent.id);
+          return res.json(agentClients);
+        } else {
+          console.log("No agent record found for user, returning all clients");
+        }
+      }
+      
+      // For admin, team leaders or if agent record not found, show all clients
       const clients = await storage.getClients();
       res.json(clients);
     } catch (error) {
       console.error("Error fetching clients:", error);
       res.status(500).json({ message: "Failed to fetch clients" });
+    }
+  });
+  
+  // Endpoint to get clients by specific agent (for admin/team leader use)
+  app.get("/api/clients/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      const clients = await storage.getClientsByAgent(agentId);
+      res.json(clients);
+    } catch (error) {
+      console.error("Error fetching clients by agent:", error);
+      res.status(500).json({ message: "Failed to fetch clients by agent" });
     }
   });
 
