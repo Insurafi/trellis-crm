@@ -1101,6 +1101,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/leads/by-agent/:agentId", isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.agentId);
+      
+      // Handle special case when agentId is 0 (fallback default agent)
+      if (isNaN(agentId) || agentId < 0) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // For agentId = 0 (default agent), return empty array to avoid errors
+      if (agentId === 0) {
+        console.log("Received request for default agent (ID 0), returning empty leads list");
+        return res.json([]);
+      }
+      
       const leads = await storage.getLeadsByAgent(agentId);
       return res.json(leads);
     } catch (error) {
@@ -1113,6 +1125,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/policies/by-agent/:agentId", isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.agentId);
+      
+      // Handle special case when agentId is 0 (fallback default agent)
+      if (isNaN(agentId) || agentId < 0) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // For agentId = 0 (default agent), return empty array to avoid errors
+      if (agentId === 0) {
+        console.log("Received request for default agent (ID 0), returning empty policy list");
+        return res.json([]);
+      }
+      
       const policies = await storage.getPoliciesByAgent(agentId);
       return res.json(policies);
     } catch (error) {
