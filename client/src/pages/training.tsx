@@ -2748,7 +2748,13 @@ export default function TrainingPage() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="space-y-1">
-                {trainingModules.map((module) => (
+                {/* Personal Insurance Section Header */}
+                <div className="px-4 py-2 bg-slate-100 dark:bg-slate-800 font-bold text-sm border-b">
+                  Personal Life Insurance
+                </div>
+                
+                {/* Personal Insurance Modules */}
+                {trainingModules.slice(0, 5).map((module) => (
                   <Button
                     key={module.id}
                     variant={selectedModule === module.id ? "default" : "ghost"}
