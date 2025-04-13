@@ -106,14 +106,16 @@ function Router() {
   );
 }
 
+import { ClientAuthProvider } from "@/hooks/use-client-auth";
+
 // Component for the client portal pages
 function ClientPortalLayout() {
   return (
-    <AuthProvider>
+    <ClientAuthProvider>
       <div className="h-screen overflow-auto">
         <Router />
       </div>
-    </AuthProvider>
+    </ClientAuthProvider>
   );
 }
 
