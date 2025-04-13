@@ -147,9 +147,14 @@ export function setupClientAuth(app: Express) {
     }
     
     try {
-      // For now, we need to retrieve the client data directly
-      // since the session is storing regular user data
-      const client = await storage.getClientByUsername("client");
+      // Get client info from the authenticated user in the session
+      const userId = req.user?.id;
+      
+      // If no user ID is available, try to use the hardcoded test client
+      // This is a fallback for development, but should retrieve from session
+      const client = userId 
+        ? await storage.getClient(userId)
+        : await storage.getClientByUsername("client");
       
       if (!client) {
         return res.status(404).json({ message: "Client not found" });
@@ -181,8 +186,8 @@ export function setupClientAuth(app: Express) {
     }
     
     try {
-      // Hardcode client ID for now since we're having session issues
-      const clientId = 1; // This should match the test client ID
+      // Get client ID from session user
+      const clientId = req.user?.id || 1; // Fallback to ID 1 for development
       const documents = await storage.getDocumentsByClient(clientId);
       res.json(documents);
     } catch (error) {
