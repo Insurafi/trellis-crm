@@ -209,8 +209,20 @@ export function setupClientAuth(app: Express) {
 export function isAuthenticatedClient(req: any, res: any, next: any) {
   console.log("isAuthenticatedClient middleware, user:", req.user);
   console.log("isAuthenticated:", req.isAuthenticated());
-  if (req.isAuthenticated()) {
+  
+  // Check if user is authenticated AND has the isClient flag
+  if (req.isAuthenticated() && req.user.isClient === true) {
+    console.log("Valid client authenticated:", req.user.id);
     return next();
   }
+  
+  // If authenticated but not a client, provide a clear error
+  if (req.isAuthenticated() && !req.user.isClient) {
+    console.log("Authenticated user is not a client:", req.user.id);
+    return res.status(403).json({ message: "Access denied: Not a client account" });
+  }
+  
+  // Otherwise, not authenticated
+  console.log("Not authenticated at all");
   res.status(401).json({ message: "Unauthorized" });
 }

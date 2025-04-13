@@ -39,6 +39,10 @@ export function ClientAuthProvider({ children }: { children: ReactNode }) {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
+      // Add debug logs
+      console.log("ClientAuth: Attempting login with credentials:", credentials);
+      console.log("ClientAuth: Using endpoint: /api/client/login");
+      
       // Make a direct fetch request without using apiRequest to see raw response
       const response = await fetch("/api/client/login", {
         method: "POST",

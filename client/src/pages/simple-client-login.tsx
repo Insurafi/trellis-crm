@@ -13,13 +13,17 @@ export default function SimpleClientLogin() {
   const [password, setPassword] = useState("password");
   const [error, setError] = useState<string | null>(null);
   
-  // Use the client auth hook
+  // Use the client auth hook - with console logs for debugging
+  console.log("SimpleClientLogin: Using ClientAuth hook");
   const { client, loginMutation } = useClientAuth();
+  console.log("SimpleClientLogin: Got client from hook:", client);
+  console.log("SimpleClientLogin: Got loginMutation from hook:", loginMutation);
   const isLoading = loginMutation.isPending;
   
   // Redirect to dashboard if already logged in
   useEffect(() => {
     if (client) {
+      console.log("SimpleClientLogin: Client authenticated, redirecting to dashboard");
       navigate("/client-dashboard");
     }
   }, [client, navigate]);
