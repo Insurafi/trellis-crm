@@ -1174,6 +1174,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerAgentLeadsPolicyRoutes(app);
   registerAnalyticsRoutes(app);
   
+  // Diagnostic test route
+  app.get("/api/client-auth-test", async (req, res) => {
+    try {
+      console.log("Running internal client auth test");
+      
+      // Same origin fetch to test client login API
+      const response = await fetch("http://localhost:5000/api/client/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: "client", password: "password" }),
+      });
+      
+      const statusCode = response.status;
+      let responseData = null;
+      
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        responseData = { error: "Failed to parse JSON response" };
+      }
+      
+      res.json({
+        success: response.ok,
+        statusCode,
+        responseData,
+        headers: Object.fromEntries(response.headers.entries()),
+      });
+    } catch (error) {
+      console.error("Client auth test error:", error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
   // Client Portal API Routes
   app.get("/api/client/info", isAuthenticatedClient, async (req, res) => {
     try {
