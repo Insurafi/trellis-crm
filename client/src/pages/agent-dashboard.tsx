@@ -51,7 +51,7 @@ export default function AgentDashboard() {
 
   // Fetch agent details for the current user
   const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
-    queryKey: ["/api/agents/by-user", user?.id],
+    queryKey: ["/api/agents/by-user"],
     enabled: !!user?.id,
   });
 
