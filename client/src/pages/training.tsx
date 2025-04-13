@@ -201,6 +201,26 @@ export default function TrainingPage() {
             "Gradually converting term to permanent insurance"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "Which of the following is typically NOT a reason to recommend term life insurance?",
+          options: [
+            "Income replacement for a family breadwinner",
+            "Coverage during high-debt years",
+            "Cash value accumulation for retirement",
+            "Covering specific temporary obligations"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What typically happens to term life insurance premiums at the end of the guaranteed level premium period?",
+          options: [
+            "They remain the same",
+            "They increase substantially each year",
+            "They are reduced by 50%",
+            "They are no longer required if the policy is kept in force"
+          ],
+          correctAnswer: 1
         }
       ]
     },
@@ -367,6 +387,26 @@ export default function TrainingPage() {
             "Increasing death benefit over time"
           ],
           correctAnswer: 3
+        },
+        {
+          question: "What is a dividend in a participating whole life policy?",
+          options: [
+            "A guaranteed annual return on investment",
+            "A return of excess premium based on the company's financial performance",
+            "A withdrawal from the cash value account",
+            "A tax credit for life insurance policyholders"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is a paid-up addition in a whole life policy?",
+          options: [
+            "A premium payment made in advance",
+            "A small amount of additional insurance purchased with policy dividends",
+            "A loan repayment to the insurance company",
+            "A rider that waives premium payments"
+          ],
+          correctAnswer: 1
         }
       ]
     },
@@ -535,6 +575,26 @@ export default function TrainingPage() {
             "The percentage of cash value available for loans"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "What crediting method calculates index performance from one policy anniversary to the next?",
+          options: [
+            "Monthly sum method",
+            "Annual point-to-point method",
+            "Daily average method",
+            "Moving average method"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which of the following statements about IUL policy loans is typically TRUE?",
+          options: [
+            "Loans always reduce the policy's cash value",
+            "Interest on policy loans is always tax-deductible",
+            "Policy loans can potentially create a tax-free income stream",
+            "Loans must be repaid within a specific timeframe"
+          ],
+          correctAnswer: 2
         }
       ]
     },
@@ -708,6 +768,26 @@ export default function TrainingPage() {
             "Tax certificate"
           ],
           correctAnswer: 1
+        },
+        {
+          question: "What is a key compliance requirement when selling VUL policies?",
+          options: [
+            "Only mentioning the potential upside of investment options",
+            "Providing a comprehensive suitability analysis for each client",
+            "Recommending the same investment allocation to all clients",
+            "Guaranteeing minimum investment returns"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which of the following statements about VUL policy charges is TRUE?",
+          options: [
+            "VUL policies have no mortality charges because they're primarily investment vehicles",
+            "Administrative fees are typically higher in VUL policies compared to other permanent insurance",
+            "Investment management fees apply only if the cash value exceeds a certain threshold",
+            "All policy charges are standardized across the industry"
+          ],
+          correctAnswer: 1
         }
       ]
     },
@@ -873,6 +953,26 @@ export default function TrainingPage() {
             "It provides more flexibility in how the death benefit can be used",
             "It always has better living benefits",
             "It's easier to qualify for"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What living benefit rider is commonly offered with modern mortgage protection policies?",
+          options: [
+            "Income replacement rider",
+            "Critical illness rider",
+            "Return of premium rider",
+            "Retirement savings rider"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What happens to a mortgage protection policy if the homeowner refinances their mortgage?",
+          options: [
+            "The policy automatically adjusts to the new mortgage terms",
+            "The policy remains in force but may no longer match the new mortgage balance",
+            "The policy is automatically cancelled",
+            "The homeowner receives a partial refund of premiums"
           ],
           correctAnswer: 1
         }
