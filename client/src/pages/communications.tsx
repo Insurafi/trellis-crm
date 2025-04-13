@@ -306,6 +306,10 @@ function CommunicationsPage() {
 
   // Handle email form submission
   const onSendEmailSubmit = (values: EmailFormValues) => {
+    // If custom text is used, replace [AGENT_NAME] with agent's name
+    if (values.customText) {
+      values.customText = replaceAgentName(values.customText);
+    }
     sendEmailMutation.mutate(values);
   };
 
