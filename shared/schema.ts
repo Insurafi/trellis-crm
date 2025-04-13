@@ -42,6 +42,11 @@ export const clients = pgTable("clients", {
   avatarUrl: text("avatar_url"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
+  // Authentication fields for client portal
+  username: text("username"),
+  password: text("password"),
+  lastLogin: timestamp("last_login"),
+  hasPortalAccess: boolean("has_portal_access").default(false),
 });
 
 export const insertClientSchema = createInsertSchema(clients).pick({
@@ -53,6 +58,9 @@ export const insertClientSchema = createInsertSchema(clients).pick({
   status: true,
   avatarUrl: true,
   notes: true,
+  username: true,
+  password: true,
+  hasPortalAccess: true,
 });
 
 export type InsertClient = z.infer<typeof insertClientSchema>;

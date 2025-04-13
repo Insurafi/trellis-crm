@@ -68,9 +68,12 @@ export interface IStorage {
   getClients(): Promise<Client[]>;
   getClientsByAgent(agentId: number): Promise<Client[]>;
   getClient(id: number): Promise<Client | undefined>;
+  getClientByUsername(username: string): Promise<Client | undefined>;
   createClient(client: InsertClient): Promise<Client>;
   updateClient(id: number, client: Partial<InsertClient>): Promise<Client | undefined>;
   deleteClient(id: number): Promise<boolean>;
+  updateClientLastLogin(id: number): Promise<void>;
+  enableClientPortalAccess(id: number, username: string, password: string): Promise<Client | undefined>;
 
   // Documents
   getDocuments(): Promise<Document[]>;

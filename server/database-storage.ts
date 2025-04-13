@@ -98,6 +98,11 @@ export class DatabaseStorage implements IStorage {
     const [client] = await db.select().from(clients).where(eq(clients.id, id));
     return client;
   }
+
+  async getClientByUsername(username: string): Promise<Client | undefined> {
+    const [client] = await db.select().from(clients).where(eq(clients.username, username));
+    return client;
+  }
   
   async createClient(client: InsertClient): Promise<Client> {
     const [insertedClient] = await db.insert(clients).values(client).returning();
@@ -116,6 +121,33 @@ export class DatabaseStorage implements IStorage {
   async deleteClient(id: number): Promise<boolean> {
     const result = await db.delete(clients).where(eq(clients.id, id));
     return result.count > 0;
+  }
+
+  async updateClientLastLogin(id: number): Promise<void> {
+    await db
+      .update(clients)
+      .set({ lastLogin: new Date() })
+      .where(eq(clients.id, id));
+  }
+
+  async enableClientPortalAccess(id: number, username: string, password: string): Promise<Client | undefined> {
+    // First check if the username is already taken
+    const existingClient = await this.getClientByUsername(username);
+    if (existingClient && existingClient.id !== id) {
+      throw new Error("Username already exists");
+    }
+
+    const [updatedClient] = await db
+      .update(clients)
+      .set({ 
+        username,
+        password, 
+        hasPortalAccess: true 
+      })
+      .where(eq(clients.id, id))
+      .returning();
+    
+    return updatedClient;
   }
   
   // Documents
