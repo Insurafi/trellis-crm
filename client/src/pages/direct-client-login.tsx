@@ -18,8 +18,10 @@ export default function DirectClientLogin() {
     setResponse(null);
 
     try {
-      // Make the request directly to the API with absolute URL
-      const response = await fetch("/api/client/login", {
+      console.log("About to fetch from http://localhost:5000/api/client/login");
+      
+      // Make the request with fully qualified URL
+      const response = await fetch("http://localhost:5000/api/client/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +38,7 @@ export default function DirectClientLogin() {
         setResponse(JSON.stringify(data, null, 2));
         
         // Try to get client info after successful login
-        const infoResponse = await fetch("/api/client/info", {
+        const infoResponse = await fetch("http://localhost:5000/api/client/info", {
           credentials: "include"
         });
         console.log("Info response status:", infoResponse.status);
