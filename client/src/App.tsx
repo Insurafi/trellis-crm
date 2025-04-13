@@ -19,7 +19,6 @@ import { useState } from "react";
 // Lazy load the new pages
 import { lazy, Suspense } from "react";
 import { AuthProvider } from "@/hooks/use-auth";
-import { ClientAuthProvider } from "@/hooks/use-client-auth";
 import { ProtectedRoute } from "./lib/protected-route";
 import AuthPage from "@/pages/auth-page";
 import HomeRedirect from "@/components/home-redirect";
@@ -106,11 +105,9 @@ function Router() {
 // Component for the client portal pages
 function ClientPortalLayout() {
   return (
-    <ClientAuthProvider>
-      <div className="h-screen overflow-auto">
-        <Router />
-      </div>
-    </ClientAuthProvider>
+    <div className="h-screen overflow-auto">
+      <Router />
+    </div>
   );
 }
 
