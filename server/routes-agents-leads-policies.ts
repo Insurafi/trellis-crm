@@ -72,15 +72,30 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
       
       console.log("Attempting to find agent for user ID:", req.user.id);
-      const agent = await storage.getAgentByUserId(req.user.id);
+      let agent = await storage.getAgentByUserId(req.user.id);
       
       if (!agent) {
-        // If no agent found for this user, create a default response with empty values
-        // This prevents errors in the frontend when an agent record doesn't exist yet
-        return res.status(200).json({ 
-          id: null,
-          userId: req.user.id, 
-          fullName: req.user.fullName || "",
+        // If no agent found for this user, create a default agent record
+        console.log("No agent found for user ID:", req.user.id, "Creating one...");
+        
+        try {
+          agent = await storage.createAgent({
+            userId: req.user.id,
+            licenseNumber: `AG${100000 + req.user.id}`,
+            phoneNumber: "",
+            address: "",
+            commissionPercentage: "70.00",
+            specialties: "",
+            notes: "Auto-generated agent record"
+          });
+          console.log("Created agent record:", agent);
+        } catch (error) {
+          console.error("Error creating agent record:", error);
+          // If we can't create an agent, still return a valid response
+          return res.status(200).json({ 
+            id: 0, // Use 0 instead of null to prevent invalid ID errors
+            userId: req.user.id, 
+            fullName: req.user.fullName || "",
         });
       }
       

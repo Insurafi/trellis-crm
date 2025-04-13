@@ -58,7 +58,7 @@ export default function AgentDashboard() {
   // Fetch leads for this agent
   const { data: agentLeads = [], isLoading: isLeadsLoading } = useQuery<any[]>({
     queryKey: ["/api/leads/by-agent", agentData?.id],
-    enabled: !!agentData?.id,
+    enabled: !!agentData?.id && agentData?.id !== null,
   });
   
   // Fetch policies for this agent
