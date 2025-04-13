@@ -27,6 +27,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize authentication systems
   setupAuth(app);
   setupClientAuth(app);
+  
+  // Serve static HTML file for pure login test 
+  app.get("/pure-client-login", (req, res) => {
+    res.sendFile("client-login-test.html", { root: "./client" });
+  });
+  
   // Error handling middleware for validation errors
   const handleValidationError = (error: unknown, res: Response) => {
     if (error instanceof ZodError) {
