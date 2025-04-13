@@ -19,6 +19,7 @@ import { useState } from "react";
 // Lazy load the new pages
 import { lazy, Suspense } from "react";
 import { AuthProvider } from "@/hooks/use-auth";
+import { ClientAuthProvider } from "@/hooks/use-client-auth";
 import { ProtectedRoute } from "./lib/protected-route";
 import AuthPage from "@/pages/auth-page";
 import HomeRedirect from "@/components/home-redirect";
@@ -102,45 +103,52 @@ function Router() {
   );
 }
 
-function AppLayout() {
+// Component for the client portal pages
+function ClientPortalLayout() {
+  return (
+    <ClientAuthProvider>
+      <div className="h-screen overflow-auto">
+        <Router />
+      </div>
+    </ClientAuthProvider>
+  );
+}
+
+// Component for the regular app pages
+function MainAppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+  
+  return (
+    <AuthProvider>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
+        <div className="flex-1 overflow-auto">
+          <MobileHeader onMenuClick={toggleMobileMenu} />
+          <Router />
+        </div>
+      </div>
+    </AuthProvider>
+  );
+}
+
+function AppLayout() {
   const [location] = useLocation();
   
   // Check if current page is client portal page
   const isClientPortalPage = location === '/client-login' || location === '/client-dashboard';
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  // If this is a client portal page, render without the sidebar
-  if (isClientPortalPage) {
-    return (
-      <div className="h-screen overflow-auto">
-        <Router />
-      </div>
-    );
-  }
-
-  // For regular app pages, render with the sidebar
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
-      <div className="flex-1 overflow-auto">
-        <MobileHeader onMenuClick={toggleMobileMenu} />
-        <Router />
-      </div>
-    </div>
-  );
+  return isClientPortalPage ? <ClientPortalLayout /> : <MainAppLayout />;
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AppLayout />
-        <Toaster />
-      </AuthProvider>
+      <AppLayout />
+      <Toaster />
     </QueryClientProvider>
   );
 }
