@@ -2754,7 +2754,35 @@ export default function TrainingPage() {
                 </div>
                 
                 {/* Personal Insurance Modules */}
-                {trainingModules.slice(0, 5).map((module) => (
+                {trainingModules.slice(0, 8).map((module) => (
+                  <Button
+                    key={module.id}
+                    variant={selectedModule === module.id ? "default" : "ghost"}
+                    className="w-full justify-start rounded-none h-auto py-3 px-4"
+                    onClick={() => {
+                      setSelectedModule(module.id);
+                      setQuizMode(false);
+                      resetQuiz();
+                    }}
+                  >
+                    <div className="flex items-center">
+                      {selectedModule === module.id ? (
+                        <BookOpen className="mr-2 h-4 w-4" />
+                      ) : (
+                        <BookOpen className="mr-2 h-4 w-4 opacity-50" />
+                      )}
+                      <span>{module.title}</span>
+                    </div>
+                  </Button>
+                ))}
+                
+                {/* Business Insurance Section Header */}
+                <div className="px-4 py-2 bg-slate-100 dark:bg-slate-800 font-bold text-sm border-b border-t">
+                  Business Life Insurance
+                </div>
+                
+                {/* Business Insurance Modules */}
+                {trainingModules.slice(8).map((module) => (
                   <Button
                     key={module.id}
                     variant={selectedModule === module.id ? "default" : "ghost"}
