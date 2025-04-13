@@ -245,7 +245,7 @@ function CommunicationsPage() {
     resolver: zodResolver(emailSchema),
     defaultValues: {
       to: "",
-      from: "",
+      from: "inga@insurafi.co", // Set default sender email
       subject: "",
       customText: "",
       replacements: {}
@@ -266,7 +266,7 @@ function CommunicationsPage() {
     setSelectedTemplate(template);
     emailForm.reset({
       to: "",
-      from: "",
+      from: "inga@insurafi.co", // Always use this email address
       subject: template.subject || "",
       templateId: template.id,
       customText: "",
@@ -361,8 +361,11 @@ function CommunicationsPage() {
                       <FormItem>
                         <FormLabel>From</FormLabel>
                         <FormControl>
-                          <Input placeholder="your@company.com" {...field} />
+                          <Input placeholder="your@company.com" disabled {...field} />
                         </FormControl>
+                        <FormDescription className="text-xs">
+                          All emails are sent from inga@insurafi.co
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}

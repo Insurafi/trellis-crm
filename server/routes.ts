@@ -955,10 +955,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Send the email
+      // Send the email - always using inga@insurafi.co as the sender
       const result = await sendEmail({
         to: data.to,
-        from: data.from,
+        from: "inga@insurafi.co", // Fixed sender email
         subject: emailSubject,
         text: emailContent,
         html: emailContent.replace(/\n/g, '<br />'), // Simple HTML conversion
