@@ -7,6 +7,7 @@ import { Loader2, FileText, Check, AlertCircle, Shield } from "lucide-react";
 import { BiSolidFilePdf, BiSolidSpreadsheet } from 'react-icons/bi';
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { getQueryFn } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 
 interface ClientInfo {
@@ -50,28 +51,34 @@ export default function ClientDashboard() {
     data: client, 
     isLoading: isLoadingClientInfo, 
     isError: isClientError 
-  } = useQuery({
+  } = useQuery<ClientInfo>({
     queryKey: ["/api/client/info"],
-    retry: false,
-    onError: (error: any) => {
+    queryFn: getQueryFn({ on401: "returnNull" }),
+    retry: false
+  });
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (isClientError) {
       toast({
         variant: "destructive",
         title: "Unable to load your information",
-        description: error.message || "Please try logging in again",
+        description: "Please try logging in again",
       });
       navigate("/client-login");
     }
-  });
+  }, [isClientError, toast, navigate]);
 
   // Fetch client documents
   const { 
     data: documents, 
     isLoading: isLoadingDocuments, 
     isError: isDocumentsError 
-  } = useQuery({
+  } = useQuery<Document[]>({
     queryKey: ["/api/client/documents"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!client,
-    retry: false,
+    retry: false
   });
 
   // Fetch client policies
@@ -79,10 +86,11 @@ export default function ClientDashboard() {
     data: policies, 
     isLoading: isLoadingPolicies, 
     isError: isPoliciesError 
-  } = useQuery({
+  } = useQuery<Policy[]>({
     queryKey: ["/api/client/policies"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!client,
-    retry: false,
+    retry: false
   });
 
   // Redirect to login page if not authenticated

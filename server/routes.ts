@@ -21,7 +21,7 @@ import { sendEmail, processTemplate, replaceAgentName } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
-import { setupClientAuth } from "./client-auth";
+import { setupClientAuth, isAuthenticatedClient } from "./client-auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize authentication systems
@@ -1173,6 +1173,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   registerAgentLeadsPolicyRoutes(app);
   registerAnalyticsRoutes(app);
+  
+  // Client Portal API Routes
+  app.get("/api/client/info", isAuthenticatedClient, async (req, res) => {
+    try {
+      // Client info is already in req.user with isClient: true
+      if (req.user && (req.user as any).isClient) {
+        const clientId = req.user.id;
+        const client = await storage.getClient(clientId);
+        
+        if (!client) {
+          return res.status(404).json({ message: "Client information not found" });
+        }
+        
+        // Update last login timestamp
+        await storage.updateClientLastLogin(clientId);
+        
+        res.json(client);
+      } else {
+        res.status(401).json({ message: "Not authenticated as a client" });
+      }
+    } catch (error) {
+      console.error("Error fetching client info:", error);
+      res.status(500).json({ message: "Failed to fetch client information" });
+    }
+  });
+  
+  app.get("/api/client/documents", isAuthenticatedClient, async (req, res) => {
+    try {
+      if (req.user && (req.user as any).isClient) {
+        const clientId = req.user.id;
+        const documents = await storage.getDocumentsByClient(clientId);
+        res.json(documents);
+      } else {
+        res.status(401).json({ message: "Not authenticated as a client" });
+      }
+    } catch (error) {
+      console.error("Error fetching client documents:", error);
+      res.status(500).json({ message: "Failed to fetch client documents" });
+    }
+  });
+  
+  app.get("/api/client/policies", isAuthenticatedClient, async (req, res) => {
+    try {
+      if (req.user && (req.user as any).isClient) {
+        const clientId = req.user.id;
+        const policies = await storage.getPoliciesByClient(clientId);
+        res.json(policies);
+      } else {
+        res.status(401).json({ message: "Not authenticated as a client" });
+      }
+    } catch (error) {
+      console.error("Error fetching client policies:", error);
+      res.status(500).json({ message: "Failed to fetch client policies" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

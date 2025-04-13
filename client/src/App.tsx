@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -104,11 +104,25 @@ function Router() {
 
 function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [location] = useLocation();
+  
+  // Check if current page is client portal page
+  const isClientPortalPage = location === '/client-login' || location === '/client-dashboard';
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  // If this is a client portal page, render without the sidebar
+  if (isClientPortalPage) {
+    return (
+      <div className="h-screen overflow-auto">
+        <Router />
+      </div>
+    );
+  }
+
+  // For regular app pages, render with the sidebar
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
