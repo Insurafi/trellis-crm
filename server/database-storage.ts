@@ -68,6 +68,32 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(clients);
   }
   
+  async getClientsByAgent(agentId: number): Promise<Client[]> {
+    // Get all policies associated with this agent to find client IDs
+    const agentPolicies = await db
+      .select({
+        clientId: policies.clientId
+      })
+      .from(policies)
+      .where(eq(policies.agentId, agentId))
+      .groupBy(policies.clientId);
+    
+    // Extract unique client IDs
+    const clientIds = agentPolicies
+      .filter(policy => policy.clientId !== null)
+      .map(policy => policy.clientId as number);
+    
+    if (clientIds.length === 0) {
+      return [];
+    }
+    
+    // Fetch clients based on these IDs
+    return await db
+      .select()
+      .from(clients)
+      .where(inArray(clients.id, clientIds));
+  }
+  
   async getClient(id: number): Promise<Client | undefined> {
     const [client] = await db.select().from(clients).where(eq(clients.id, id));
     return client;
