@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation } from "wouter";
-import { useClientAuth } from "@/hooks/use-client-auth";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -22,14 +21,27 @@ export default function ClientLogin() {
   const { toast } = useToast();
   const [location, navigate] = useLocation();
   const [error, setError] = useState<string | null>(null);
-  const { client, isLoading, loginMutation } = useClientAuth();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   
-  // Redirect to client dashboard if already logged in
+  // Check if already logged in by trying to fetch client info
   useEffect(() => {
-    if (client) {
-      navigate("/client-dashboard");
+    async function checkLogin() {
+      try {
+        const response = await fetch("/api/client/info", {
+          credentials: "include"
+        });
+        
+        if (response.ok) {
+          // Already logged in, redirect to dashboard
+          navigate("/client-dashboard");
+        }
+      } catch (err) {
+        console.error("Error checking login status:", err);
+      }
     }
-  }, [client, navigate]);
+    
+    checkLogin();
+  }, [navigate]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -41,6 +53,7 @@ export default function ClientLogin() {
 
   async function onSubmit(values: LoginFormValues) {
     setError(null);
+    setIsLoggingIn(true);
     console.log("Submitting login form with values:", values);
     
     try {
@@ -81,6 +94,8 @@ export default function ClientLogin() {
         title: "Login error",
         description: "An unexpected error occurred. Please try again.",
       });
+    } finally {
+      setIsLoggingIn(false);
     }
   }
 
@@ -163,9 +178,9 @@ export default function ClientLogin() {
                   <Button 
                     type="submit" 
                     className="w-full"
-                    disabled={loginMutation.isPending}
+                    disabled={isLoggingIn}
                   >
-                    {loginMutation.isPending ? (
+                    {isLoggingIn ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Logging in...
