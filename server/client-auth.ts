@@ -71,6 +71,18 @@ export function setupClientAuth(app: Express) {
       });
     })(req, res, next);
   });
+  
+  // Client logout route
+  app.post("/api/client/logout", (req, res) => {
+    console.log("Client logout route hit");
+    req.logout((err) => {
+      if (err) {
+        console.error("Error during client logout:", err);
+        return res.status(500).json({ message: "Error during logout" });
+      }
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
+  });
 
   // Client registration (enabling portal access for existing clients)
   app.post("/api/client/enable-portal", async (req, res, next) => {

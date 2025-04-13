@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getQueryFn } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { useClientAuth } from "@/hooks/use-client-auth";
 
 interface ClientInfo {
   id: number;
@@ -123,7 +122,7 @@ export default function ClientDashboard() {
   const handleLogout = async () => {
     try {
       console.log("Logging out...");
-      const response = await fetch("/api/logout", {
+      const response = await fetch("/api/client/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
