@@ -138,13 +138,9 @@ export function setupClientAuth(app: Express) {
   });
 
   // Client info route
-  app.get("/api/client/info", async (req, res) => {
+  app.get("/api/client/info", isAuthenticatedClient, async (req, res) => {
     console.log("Client info route hit, user:", req.user);
     console.log("isAuthenticated:", req.isAuthenticated());
-    
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
     
     try {
       // Get client info from the authenticated user in the session
@@ -177,13 +173,9 @@ export function setupClientAuth(app: Express) {
   });
   
   // Client documents route
-  app.get("/api/client/documents", async (req, res) => {
+  app.get("/api/client/documents", isAuthenticatedClient, async (req, res) => {
     console.log("Client documents route hit, user:", req.user);
     console.log("isAuthenticated:", req.isAuthenticated());
-    
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
     
     try {
       // Get client ID from session user
@@ -197,17 +189,13 @@ export function setupClientAuth(app: Express) {
   });
   
   // Client policies route
-  app.get("/api/client/policies", async (req, res) => {
+  app.get("/api/client/policies", isAuthenticatedClient, async (req, res) => {
     console.log("Client policies route hit, user:", req.user);
     console.log("isAuthenticated:", req.isAuthenticated());
     
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    
     try {
-      // Hardcode client ID for now since we're having session issues
-      const clientId = 1; // This should match the test client ID
+      // Get client ID from session user
+      const clientId = req.user?.id || 1; // Fallback to ID 1 for development
       const policies = await storage.getPoliciesByClient(clientId);
       res.json(policies);
     } catch (error) {
