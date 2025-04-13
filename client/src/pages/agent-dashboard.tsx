@@ -55,22 +55,25 @@ export default function AgentDashboard() {
     enabled: !!user?.id,
   });
 
+  // Check if agent ID is valid for data fetching (must be a positive integer)
+  const hasValidAgentId = agentData && agentData.id !== undefined && agentData.id !== null && agentData.id > 0;
+
   // Fetch leads for this agent
   const { data: agentLeads = [], isLoading: isLeadsLoading } = useQuery<any[]>({
     queryKey: ["/api/leads/by-agent", agentData?.id],
-    enabled: !!agentData?.id && agentData?.id !== null,
+    enabled: hasValidAgentId,
   });
   
   // Fetch policies for this agent
   const { data: agentPolicies = [], isLoading: isPoliciesLoading } = useQuery<any[]>({
     queryKey: ["/api/policies/by-agent", agentData?.id],
-    enabled: !!agentData?.id,
+    enabled: hasValidAgentId,
   });
 
   // Fetch commissions for this agent
   const { data: agentCommissions = [], isLoading: isCommissionsLoading } = useQuery<any[]>({
     queryKey: ["/api/commissions/by-agent", agentData?.id],
-    enabled: !!agentData?.id,
+    enabled: hasValidAgentId,
   });
 
   // Fetch calendar events

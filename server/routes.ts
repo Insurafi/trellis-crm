@@ -1125,6 +1125,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/commissions/by-agent/:agentId", isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.agentId);
+      
+      // Handle special case when agentId is 0 (fallback default agent)
+      if (isNaN(agentId) || agentId < 0) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // For agentId = 0 (default agent), return empty array to avoid errors
+      if (agentId === 0) {
+        console.log("Received request for default agent (ID 0), returning empty commission list");
+        return res.json([]);
+      }
+      
       const commissions = await storage.getCommissionsByBroker(agentId);
       return res.json(commissions);
     } catch (error) {

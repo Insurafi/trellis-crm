@@ -208,8 +208,16 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   app.get("/api/leads/by-agent/:agentId", isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.agentId);
-      if (isNaN(agentId)) {
+      
+      // Handle special case when agentId is 0 (fallback default agent)
+      if (isNaN(agentId) || agentId < 0) {
         return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // For agentId = 0 (default agent), return empty array to avoid errors
+      if (agentId === 0) {
+        console.log("Received request for default agent (ID 0), returning empty list");
+        return res.json([]);
       }
 
       const leads = await storage.getLeadsByAgent(agentId);
@@ -316,8 +324,16 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   app.get("/api/policies/by-agent/:agentId", isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.agentId);
-      if (isNaN(agentId)) {
+      
+      // Handle special case when agentId is 0 (fallback default agent)
+      if (isNaN(agentId) || agentId < 0) {
         return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // For agentId = 0 (default agent), return empty array to avoid errors
+      if (agentId === 0) {
+        console.log("Received request for default agent (ID 0), returning empty policy list");
+        return res.json([]);
       }
 
       const policies = await storage.getPoliciesByAgent(agentId);
