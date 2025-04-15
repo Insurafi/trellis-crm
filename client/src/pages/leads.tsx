@@ -681,6 +681,7 @@ const LeadsPage: React.FC = () => {
                     <TableHead>Name</TableHead>
                     <TableHead>Date of Birth (Age)</TableHead>
                     <TableHead>State</TableHead>
+                    <TableHead>Lead Source</TableHead>
                     <TableHead>Assigned Agent</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -702,6 +703,12 @@ const LeadsPage: React.FC = () => {
                           <div className="flex items-center">
                             <MapPin size={14} className="mr-1 text-muted-foreground" />
                             {extractState(lead.address)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center">
+                            <UserPlus size={14} className="mr-1 text-muted-foreground" />
+                            {lead.leadSource}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -748,7 +755,7 @@ const LeadsPage: React.FC = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-4">
+                      <TableCell colSpan={6} className="text-center py-4">
                         No leads found
                       </TableCell>
                     </TableRow>
