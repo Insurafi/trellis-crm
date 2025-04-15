@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useLocation, Link } from "wouter";
 import {
   Card,
   CardContent,
@@ -54,7 +55,7 @@ import { Agent } from "@shared/schema";
 // Extend Agent type to include the name property from the user
 type AgentWithName = Agent & { name?: string };
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, UserPlus } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Form schema
 const agentFormSchema = z.object({
@@ -452,10 +453,20 @@ const AgentsPage: React.FC = () => {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
+                            <Link href={`/agent-detail/${agent.id}`}>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="View Agent Details"
+                              >
+                                <Eye size={16} />
+                              </Button>
+                            </Link>
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => setSelectedAgent(agent)}
+                              title="Edit Agent"
                             >
                               <Pencil size={16} />
                             </Button>
@@ -463,6 +474,7 @@ const AgentsPage: React.FC = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => handleDelete(agent)}
+                              title="Delete Agent"
                             >
                               <Trash2 size={16} />
                             </Button>

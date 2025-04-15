@@ -75,6 +75,15 @@ const AgentDashboardPage = () => {
   );
 };
 
+const AgentDetailPage = () => {
+  const AgentDetail = lazy(() => import("@/pages/agent-detail"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <AgentDetail />
+    </Suspense>
+  );
+};
+
 function Router() {
   return (
     <Switch>
@@ -94,6 +103,7 @@ function Router() {
       <ProtectedRoute path="/policies" component={PoliciesPage} />
       <ProtectedRoute path="/users" component={UsersPage} />
       <ProtectedRoute path="/agent-dashboard" component={AgentDashboardPage} />
+      <ProtectedRoute path="/agent-detail/:id" component={AgentDetailPage} />
       <ProtectedRoute path="/training" component={Training} />
       <ProtectedRoute path="/analytics" component={Analytics} />
       <Route path="/auth" component={AuthPage} />

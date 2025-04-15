@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function AgentDetail() {
-  const [_, params] = useRoute("/agents/:id");
+  const [_, params] = useRoute("/agent-detail/:id");
   const agentId = params?.id;
   const { user } = useAuth();
   const { toast } = useToast();
