@@ -113,6 +113,10 @@ import TestClientLogin from "@/pages/test-client-login";
 import BypassLogin from "@/pages/bypass-login";
 
 // Client portal router
+// Import our new client pages
+import ClientLoginNew from "@/pages/client-login-new";
+const ClientDashboardNew = lazy(() => import("@/pages/client-dashboard-new"));
+
 function ClientRouter() {
   return (
     <Switch>
@@ -124,6 +128,13 @@ function ClientRouter() {
       <Route path="/direct-client-login" component={DirectClientLogin} />
       <Route path="/test-client-login" component={TestClientLogin} />
       <Route path="/bypass-login" component={BypassLogin} />
+      {/* New client portal pages using React */}
+      <Route path="/client-login-new" component={ClientLoginNew} />
+      <Route path="/client-dashboard-new">
+        <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+          <ClientDashboardNew />
+        </Suspense>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
@@ -168,7 +179,8 @@ function AppLayout() {
   const isClientPortalPage = location === '/client-login' || location === '/client-dashboard' || 
     location === '/client-api-test' || location === '/final-client-test' || 
     location === '/simple-client-login' || location === '/direct-client-login' ||
-    location === '/test-client-login';
+    location === '/test-client-login' || location === '/client-login-new' ||
+    location === '/client-dashboard-new';
 
   return isClientPortalPage ? <ClientPortalLayout /> : <MainAppLayout />;
 }

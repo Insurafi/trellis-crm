@@ -1,74 +1,78 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import {
   useQuery,
   useMutation,
   UseMutationResult,
 } from "@tanstack/react-query";
-import { Client as SelectClient } from "@shared/schema";
+import { Client } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
 
 type ClientAuthContextType = {
-  client: SelectClient | null;
+  client: Client | null;
   isLoading: boolean;
   error: Error | null;
-  loginMutation: UseMutationResult<SelectClient, Error, LoginData>;
+  loginMutation: UseMutationResult<Client, Error, LoginData>;
   logoutMutation: UseMutationResult<void, Error, void>;
 };
 
-const loginSchema = z.object({
-  username: z.string().min(1, { message: "Username is required" }),
-  password: z.string().min(1, { message: "Password is required" }),
-});
+type LoginData = {
+  username: string;
+  password: string;
+};
 
-type LoginData = z.infer<typeof loginSchema>;
-
+// Create a separate context for client authentication
 export const ClientAuthContext = createContext<ClientAuthContextType | null>(null);
 
 export function ClientAuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+  const [clientData, setClientData] = useState<Client | null>(null);
+
+  // First try to get client data from localStorage
+  useEffect(() => {
+    try {
+      const savedClient = localStorage.getItem("clientData");
+      if (savedClient) {
+        setClientData(JSON.parse(savedClient));
+      }
+    } catch (error) {
+      console.error("Error reading client data from localStorage:", error);
+    }
+  }, []);
+
+  // Use React Query for client authentication state
   const {
     data: client,
     error,
     isLoading,
-  } = useQuery<SelectClient | undefined, Error>({
-    queryKey: ["/api/client/info"],
+  } = useQuery<Client | undefined, Error>({
+    queryKey: ["/api/client/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
+    enabled: !clientData, // Only run query if we don't have client data from localStorage
+    initialData: clientData || undefined,
   });
 
+  // Client login mutation
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
-      // Add debug logs
-      console.log("ClientAuth: Attempting login with credentials:", credentials);
-      console.log("ClientAuth: Using endpoint: /api/client/login");
+      // Try the direct client login endpoint
+      const res = await apiRequest("POST", "/direct-client-login", credentials);
+      const data = await res.json();
       
-      // Make a direct fetch request without using apiRequest to see raw response
-      const response = await fetch("/api/client/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-        credentials: "include" // Important: include cookies
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Login failed");
-      }
-
-      return await response.json();
+      // Save to localStorage for persistence
+      localStorage.setItem("clientData", JSON.stringify(data));
+      
+      return data;
     },
-    onSuccess: (client: SelectClient) => {
-      queryClient.setQueryData(["/api/client/info"], client);
+    onSuccess: (clientData: Client) => {
+      queryClient.setQueryData(["/api/client/user"], clientData);
+      setClientData(clientData);
       toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
+        title: "Login successful",
+        description: "Welcome to your client portal!",
       });
     },
     onError: (error: Error) => {
-      console.error("Login error:", error);
       toast({
         title: "Login failed",
         description: error.message || "Invalid username or password",
@@ -77,43 +81,43 @@ export function ClientAuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  // Client logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      // Use direct fetch instead of apiRequest
-      const response = await fetch("/api/client/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include" // Important: include cookies
-      });
+      // Just clear localStorage for direct login
+      localStorage.removeItem("clientData");
       
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Logout failed");
+      // Also try the API logout endpoint
+      try {
+        await apiRequest("POST", "/api/client/logout");
+      } catch (error) {
+        console.warn("API logout failed, but localStorage was cleared:", error);
       }
     },
     onSuccess: () => {
-      queryClient.setQueryData(["/api/client/info"], null);
+      queryClient.setQueryData(["/api/client/user"], null);
+      setClientData(null);
       toast({
         title: "Logged out",
-        description: "You have been successfully logged out.",
+        description: "You have been successfully logged out",
       });
     },
     onError: (error: Error) => {
-      console.error("Logout error:", error);
       toast({
         title: "Logout failed",
-        description: error.message || "Please try again",
+        description: error.message,
         variant: "destructive",
       });
+      // Force clear client data anyway
+      queryClient.setQueryData(["/api/client/user"], null);
+      setClientData(null);
     },
   });
 
   return (
     <ClientAuthContext.Provider
       value={{
-        client: client ?? null,
+        client: clientData || client || null,
         isLoading,
         error,
         loginMutation,
