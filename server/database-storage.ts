@@ -424,14 +424,146 @@ export class DatabaseStorage implements IStorage {
     return result.count > 0;
   }
   
-  async getCommissionsStats(): Promise<{ totalCommissions: number; pendingAmount: string; paidAmount: string; commissionsByType: Record<string, number>; }> {
-    // Implementation omitted for brevity - would use SQL count and sum functions
-    return {
-      totalCommissions: 0,
-      pendingAmount: "$0",
-      paidAmount: "$0",
-      commissionsByType: {}
+  async getCommissionsStats(): Promise<{ totalCommissions: number; pendingAmount: string; paidAmount: string; commissionsByType: Record<string, number>; companyProfit: string; }> {
+    // Get all commissions
+    const allCommissions = await this.getCommissions();
+    
+    // Calculate total commissions
+    const totalCommissions = allCommissions.length;
+    
+    // Calculate pending and paid amounts
+    let pendingAmount = 0;
+    let paidAmount = 0;
+    
+    // Group commissions by type
+    const commissionsByType: Record<string, number> = {};
+    
+    // Calculate company profit (assuming company keeps 40% of commission)
+    let totalCommissionAmount = 0;
+    
+    for (const commission of allCommissions) {
+      // Extract numeric value from amount
+      const amount = parseFloat(commission.amount.replace(/[^0-9.-]+/g, ''));
+      
+      if (!isNaN(amount)) {
+        totalCommissionAmount += amount;
+        
+        if (commission.status === 'paid') {
+          paidAmount += amount;
+        } else if (commission.status === 'pending') {
+          pendingAmount += amount;
+        }
+        
+        // Group by type
+        const type = commission.type || 'other';
+        commissionsByType[type] = (commissionsByType[type] || 0) + amount;
+      }
+    }
+    
+    // Calculate company profit (40% retention rate)
+    const companyProfit = totalCommissionAmount * 0.4;
+    
+    // Format currency values
+    const formatCurrency = (value: number): string => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value);
     };
+    
+    return {
+      totalCommissions,
+      pendingAmount: formatCurrency(pendingAmount),
+      paidAmount: formatCurrency(paidAmount),
+      commissionsByType,
+      companyProfit: formatCurrency(companyProfit)
+    };
+  }
+  
+  async getWeeklyCommissions(): Promise<any[]> {
+    // Get all commissions
+    const allCommissions = await this.getCommissions();
+    
+    // Get all users for broker name lookup
+    const allUsers = await db.select().from(users);
+    
+    // Filter to only paid commissions with payment dates
+    const paidCommissions = allCommissions.filter(comm => 
+      comm.status === 'paid' && comm.paymentDate !== null
+    );
+    
+    // Group commissions by week
+    const weeklyCommissions: Record<string, any> = {};
+    
+    for (const commission of paidCommissions) {
+      if (!commission.paymentDate) continue;
+      
+      // Get the week start date (Sunday)
+      const paymentDate = new Date(commission.paymentDate);
+      const day = paymentDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const diff = paymentDate.getDate() - day;
+      const weekStart = new Date(paymentDate.setDate(diff));
+      const weekKey = weekStart.toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      // Extract amount
+      const amount = parseFloat(commission.amount.replace(/[^0-9.-]+/g, ''));
+      if (isNaN(amount)) continue;
+      
+      // Find broker name
+      const broker = allUsers.find(user => user.id === commission.brokerId);
+      const brokerName = broker ? broker.fullName : `Broker #${commission.brokerId}`;
+      
+      // Initialize week if not exists
+      if (!weeklyCommissions[weekKey]) {
+        weeklyCommissions[weekKey] = {
+          weekStartDate: weekKey,
+          weekLabel: `Week of ${new Date(weekKey).toLocaleDateString()}`,
+          totalAmount: 0,
+          companyProfit: 0,
+          agentPayouts: 0,
+          commissions: [],
+          brokers: new Set(),
+          brokerNames: []
+        };
+      }
+      
+      // Add commission to the week
+      weeklyCommissions[weekKey].totalAmount += amount;
+      weeklyCommissions[weekKey].companyProfit += amount * 0.4; // 40% to company
+      weeklyCommissions[weekKey].agentPayouts += amount * 0.6; // 60% to agents
+      weeklyCommissions[weekKey].commissions.push(commission);
+      weeklyCommissions[weekKey].brokers.add(brokerName);
+    }
+    
+    // Convert to array and sort by week (most recent first)
+    const result = Object.values(weeklyCommissions).map(week => {
+      // Convert Set to Array for broker names
+      week.brokerNames = Array.from(week.brokers);
+      delete week.brokers; // Remove the Set
+      
+      // Format currency values
+      week.totalAmount = new Intl.NumberFormat('en-US', {
+        style: 'currency', 
+        currency: 'USD'
+      }).format(week.totalAmount);
+      
+      week.companyProfit = new Intl.NumberFormat('en-US', {
+        style: 'currency', 
+        currency: 'USD'
+      }).format(week.companyProfit);
+      
+      week.agentPayouts = new Intl.NumberFormat('en-US', {
+        style: 'currency', 
+        currency: 'USD'
+      }).format(week.agentPayouts);
+      
+      return week;
+    });
+    
+    // Sort by week start date (descending)
+    return result.sort((a, b) => 
+      new Date(b.weekStartDate).getTime() - new Date(a.weekStartDate).getTime()
+    );
   }
   
   // Communication Templates
