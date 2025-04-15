@@ -88,6 +88,17 @@ const AgentsPage: React.FC = () => {
   
   // Ensure we have a valid array of agents
   const agents = Array.isArray(agentsData) ? agentsData : [];
+  
+  // State for tracking which agent's commission data is being viewed
+  const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
+  const [isCommissionDialogOpen, setIsCommissionDialogOpen] = useState(false);
+  
+  // Fetch weekly commission data for selected agent
+  const { data: weeklyCommissionData, isLoading: isLoadingCommission } = useQuery({
+    queryKey: ["/api/commissions/weekly/by-agent", selectedAgentId],
+    enabled: !!selectedAgentId,
+    throwOnError: true,
+  });
 
   // Add agent mutation
   const addAgentMutation = useMutation({
@@ -432,6 +443,7 @@ const AgentsPage: React.FC = () => {
                   <TableRow>
                     <TableHead>Agent Name</TableHead>
                     <TableHead>Specialties</TableHead>
+                    <TableHead>Commission</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -447,6 +459,22 @@ const AgentsPage: React.FC = () => {
                                 {specialty.trim()}
                               </Badge>
                             ))}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <div className="text-sm">{agent.commissionPercentage ? `${agent.commissionPercentage}%` : "60%"}</div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => {
+                                setSelectedAgentId(agent.id);
+                                setIsCommissionDialogOpen(true);
+                              }}
+                            >
+                              View Commissions
+                            </Button>
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
@@ -482,7 +510,7 @@ const AgentsPage: React.FC = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center py-4">
+                      <TableCell colSpan={4} className="text-center py-4">
                         No agents found
                       </TableCell>
                     </TableRow>
@@ -494,6 +522,97 @@ const AgentsPage: React.FC = () => {
         </Card>
       )}
 
+      {/* Weekly Commission Dialog */}
+      <Dialog open={isCommissionDialogOpen} onOpenChange={setIsCommissionDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Weekly Commissions</DialogTitle>
+            <DialogDescription>
+              View agent's weekly commission payments
+            </DialogDescription>
+          </DialogHeader>
+          
+          {isLoadingCommission ? (
+            <div className="py-8 flex justify-center">
+              <p>Loading commission data...</p>
+            </div>
+          ) : weeklyCommissionData && weeklyCommissionData.length > 0 ? (
+            <div className="space-y-4">
+              <div className="border rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Policy Type</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {weeklyCommissionData.map((commission: any) => (
+                      <TableRow key={commission.id}>
+                        <TableCell>{new Date(commission.date).toLocaleDateString()}</TableCell>
+                        <TableCell>${parseFloat(commission.amount).toFixed(2)}</TableCell>
+                        <TableCell>{commission.policyType}</TableCell>
+                        <TableCell>
+                          <Badge variant={commission.status === 'Paid' ? 'success' : 'outline'}>
+                            {commission.status}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              
+              <div className="mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Agent Payment (60%)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        ${weeklyCommissionData.reduce((total: number, commission: any) => 
+                          total + (parseFloat(commission.amount) * 0.6), 0).toFixed(2)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Company Profit (40%)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        ${weeklyCommissionData.reduce((total: number, commission: any) => 
+                          total + (parseFloat(commission.amount) * 0.4), 0).toFixed(2)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsCommissionDialogOpen(false)}>
+                  Close
+                </Button>
+              </DialogFooter>
+            </div>
+          ) : (
+            <div className="py-8 text-center">
+              <p>No commission data found for this agent.</p>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsCommissionDialogOpen(false)}
+                className="mt-4"
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      
       {/* Edit Agent Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
