@@ -5,7 +5,8 @@ import CalendarCard from "@/components/ui/calendar-card";
 import AgentStatusList from "@/components/dashboard/agent-status-list";
 import ClientReviews from "@/components/ui/client-reviews";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter } from "lucide-react";
+import { Plus, Filter, ExternalLink } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Dashboard() {
   return (
@@ -17,6 +18,12 @@ export default function Dashboard() {
           <p className="mt-1 text-sm text-neutral-600">Welcome back, Alex! Here's what's happening today.</p>
         </div>
         <div className="mt-4 md:mt-0 flex space-x-3">
+          <Button className="inline-flex items-center" asChild>
+            <Link href="/client-login-new">
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Client Portal
+            </Link>
+          </Button>
           <Button className="inline-flex items-center">
             <Plus className="mr-2 h-4 w-4" />
             Add Client
