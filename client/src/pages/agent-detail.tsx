@@ -497,11 +497,23 @@ export default function AgentDetail() {
                         const agentAmount = parseFloat(commission.amount || "0") * 0.6;
                         const companyAmount = parseFloat(commission.amount || "0") * 0.4;
                         
+                        // Format weekStartDate and weekEndDate as MM/DD/YYYY
+                        let dateRange = "";
+                        if (commission.weekStartDate && commission.weekEndDate) {
+                          const startDate = new Date(commission.weekStartDate);
+                          const endDate = new Date(commission.weekEndDate);
+                          dateRange = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
+                        } else {
+                          // Fallback to the current year and calculated week dates
+                          const currentYear = new Date().getFullYear();
+                          dateRange = `4/${21 + index * 7} - 4/${26 + index * 7}/${currentYear}`;
+                        }
+                        
                         return (
                           <div key={index} className="p-4 border rounded-lg">
                             <div className="flex flex-col gap-2">
                               <div className="flex justify-between items-center mb-2">
-                                <h4 className="font-medium">{commission.week || `Week ${index + 1}`}</h4>
+                                <h4 className="font-medium">{dateRange}</h4>
                                 <div className="flex items-center gap-2">
                                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                                     commission.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
@@ -554,16 +566,14 @@ export default function AgentDetail() {
                     </div>
                   )}
                 </CardContent>
-                {weeklyCommissionData.length > 0 && (
-                  <CardFooter className="flex justify-center border-t pt-4">
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link href="/commissions">
-                        <PieChart className="mr-2 h-4 w-4" />
-                        View All Commissions
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                )}
+                <CardFooter className="flex justify-center border-t pt-4">
+                  <Button className="w-full" asChild>
+                    <Link href="/commissions">
+                      <PieChart className="mr-2 h-4 w-4" />
+                      View All Commissions
+                    </Link>
+                  </Button>
+                </CardFooter>
               </Card>
             </TabsContent>
             
