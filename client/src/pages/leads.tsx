@@ -51,7 +51,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Lead } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, UserPlus, Check, X, Clock } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Check, X, Clock, Eye, MapPin } from "lucide-react";
 
 // Form schema
 const leadFormSchema = z.object({
@@ -198,6 +198,38 @@ const LeadsPage: React.FC = () => {
   const formatDate = (isoDate: string) => {
     const date = new Date(isoDate);
     return date.toISOString().split("T")[0];
+  };
+
+  // Calculate age from date of birth
+  const calculateAge = (dateOfBirth: string): number => {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    
+    // If birthday hasn't occurred this year yet, subtract 1 from age
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+  
+  // Extract state from address
+  const extractState = (address: string): string => {
+    // Attempt to find a state code in the address (assuming format: City, STATE ZIP)
+    const stateMatch = address.match(/,\s*([A-Z]{2})\s*\d{5}(?:-\d{4})?$/i);
+    if (stateMatch && stateMatch[1]) {
+      return stateMatch[1].toUpperCase();
+    }
+    
+    // If standard format isn't found, look for any two uppercase letters that might be a state
+    const altStateMatch = address.match(/\b([A-Z]{2})\b/);
+    if (altStateMatch && altStateMatch[1]) {
+      return altStateMatch[1];
+    }
+    
+    return "N/A"; // Return N/A if no state found
   };
 
   // Set up edit form when a lead is selected
