@@ -180,6 +180,7 @@ export default function CommissionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/commissions'] });
       queryClient.invalidateQueries({ queryKey: ['/api/commissions/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/commissions/weekly'] });
       toast({
         title: "Success",
         description: "Commission created successfully",
@@ -205,6 +206,7 @@ export default function CommissionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/commissions'] });
       queryClient.invalidateQueries({ queryKey: ['/api/commissions/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/commissions/weekly'] });
       toast({
         title: "Success",
         description: "Commission updated successfully",
@@ -230,6 +232,7 @@ export default function CommissionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/commissions'] });
       queryClient.invalidateQueries({ queryKey: ['/api/commissions/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/commissions/weekly'] });
       toast({
         title: "Success",
         description: "Commission deleted successfully",
@@ -890,6 +893,9 @@ export default function CommissionsPage() {
       </div>
 
       {renderCommissionDashboard()}
+      
+      {/* Weekly Commission Payments Section */}
+      {renderWeeklyCommissions()}
       
       <div className="mb-8">
         <Card>
