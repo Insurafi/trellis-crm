@@ -679,11 +679,8 @@ const LeadsPage: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Contact</TableHead>
                     <TableHead>Date of Birth (Age)</TableHead>
                     <TableHead>State</TableHead>
-                    <TableHead>Lead Source</TableHead>
-                    <TableHead>Status</TableHead>
                     <TableHead>Assigned Agent</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -696,12 +693,6 @@ const LeadsPage: React.FC = () => {
                           {lead.firstName} {lead.lastName}
                         </TableCell>
                         <TableCell>
-                          <div className="text-sm">
-                            <div>{lead.email}</div>
-                            <div className="text-muted-foreground">{lead.phoneNumber}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
                           {new Date(lead.dateOfBirth).toLocaleDateString()} 
                           <span className="text-muted-foreground ml-2">
                             ({calculateAge(lead.dateOfBirth)} yrs)
@@ -712,10 +703,6 @@ const LeadsPage: React.FC = () => {
                             <MapPin size={14} className="mr-1 text-muted-foreground" />
                             {extractState(lead.address)}
                           </div>
-                        </TableCell>
-                        <TableCell>{lead.leadSource}</TableCell>
-                        <TableCell>
-                          <StatusBadge status={lead.status} />
                         </TableCell>
                         <TableCell>
                           {lead.assignedAgentId ? 
@@ -761,7 +748,7 @@ const LeadsPage: React.FC = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-4">
+                      <TableCell colSpan={5} className="text-center py-4">
                         No leads found
                       </TableCell>
                     </TableRow>
