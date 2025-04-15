@@ -50,6 +50,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Agent } from "@shared/schema";
+
+// Extend Agent type to include the name property from the user
+type AgentWithName = Agent & { name?: string };
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, UserPlus } from "lucide-react";
 
@@ -85,10 +88,7 @@ const AgentsPage: React.FC = () => {
   // Add agent mutation
   const addAgentMutation = useMutation({
     mutationFn: (newAgent: AgentFormValues) =>
-      apiRequest("/api/agents", {
-        method: "POST",
-        data: newAgent,
-      }),
+      apiRequest("POST", "/api/agents", newAgent),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
@@ -431,10 +431,7 @@ const AgentsPage: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>License #</TableHead>
-                    <TableHead>NPN</TableHead>
-                    <TableHead>License Expiration</TableHead>
-                    <TableHead>Phone</TableHead>
+                    <TableHead>Agent Name</TableHead>
                     <TableHead>Commission %</TableHead>
                     <TableHead>Specialties</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -442,18 +439,13 @@ const AgentsPage: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {agents && agents.length > 0 ? (
-                    agents.map((agent: Agent) => (
+                    agents.map((agent: Agent & {name?: string}) => (
                       <TableRow key={agent.id}>
-                        <TableCell className="font-medium">{agent.licenseNumber}</TableCell>
-                        <TableCell>{agent.npn}</TableCell>
-                        <TableCell>
-                          {new Date(agent.licenseExpiration).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>{agent.phoneNumber}</TableCell>
+                        <TableCell className="font-medium">{agent.name || "Unnamed Agent"}</TableCell>
                         <TableCell>{agent.commissionPercentage}%</TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1 max-w-xs">
-                            {agent.specialties.split(',').map((specialty, index) => (
+                            {agent.specialties && agent.specialties.split(',').map((specialty, index) => (
                               <Badge key={index} variant="outline" className="whitespace-nowrap">
                                 {specialty.trim()}
                               </Badge>
