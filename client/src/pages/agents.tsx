@@ -80,10 +80,13 @@ const AgentsPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
 
   // Fetch agents
-  const { data: agents, isLoading, error } = useQuery({
+  const { data: agentsData, isLoading, error } = useQuery<(Agent & { name?: string })[]>({
     queryKey: ["/api/agents"],
     throwOnError: true,
   });
+  
+  // Ensure we have a valid array of agents
+  const agents = Array.isArray(agentsData) ? agentsData : [];
 
   // Add agent mutation
   const addAgentMutation = useMutation({
@@ -109,10 +112,7 @@ const AgentsPage: React.FC = () => {
   // Update agent mutation
   const updateAgentMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: AgentFormValues }) =>
-      apiRequest(`/api/agents/${id}`, {
-        method: "PUT",
-        data,
-      }),
+      apiRequest("PUT", `/api/agents/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
@@ -134,9 +134,7 @@ const AgentsPage: React.FC = () => {
   // Delete agent mutation
   const deleteAgentMutation = useMutation({
     mutationFn: (id: number) =>
-      apiRequest(`/api/agents/${id}`, {
-        method: "DELETE",
-      }),
+      apiRequest("DELETE", `/api/agents/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
@@ -188,14 +186,14 @@ const AgentsPage: React.FC = () => {
       editForm.reset({
         licenseNumber: selectedAgent.licenseNumber,
         licenseExpiration: formatDate(selectedAgent.licenseExpiration),
-        npn: selectedAgent.npn,
+        npn: selectedAgent.npn || "",
         phoneNumber: selectedAgent.phoneNumber,
-        address: selectedAgent.address,
-        carrierAppointments: selectedAgent.carrierAppointments,
-        uplineAgentId: selectedAgent.uplineAgentId,
-        commissionPercentage: selectedAgent.commissionPercentage,
-        overridePercentage: selectedAgent.overridePercentage,
-        specialties: selectedAgent.specialties,
+        address: selectedAgent.address || "",
+        carrierAppointments: selectedAgent.carrierAppointments || "",
+        uplineAgentId: selectedAgent.uplineAgentId || null,
+        commissionPercentage: selectedAgent.commissionPercentage || "0.00",
+        overridePercentage: selectedAgent.overridePercentage || "0.00",
+        specialties: selectedAgent.specialties || "",
         notes: selectedAgent.notes || "",
       });
       setIsEditDialogOpen(true);
@@ -438,7 +436,7 @@ const AgentsPage: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {agents && agents.length > 0 ? (
+                  {agents.length > 0 ? (
                     agents.map((agent: Agent & {name?: string}) => (
                       <TableRow key={agent.id}>
                         <TableCell className="font-medium">{agent.name || "Unnamed Agent"}</TableCell>
