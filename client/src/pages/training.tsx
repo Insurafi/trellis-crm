@@ -3057,7 +3057,7 @@ export default function TrainingPage() {
                   </div>
                   <div className="space-y-3">
                     {trainingModules
-                      .filter(module => ['term', 'whole', 'universal'].includes(module.id))
+                      .filter(module => ['term', 'whole', 'universal', 'final'].includes(module.id))
                       .map((module) => {
                         // This would normally come from a user's progress data
                         const progress = Math.floor(Math.random() * 101);
@@ -3065,7 +3065,8 @@ export default function TrainingPage() {
                         const icons = {
                           term: <BookOpen className="h-4 w-4" />,
                           whole: <Award className="h-4 w-4" />,
-                          universal: <BadgeCheck className="h-4 w-4" />
+                          universal: <BadgeCheck className="h-4 w-4" />,
+                          final: <AlertCircle className="h-4 w-4" />
                         };
                         
                         return (
@@ -3104,15 +3105,14 @@ export default function TrainingPage() {
                   </div>
                   <div className="space-y-3">
                     {trainingModules
-                      .filter(module => ['variable', 'senior', 'final'].includes(module.id))
+                      .filter(module => ['variable', 'senior'].includes(module.id))
                       .map((module) => {
                         // This would normally come from a user's progress data
                         const progress = Math.floor(Math.random() * 101);
                         const isCompleted = progress === 100;
                         const icons = {
                           variable: <Info className="h-4 w-4" />,
-                          senior: <HelpCircle className="h-4 w-4" />,
-                          final: <AlertCircle className="h-4 w-4" />
+                          senior: <HelpCircle className="h-4 w-4" />
                         };
                         
                         return (
