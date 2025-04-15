@@ -240,10 +240,10 @@ export default function Quotes() {
             variant="default" 
             size="lg" 
             className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-2 text-base h-auto"
-            onClick={() => window.open('https://www.ninjaquoter.com', '_blank')}
+            onClick={() => window.open('https://my.ninjaquoter.com/agent_quoter', '_blank')}
           >
             <ExternalLink className="mr-2 h-5 w-5" />
-            Get Quote with NinjaQuoters
+            Get Quote with NinjaQuoter
           </Button>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-400" />
@@ -397,7 +397,7 @@ export default function Quotes() {
         <CardHeader>
           <CardTitle className="flex items-center">
             <ExternalLink className="mr-2 h-5 w-5 text-blue-600" />
-            NinjaQuoters Integration
+            NinjaQuoter Integration
           </CardTitle>
           <CardDescription>
             Generate fast and accurate life insurance quotes for your clients through our partner, NinjaQuoters.
@@ -431,10 +431,10 @@ export default function Quotes() {
                 variant="default" 
                 size="lg" 
                 className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 text-base h-auto"
-                onClick={() => window.open('https://www.ninjaquoter.com', '_blank')}
+                onClick={() => window.open('https://my.ninjaquoter.com/agent_quoter', '_blank')}
               >
                 <ExternalLink className="mr-2 h-5 w-5" />
-                Go to NinjaQuoters Quote Engine
+                Go to NinjaQuoter Quote Engine
               </Button>
               <p className="text-sm text-neutral-500 mt-3 text-center">
                 Opens in a new window for a seamless quoting experience
