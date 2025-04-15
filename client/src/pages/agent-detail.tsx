@@ -492,8 +492,10 @@ export default function AgentDetail() {
                 </CardHeader>
                 <CardContent>
                   {weeklyCommissionData.length > 0 ? (
-                    <div className="space-y-4">
-                      {weeklyCommissionData.map((commission: any, index: number) => {
+                    <div>
+                      {/* Just show the first/latest commission entry */}
+                      {(() => {
+                        const commission = weeklyCommissionData[0];
                         const agentAmount = parseFloat(commission.amount || "0") * 0.6;
                         const companyAmount = parseFloat(commission.amount || "0") * 0.4;
                         
@@ -504,13 +506,12 @@ export default function AgentDetail() {
                           const endDate = new Date(commission.weekEndDate);
                           dateRange = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
                         } else {
-                          // Fallback to the current year and calculated week dates
-                          const currentYear = new Date().getFullYear();
-                          dateRange = `4/${21 + index * 7} - 4/${26 + index * 7}/${currentYear}`;
+                          // Fallback to a fixed date format
+                          dateRange = "4/21 - 4/26/2025";
                         }
                         
                         return (
-                          <div key={index} className="p-4 border rounded-lg">
+                          <div className="p-4 border rounded-lg">
                             <div className="flex flex-col gap-2">
                               <div className="flex justify-between items-center mb-2">
                                 <h4 className="font-medium">{dateRange}</h4>
@@ -547,14 +548,14 @@ export default function AgentDetail() {
                                   </div>
                                   <div className="flex justify-between text-sm">
                                     <span>Commission Period:</span>
-                                    <span className="font-medium">{commission.period || "Monthly"}</span>
+                                    <span className="font-medium">{commission.period || "Weekly"}</span>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         );
-                      })}
+                      })()}
                     </div>
                   ) : (
                     <div className="text-center py-8">
