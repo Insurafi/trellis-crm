@@ -431,7 +431,6 @@ const AgentsPage: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Agent Name</TableHead>
-                    <TableHead>Commission %</TableHead>
                     <TableHead>Specialties</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -441,7 +440,6 @@ const AgentsPage: React.FC = () => {
                     agents.map((agent: Agent & {name?: string}) => (
                       <TableRow key={agent.id}>
                         <TableCell className="font-medium">{agent.name || "Unnamed Agent"}</TableCell>
-                        <TableCell>{agent.commissionPercentage}%</TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1 max-w-xs">
                             {agent.specialties && agent.specialties.split(',').map((specialty, index) => (
@@ -484,7 +482,7 @@ const AgentsPage: React.FC = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-4">
+                      <TableCell colSpan={3} className="text-center py-4">
                         No agents found
                       </TableCell>
                     </TableRow>

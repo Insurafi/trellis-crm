@@ -92,19 +92,19 @@ export default function AgentDetail() {
 
   // Fetch agent's clients
   const { data: agentClients = [], isLoading: isClientsLoading } = useQuery<any[]>({
-    queryKey: ["/api/clients/by-agent", agentId],
+    queryKey: [`/api/clients/by-agent/${agentId}`],
     enabled: !!agentId,
   });
 
   // Fetch agent's policies
   const { data: agentPolicies = [], isLoading: isPoliciesLoading } = useQuery<any[]>({
-    queryKey: ["/api/policies/by-agent", agentId],
+    queryKey: [`/api/policies/by-agent/${agentId}`],
     enabled: !!agentId,
   });
 
   // Fetch agent's leads
   const { data: agentLeads = [], isLoading: isLeadsLoading } = useQuery<any[]>({
-    queryKey: ["/api/leads/by-agent", agentId],
+    queryKey: [`/api/leads/by-agent/${agentId}`],
     enabled: !!agentId,
   });
 
