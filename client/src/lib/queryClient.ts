@@ -43,7 +43,9 @@ export const getQueryFn: <T>(options?: {
   async ({ queryKey }) => {
     const unauthorizedBehavior = options.on401 || "throw";
     try {
-      const res = await fetch(queryKey[0] as string, {
+      const url = queryKey[0] as string;
+      console.log(`Making API request to: ${url}`, { queryKey });
+      const res = await fetch(url, {
         credentials: "include",
       });
 

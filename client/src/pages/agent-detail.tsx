@@ -48,9 +48,20 @@ export default function AgentDetail() {
   const commissionInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch agent data
-  const { data: agent, isLoading: isAgentLoading } = useQuery<any>({
-    queryKey: ["/api/agents", agentId],
-    enabled: !!agentId
+  const { data: agent, isLoading: isAgentLoading, error: agentError } = useQuery<any>({
+    queryKey: [`/api/agents/${agentId}`],
+    enabled: !!agentId,
+    onError: (error: any) => {
+      console.error("Error fetching agent:", error);
+      toast({
+        title: "Error loading agent data",
+        description: error.message || "Could not load agent details",
+        variant: "destructive",
+      });
+    },
+    onSuccess: (data) => {
+      console.log("Successfully loaded agent data:", data);
+    }
   });
   
   // Update commission value when agent data loads
