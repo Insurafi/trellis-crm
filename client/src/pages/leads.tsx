@@ -624,9 +624,15 @@ const LeadsPage: React.FC = () => {
                           <SelectContent>
                             <SelectItem value="Website">Website</SelectItem>
                             <SelectItem value="Referral">Referral</SelectItem>
-                            <SelectItem value="Social Media">Social Media</SelectItem>
+                            <SelectItem value="Facebook">Facebook</SelectItem>
+                            <SelectItem value="Instagram">Instagram</SelectItem>
+                            <SelectItem value="TikTok">TikTok</SelectItem>
                             <SelectItem value="Email Campaign">Email Campaign</SelectItem>
                             <SelectItem value="Cold Call">Cold Call</SelectItem>
+                            <SelectItem value="TV">TV</SelectItem>
+                            <SelectItem value="Radio">Radio</SelectItem>
+                            <SelectItem value="ValPak Mailers">ValPak Mailers</SelectItem>
+                            <SelectItem value="Bus">Bus</SelectItem>
                             <SelectItem value="Event">Event</SelectItem>
                             <SelectItem value="Other">Other</SelectItem>
                           </SelectContent>
@@ -1097,9 +1103,15 @@ const LeadsPage: React.FC = () => {
                         <SelectContent>
                           <SelectItem value="Website">Website</SelectItem>
                           <SelectItem value="Referral">Referral</SelectItem>
-                          <SelectItem value="Social Media">Social Media</SelectItem>
+                          <SelectItem value="Facebook">Facebook</SelectItem>
+                          <SelectItem value="Instagram">Instagram</SelectItem>
+                          <SelectItem value="TikTok">TikTok</SelectItem>
                           <SelectItem value="Email Campaign">Email Campaign</SelectItem>
                           <SelectItem value="Cold Call">Cold Call</SelectItem>
+                          <SelectItem value="TV">TV</SelectItem>
+                          <SelectItem value="Radio">Radio</SelectItem>
+                          <SelectItem value="ValPak Mailers">ValPak Mailers</SelectItem>
+                          <SelectItem value="Bus">Bus</SelectItem>
                           <SelectItem value="Event">Event</SelectItem>
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
