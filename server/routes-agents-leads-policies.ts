@@ -27,38 +27,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.get("/api/agents/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid agent ID" });
-      }
-
-      const agent = await storage.getAgent(id);
-      if (!agent) {
-        return res.status(404).json({ message: "Agent not found" });
-      }
-
-      // Get user information to include full name
-      const user = await storage.getUser(agent.userId);
-      if (!user) {
-        return res.status(404).json({ message: "Associated user not found" });
-      }
-
-      // Combine agent and user data
-      const agentWithUserInfo = {
-        ...agent,
-        fullName: user.fullName || "",
-        email: user.email || "",
-      };
-
-      res.json(agentWithUserInfo);
-    } catch (error) {
-      console.error("Error fetching agent:", error);
-      res.status(500).json({ message: "Failed to fetch agent" });
-    }
-  });
-
+  // Get agent by user ID - must come before the :id route to avoid param conflicts
   app.get("/api/agents/user/:userId", isAuthenticated, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
@@ -145,9 +114,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // This ensures client code can continue functioning
       return res.status(200).json({ 
         id: 0, 
-        userId: req.user.id, 
-        fullName: req.user.fullName || "",
-        licenseNumber: `AG${100000 + req.user.id}`,
+        userId: req.user?.id, 
+        fullName: req.user?.fullName || "",
+        licenseNumber: `AG${100000 + (req.user?.id || 0)}`,
         licenseExpiration: new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString().split('T')[0],
         phoneNumber: "(555) 555-5555",
         address: "",
@@ -158,6 +127,69 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       });
     }
   });
+
+  app.get("/api/agents/upline/:uplineId", async (req, res) => {
+    try {
+      const uplineId = parseInt(req.params.uplineId);
+      if (isNaN(uplineId)) {
+        return res.status(400).json({ message: "Invalid upline agent ID" });
+      }
+
+      const agents = await storage.getAgentsByUpline(uplineId);
+      res.json(agents);
+    } catch (error) {
+      console.error("Error fetching agents by upline:", error);
+      res.status(500).json({ message: "Failed to fetch agents by upline" });
+    }
+  });
+  
+  // Get agent by ID - this must come after other specific routes
+  app.get("/api/agents/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      // Get user information to include full name
+      const user = await storage.getUser(agent.userId);
+      if (!user) {
+        console.error(`User with ID ${agent.userId} not found for agent ${id}`);
+        // Instead of failing, still return the agent but with placeholder values
+        return res.json({
+          ...agent,
+          fullName: "Unknown Agent",
+          email: ""
+        });
+      }
+
+      // Log user info to help debug
+      console.log(`Found user for agent ${id}:`, {
+        userId: user.id,
+        fullName: user.fullName,
+        email: user.email
+      });
+
+      // Combine agent and user data
+      const agentWithUserInfo = {
+        ...agent,
+        fullName: user.fullName || "",
+        email: user.email || "",
+      };
+
+      res.json(agentWithUserInfo);
+    } catch (error) {
+      console.error("Error fetching agent:", error);
+      res.status(500).json({ message: "Failed to fetch agent" });
+    }
+  });
+
+
 
   app.get("/api/agents/upline/:uplineId", async (req, res) => {
     try {
