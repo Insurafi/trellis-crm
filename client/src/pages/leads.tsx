@@ -61,6 +61,8 @@ const leadFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().min(1, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
+  state: z.string().min(1, "State is required"),
+  zipCode: z.string().min(1, "ZIP code is required"),
   height: z.string().optional(),
   weight: z.string().optional(),
   smokerStatus: z.string(),
@@ -69,6 +71,7 @@ const leadFormSchema = z.object({
   incomeRange: z.string().optional(),
   existingCoverage: z.string().optional(),
   coverageNeeds: z.string().optional(),
+  insuranceTypeInterest: z.string().min(1, "Insurance type interest is required"),
   leadSource: z.string(),
   assignedAgentId: z.number().nullable().optional(),
   status: z.string(),
@@ -174,6 +177,8 @@ const LeadsPage: React.FC = () => {
       email: "",
       phoneNumber: "",
       address: "",
+      state: "",
+      zipCode: "",
       height: "",
       weight: "",
       smokerStatus: "No",
@@ -182,6 +187,7 @@ const LeadsPage: React.FC = () => {
       incomeRange: "",
       existingCoverage: "",
       coverageNeeds: "",
+      insuranceTypeInterest: "",
       leadSource: "Website",
       assignedAgentId: null,
       status: "new",
@@ -403,12 +409,41 @@ const LeadsPage: React.FC = () => {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Main St, City, State ZIP" {...field} />
+                        <Input placeholder="123 Main St, City" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>
+                          <Input placeholder="CA" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addForm.control}
+                    name="zipCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ZIP Code</FormLabel>
+                        <FormControl>
+                          <Input placeholder="90210" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 
                 <div className="grid grid-cols-3 gap-4">
                   <FormField
@@ -531,6 +566,37 @@ const LeadsPage: React.FC = () => {
                       <FormControl>
                         <Input placeholder="500k term life, income protection" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={addForm.control}
+                  name="insuranceTypeInterest"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Insurance Type Interest</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select insurance type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Term Life">Term Life</SelectItem>
+                          <SelectItem value="Whole Life">Whole Life</SelectItem>
+                          <SelectItem value="Final Expense">Final Expense</SelectItem>
+                          <SelectItem value="IUL">Indexed Universal Life (IUL)</SelectItem>
+                          <SelectItem value="Disability">Disability Insurance</SelectItem>
+                          <SelectItem value="Long-Term Care">Long-Term Care</SelectItem>
+                          <SelectItem value="Medicare Supplement">Medicare Supplement</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
