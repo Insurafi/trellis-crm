@@ -19,6 +19,7 @@ import {
   Save,
   Pencil,
   X,
+  Star,
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -252,7 +253,7 @@ export default function AgentDetail() {
               </div>
             </div>
             <CardTitle className="text-xl">{agent.fullName || agent.name || "Agent"}</CardTitle>
-            <CardDescription>{agent.specialties || "Life Insurance Agent"}</CardDescription>
+            <CardDescription>Insurance Agent</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -278,6 +279,23 @@ export default function AgentDetail() {
               <div className="col-span-2">
                 <p className="text-muted-foreground">Upline Agent</p>
                 <p className="font-medium">{"Insurafi"}</p>
+              </div>
+              
+              <div className="col-span-2 p-3 rounded-lg border border-blue-200 bg-blue-50">
+                <p className="text-sm font-medium text-blue-700 mb-2 flex items-center">
+                  <Star className="h-4 w-4 mr-2 text-blue-600" />
+                  Specialties
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {agent.specialties ? 
+                    agent.specialties.split(',').map((specialty: string, idx: number) => (
+                      <span key={idx} className="px-2.5 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium">
+                        {specialty.trim()}
+                      </span>
+                    )) : 
+                    <div className="text-sm text-blue-700">Term Life, Whole Life, Universal Life</div>
+                  }
+                </div>
               </div>
               <div className="col-span-2 mt-3 bg-primary/5 rounded-lg p-3 border border-primary/10">
                 <div className="flex justify-between items-center">
