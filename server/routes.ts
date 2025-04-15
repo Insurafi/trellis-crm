@@ -1258,6 +1258,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ message: "Internal server error" });
     }
   });
+  
+  // Get weekly commissions for a specific agent/broker
+  app.get("/api/commissions/weekly/by-agent/:agentId", isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      
+      // Handle special case when agentId is 0 or invalid
+      if (isNaN(agentId) || agentId < 0) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // For agentId = 0 (default agent), return empty array to avoid errors
+      if (agentId === 0) {
+        console.log("Received request for default agent (ID 0), returning empty weekly commission data");
+        return res.json([]);
+      }
+      
+      const weeklyCommissions = await storage.getWeeklyCommissionsByAgent(agentId);
+      return res.json(weeklyCommissions || []);
+    } catch (error) {
+      console.error("Error fetching weekly commissions by agent:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
   // Create a new API endpoint specifically for getting agent details by ID
   // This won't conflict with the frontend routing
