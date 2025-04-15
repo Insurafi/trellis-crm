@@ -3053,7 +3053,7 @@ export default function TrainingPage() {
                 <div>
                   <div className="flex items-center mb-3">
                     <Users className="h-5 w-5 mr-2 text-primary"/>
-                    <h3 className="text-base font-semibold">Personal Market Products</h3>
+                    <h3 className="text-base font-semibold">Personal Products</h3>
                   </div>
                   <div className="space-y-3">
                     {trainingModules
@@ -3097,11 +3097,11 @@ export default function TrainingPage() {
                 {/* Separator */}
                 <Separator className="my-2" />
                 
-                {/* Specialty Markets Section */}
+                {/* Specialty Products Section */}
                 <div>
                   <div className="flex items-center mb-3">
                     <Target className="h-5 w-5 mr-2 text-primary"/>
-                    <h3 className="text-base font-semibold">Specialty Markets</h3>
+                    <h3 className="text-base font-semibold">Specialty Products</h3>
                   </div>
                   <div className="space-y-3">
                     {trainingModules
@@ -3143,15 +3143,15 @@ export default function TrainingPage() {
                 {/* Separator */}
                 <Separator className="my-2" />
                 
-                {/* Business Market Section */}
+                {/* Business Products Section */}
                 <div>
                   <div className="flex items-center mb-3">
                     <Briefcase className="h-5 w-5 mr-2 text-primary"/>
-                    <h3 className="text-base font-semibold">Business Market Products</h3>
+                    <h3 className="text-base font-semibold">Business Products</h3>
                   </div>
                   <div className="space-y-3">
                     {/* Note: Current modules don't have business-specific IDs, 
-                        this is a placeholder for future business market modules */}
+                        this is a placeholder for future business products modules */}
                     <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
