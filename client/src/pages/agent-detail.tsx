@@ -47,21 +47,10 @@ export default function AgentDetail() {
   const [commissionValue, setCommissionValue] = useState("60.00");
   const commissionInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch agent data
-  const { data: agent, isLoading: isAgentLoading, error: agentError } = useQuery<any>({
-    queryKey: [`/api/agents/${agentId}`],
-    enabled: !!agentId,
-    onError: (error: any) => {
-      console.error("Error fetching agent:", error);
-      toast({
-        title: "Error loading agent data",
-        description: error.message || "Could not load agent details",
-        variant: "destructive",
-      });
-    },
-    onSuccess: (data) => {
-      console.log("Successfully loaded agent data:", data);
-    }
+  // Fetch agent data using the new API endpoint to avoid routing conflicts
+  const { data: agent, isLoading: isAgentLoading } = useQuery<any>({
+    queryKey: [`/api/agent-data/${agentId}`],
+    enabled: !!agentId
   });
   
   // Update commission value when agent data loads
@@ -82,7 +71,9 @@ export default function AgentDetail() {
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/agents", agentId] });
+      // Invalidate both endpoints to ensure data consistency
+      queryClient.invalidateQueries({ queryKey: [`/api/agent-data/${agentId}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
         title: "Commission updated",
         description: `Agent commission has been set to ${commissionValue}%`,

@@ -1248,6 +1248,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create a new API endpoint specifically for getting agent details by ID
+  // This won't conflict with the frontend routing
+  app.get("/api/agent-data/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      // Log agent details for debugging
+      console.log(`Fetched agent ${id} with full info from direct endpoint:`, {
+        id: agent.id,
+        fullName: agent.fullName,
+        email: agent.email,
+        commissionPercentage: agent.commissionPercentage
+      });
+      
+      // Return the agent data in JSON format
+      res.json(agent);
+    } catch (error) {
+      console.error("Error fetching agent data:", error);
+      res.status(500).json({ message: "Failed to fetch agent data" });
+    }
+  });
+
   registerAgentLeadsPolicyRoutes(app);
   registerAnalyticsRoutes(app);
   
