@@ -230,6 +230,34 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       res.status(500).json({ message: "Failed to delete agent" });
     }
   });
+  
+  // Get agent by ID - this must come last of all agent routes
+  app.get("/api/agents/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      // The agent data already includes fullName from the database-storage.ts changes
+      console.log(`Fetched agent ${id} successfully:`, {
+        id: agent.id,
+        fullName: agent.fullName,
+        email: agent.email,
+        commissionPercentage: agent.commissionPercentage
+      });
+      
+      res.json(agent);
+    } catch (error) {
+      console.error("Error fetching agent:", error);
+      res.status(500).json({ message: "Failed to fetch agent" });
+    }
+  });
 
   // Leads
   app.get("/api/leads", isAuthenticated, async (req, res) => {
