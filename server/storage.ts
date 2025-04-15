@@ -151,7 +151,10 @@ export interface IStorage {
     pendingAmount: string;
     paidAmount: string;
     commissionsByType: Record<string, number>;
+    companyProfit: string;
   }>;
+  getWeeklyCommissions(): Promise<any[]>;
+  getWeeklyCommissionsByAgent(agentId: number): Promise<any[]>;
   
   // Communication Templates
   getCommunicationTemplates(): Promise<CommunicationTemplate[]>;
