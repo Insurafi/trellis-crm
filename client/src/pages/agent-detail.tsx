@@ -108,8 +108,14 @@ export default function AgentDetail() {
     queryKey: [`/api/leads/by-agent/${agentId}`],
     enabled: !!agentId,
   });
+  
+  // Fetch agent's weekly commissions
+  const { data: weeklyCommissionData = [], isLoading: isCommissionsLoading } = useQuery<any[]>({
+    queryKey: [`/api/commissions/weekly/by-agent/${agentId}`],
+    enabled: !!agentId,
+  });
 
-  const isLoading = isAgentLoading || isClientsLoading || isPoliciesLoading || isLeadsLoading;
+  const isLoading = isAgentLoading || isClientsLoading || isPoliciesLoading || isLeadsLoading || isCommissionsLoading;
 
   // Generate some random performance data for UI display
   const [performanceData] = useState(() => {
@@ -470,12 +476,96 @@ export default function AgentDetail() {
             </CardContent>
           </Card>
 
-          <Tabs defaultValue="products">
-            <TabsList className="grid grid-cols-3 mb-4">
+          <Tabs defaultValue="commissions">
+            <TabsList className="grid grid-cols-4 mb-4">
+              <TabsTrigger value="commissions">Commissions</TabsTrigger>
               <TabsTrigger value="products">Top Products</TabsTrigger>
               <TabsTrigger value="clients">Recent Clients</TabsTrigger>
               <TabsTrigger value="activity">Weekly Activity</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="commissions" className="mt-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Agent Commission History</CardTitle>
+                  <CardDescription>Weekly commissions earned by this agent</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {weeklyCommissionData.length > 0 ? (
+                    <div className="space-y-4">
+                      {weeklyCommissionData.map((commission: any, index: number) => {
+                        const agentAmount = parseFloat(commission.amount || "0") * 0.6;
+                        const companyAmount = parseFloat(commission.amount || "0") * 0.4;
+                        
+                        return (
+                          <div key={index} className="p-4 border rounded-lg">
+                            <div className="flex flex-col gap-2">
+                              <div className="flex justify-between items-center mb-2">
+                                <h4 className="font-medium">{commission.week || `Week ${index + 1}`}</h4>
+                                <div className="flex items-center gap-2">
+                                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                    commission.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                                  }`}>
+                                    {commission.status === 'paid' ? 'Paid' : 'Pending'}
+                                  </span>
+                                  <span className="text-md font-bold">${commission.amount?.toLocaleString() || "0.00"}</span>
+                                </div>
+                              </div>
+                              
+                              <div className="flex flex-col gap-3 mt-2">
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
+                                    <p className="text-sm text-muted-foreground mb-1">Agent Share (60%)</p>
+                                    <p className="text-xl font-bold text-primary">${agentAmount.toFixed(2)}</p>
+                                  </div>
+                                  <div className="p-3 rounded-lg bg-gray-100 border border-gray-200">
+                                    <p className="text-sm text-muted-foreground mb-1">Company Share (40%)</p>
+                                    <p className="text-xl font-bold">${companyAmount.toFixed(2)}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="flex flex-col gap-1 mt-1">
+                                  <div className="flex justify-between text-sm">
+                                    <span>Policy Count:</span>
+                                    <span className="font-medium">{commission.policyCount || "0"}</span>
+                                  </div>
+                                  <div className="flex justify-between text-sm">
+                                    <span>Premium Volume:</span>
+                                    <span className="font-medium">${commission.premiumVolume?.toLocaleString() || "0.00"}</span>
+                                  </div>
+                                  <div className="flex justify-between text-sm">
+                                    <span>Commission Period:</span>
+                                    <span className="font-medium">{commission.period || "Monthly"}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <PieChart className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                      <h3 className="text-lg font-medium mb-1">No commission data found</h3>
+                      <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                        This agent hasn't earned any commissions yet or the commission data hasn't been recorded.
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+                {weeklyCommissionData.length > 0 && (
+                  <CardFooter className="flex justify-center border-t pt-4">
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/commissions">
+                        <PieChart className="mr-2 h-4 w-4" />
+                        View All Commissions
+                      </Link>
+                    </Button>
+                  </CardFooter>
+                )}
+              </Card>
+            </TabsContent>
             
             <TabsContent value="products" className="mt-0">
               <Card>
