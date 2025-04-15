@@ -196,34 +196,47 @@ export default function AgentStatusList() {
                       </div>
                     </div>
                     
-                    <div className="mt-2 flex gap-1 justify-end">
-                      <button 
-                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
-                        title="Send Email"
+                    <div className="mt-2 flex gap-1 justify-between">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="text-xs h-7"
                       >
-                        <Mail className="h-3.5 w-3.5" />
-                      </button>
+                        <Link href={`/agents/${agent.id}`}>
+                          View Agent
+                        </Link>
+                      </Button>
                       
-                      <button 
-                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
-                        title="Call Agent"
-                      >
-                        <Phone className="h-3.5 w-3.5" />
-                      </button>
-                      
-                      <button 
-                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
-                        title="Send Message"
-                      >
-                        <MessageSquare className="h-3.5 w-3.5" />
-                      </button>
-                      
-                      <button 
-                        className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
-                        title="Schedule Meeting"
-                      >
-                        <Calendar className="h-3.5 w-3.5" />
-                      </button>
+                      <div className="flex gap-1">
+                        <button 
+                          className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                          title="Send Email"
+                        >
+                          <Mail className="h-3.5 w-3.5" />
+                        </button>
+                        
+                        <button 
+                          className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                          title="Call Agent"
+                        >
+                          <Phone className="h-3.5 w-3.5" />
+                        </button>
+                        
+                        <button 
+                          className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                          title="Send Message"
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                        </button>
+                        
+                        <button 
+                          className="h-7 w-7 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                          title="Schedule Meeting"
+                        >
+                          <Calendar className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

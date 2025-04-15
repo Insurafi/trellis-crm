@@ -422,6 +422,7 @@ export const agents = pgTable("agents", {
   commissionPercentage: decimal("commission_percentage", { precision: 5, scale: 2 }),
   overridePercentage: decimal("override_percentage", { precision: 5, scale: 2 }),
   specialties: text("specialties"), // Comma-separated list of specialties
+  licensedStates: text("licensed_states"), // Comma-separated list of states where agent is licensed to sell
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -439,6 +440,7 @@ export const insertAgentSchema = createInsertSchema(agents).pick({
   commissionPercentage: true,
   overridePercentage: true,
   specialties: true,
+  licensedStates: true,
   notes: true,
 });
 
