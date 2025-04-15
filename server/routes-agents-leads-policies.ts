@@ -39,7 +39,20 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(404).json({ message: "Agent not found" });
       }
 
-      res.json(agent);
+      // Get user information to include full name
+      const user = await storage.getUser(agent.userId);
+      if (!user) {
+        return res.status(404).json({ message: "Associated user not found" });
+      }
+
+      // Combine agent and user data
+      const agentWithUserInfo = {
+        ...agent,
+        fullName: user.fullName || "",
+        email: user.email || "",
+      };
+
+      res.json(agentWithUserInfo);
     } catch (error) {
       console.error("Error fetching agent:", error);
       res.status(500).json({ message: "Failed to fetch agent" });
