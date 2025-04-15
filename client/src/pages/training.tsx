@@ -3037,13 +3037,35 @@ export default function TrainingPage() {
                 {trainingModules.map((module) => {
                   // This would normally come from a user's progress data
                   const progress = Math.floor(Math.random() * 101);
+                  const isCompleted = progress === 100;
+                  const icons = {
+                    term: <BookOpen className="h-4 w-4" />,
+                    whole: <Award className="h-4 w-4" />,
+                    universal: <BadgeCheck className="h-4 w-4" />,
+                    variable: <Info className="h-4 w-4" />,
+                    senior: <HelpCircle className="h-4 w-4" />,
+                    final: <AlertCircle className="h-4 w-4" />
+                  };
+                  
                   return (
-                    <div key={module.id} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">{module.title}</span>
-                        <span className="text-sm text-muted-foreground">{progress}%</span>
+                    <div key={module.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center">
+                        <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center mr-3`}>
+                          {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
+                        </div>
+                        <div>
+                          <p className="font-medium">{module.title}</p>
+                          <div className="flex items-center mt-1">
+                            <Progress value={progress} className="h-2 w-24" />
+                            <span className="text-xs text-muted-foreground ml-2">{progress}%</span>
+                          </div>
+                        </div>
                       </div>
-                      <Progress value={progress} className="h-2" />
+                      <div className="text-right">
+                        <Button variant={isCompleted ? "outline" : "default"} size="sm">
+                          {isCompleted ? 'Review' : 'Continue'}
+                        </Button>
+                      </div>
                     </div>
                   );
                 })}
