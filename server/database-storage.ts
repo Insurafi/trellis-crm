@@ -494,9 +494,27 @@ export class DatabaseStorage implements IStorage {
     });
   }
   
-  async getAgent(id: number): Promise<Agent | undefined> {
+  async getAgent(id: number): Promise<(Agent & { fullName?: string; email?: string }) | undefined> {
+    // Get the agent record
     const [agent] = await db.select().from(agents).where(eq(agents.id, id));
-    return agent;
+    
+    if (!agent) {
+      return undefined;
+    }
+    
+    // Get the associated user record to include fullName
+    const [user] = await db.select().from(users).where(eq(users.id, agent.userId));
+    
+    if (!user) {
+      return agent; // Return agent without user data if user not found
+    }
+    
+    // Combine agent and user data
+    return {
+      ...agent,
+      fullName: user.fullName,
+      email: user.email
+    };
   }
   
   async getAgentByUserId(userId: number): Promise<Agent | undefined> {
