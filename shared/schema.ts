@@ -456,6 +456,8 @@ export const leads = pgTable("leads", {
   email: text("email"),
   phoneNumber: text("phone_number"),
   address: text("address"),
+  state: text("state"), // Added state field
+  zipCode: text("zip_code"), // Added zip code field
   // Health Information
   height: text("height"), // Store as string to allow for different formats (e.g., 5'10")
   weight: text("weight"), // Store as string to allow for different formats
@@ -466,6 +468,7 @@ export const leads = pgTable("leads", {
   incomeRange: text("income_range"), // e.g., "50k-100k"
   existingCoverage: text("existing_coverage"), // Details about current insurance
   coverageNeeds: text("coverage_needs"), // Amount and type of coverage needed
+  insuranceTypeInterest: text("insurance_type_interest"), // Term, Whole Life, Final Expense, IUL, etc.
   // Lead Management
   leadSource: text("lead_source"), // How the lead was acquired
   assignedAgentId: integer("assigned_agent_id").references(() => agents.id),
@@ -483,6 +486,8 @@ export const insertLeadSchema = createInsertSchema(leads).pick({
   email: true,
   phoneNumber: true,
   address: true,
+  state: true,
+  zipCode: true,
   height: true,
   weight: true,
   smokerStatus: true,
@@ -491,6 +496,7 @@ export const insertLeadSchema = createInsertSchema(leads).pick({
   incomeRange: true,
   existingCoverage: true,
   coverageNeeds: true,
+  insuranceTypeInterest: true,
   leadSource: true,
   assignedAgentId: true,
   status: true,
