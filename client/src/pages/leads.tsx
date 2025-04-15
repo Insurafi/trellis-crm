@@ -1047,6 +1047,37 @@ const LeadsPage: React.FC = () => {
                 />
               </div>
               
+              <FormField
+                control={editForm.control}
+                name="insuranceTypeInterest"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Type Interest</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select insurance type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Term Life">Term Life</SelectItem>
+                        <SelectItem value="Whole Life">Whole Life</SelectItem>
+                        <SelectItem value="Final Expense">Final Expense</SelectItem>
+                        <SelectItem value="IUL">Indexed Universal Life (IUL)</SelectItem>
+                        <SelectItem value="Disability">Disability Insurance</SelectItem>
+                        <SelectItem value="Long-Term Care">Long-Term Care</SelectItem>
+                        <SelectItem value="Medicare Supplement">Medicare Supplement</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={editForm.control}
