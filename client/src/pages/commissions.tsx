@@ -125,11 +125,18 @@ export default function CommissionsPage() {
     totalCommissions: 0,
     pendingAmount: "$0.00",
     paidAmount: "$0.00",
-    commissionsByType: {}
+    commissionsByType: {},
+    companyProfit: "$0.00"
   }, isLoading: isLoadingStats } = useQuery({
     queryKey: ['/api/commissions/stats'],
     refetchOnWindowFocus: false,
   }) as { data: any, isLoading: boolean };
+  
+  // Fetch weekly commission data
+  const { data: weeklyCommissions = [], isLoading: isLoadingWeekly } = useQuery({
+    queryKey: ['/api/commissions/weekly'],
+    refetchOnWindowFocus: false,
+  }) as { data: any[], isLoading: boolean };
 
   // Form for adding new commission
   const form = useForm<CommissionFormValues>({
@@ -406,6 +413,102 @@ export default function CommissionsPage() {
               <Calendar className="inline h-3 w-3 mr-1" />
               {format(new Date(), "MMMM yyyy")}
             </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  // Function to render weekly commissions report
+  const renderWeeklyCommissions = () => {
+    if (isLoadingWeekly) {
+      return (
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Weekly Commission Payments</CardTitle>
+              <CardDescription>
+                Overview of commission payments by week
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] flex items-center justify-center">
+                <p className="text-muted-foreground">Loading weekly commission data...</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    
+    if (!weeklyCommissions || weeklyCommissions.length === 0) {
+      return (
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Weekly Commission Payments</CardTitle>
+              <CardDescription>
+                Overview of commission payments by week
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] flex items-center justify-center">
+                <p className="text-muted-foreground">No weekly commission data available yet.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Weekly Commission Payments</CardTitle>
+            <CardDescription>
+              Overview of weekly commissions, agent payments, and company profits
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Week</TableHead>
+                    <TableHead>Total Amount</TableHead>
+                    <TableHead>Agent Payouts (60%)</TableHead>
+                    <TableHead>Company Profit (40%)</TableHead>
+                    <TableHead>Agents Receiving Payments</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {weeklyCommissions.map((week, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <div className="font-medium">{week.weekLabel}</div>
+                      </TableCell>
+                      <TableCell className="font-medium">{week.totalAmount}</TableCell>
+                      <TableCell>{week.agentPayouts}</TableCell>
+                      <TableCell>{week.companyProfit}</TableCell>
+                      <TableCell>
+                        {week.brokerNames && week.brokerNames.length > 0 ? (
+                          <div className="flex flex-col gap-1">
+                            {week.brokerNames.map((name: string, idx: number) => (
+                              <Badge key={idx} variant="outline" className="font-normal">
+                                {name}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">None</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

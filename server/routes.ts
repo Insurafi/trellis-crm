@@ -839,6 +839,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch commissions statistics" });
     }
   });
+  
+  // Weekly commissions report
+  app.get("/api/commissions/weekly", isAuthenticated, async (req, res) => {
+    try {
+      const weeklyData = await storage.getWeeklyCommissions();
+      res.json(weeklyData);
+    } catch (error) {
+      console.error("Error fetching weekly commissions:", error);
+      res.status(500).json({ message: "Failed to fetch weekly commissions" });
+    }
+  });
 
   app.get("/api/commissions", async (req, res) => {
     try {
