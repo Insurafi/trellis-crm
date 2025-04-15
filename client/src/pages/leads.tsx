@@ -248,6 +248,8 @@ const LeadsPage: React.FC = () => {
         email: selectedLead.email,
         phoneNumber: selectedLead.phoneNumber,
         address: selectedLead.address,
+        state: selectedLead.state || "",
+        zipCode: selectedLead.zipCode || "",
         height: selectedLead.height || "",
         weight: selectedLead.weight || "",
         smokerStatus: selectedLead.smokerStatus,
@@ -256,6 +258,7 @@ const LeadsPage: React.FC = () => {
         incomeRange: selectedLead.incomeRange || "",
         existingCoverage: selectedLead.existingCoverage || "",
         coverageNeeds: selectedLead.coverageNeeds || "",
+        insuranceTypeInterest: selectedLead.insuranceTypeInterest || "",
         leadSource: selectedLead.leadSource,
         assignedAgentId: selectedLead.assignedAgentId,
         status: selectedLead.status,
@@ -931,6 +934,35 @@ const LeadsPage: React.FC = () => {
                   </FormItem>
                 )}
               />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={editForm.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="zipCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ZIP Code</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
               <div className="grid grid-cols-3 gap-4">
                 <FormField
