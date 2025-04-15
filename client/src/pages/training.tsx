@@ -16,13 +16,28 @@ import {
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Check, Info, Award, BookOpen, HelpCircle, ThumbsUp, AlertCircle, BadgeCheck } from "lucide-react";
+import { 
+  AlertCircle, 
+  Award, 
+  BadgeCheck, 
+  BookOpen, 
+  Briefcase,
+  Building2,
+  Check, 
+  HelpCircle, 
+  Info, 
+  Landmark,
+  Target,
+  ThumbsUp, 
+  Users 
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface QuizQuestion {
@@ -3033,42 +3048,150 @@ export default function TrainingPage() {
               <CardDescription>Your progress tracking</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {trainingModules.map((module) => {
-                  // This would normally come from a user's progress data
-                  const progress = Math.floor(Math.random() * 101);
-                  const isCompleted = progress === 100;
-                  const icons = {
-                    term: <BookOpen className="h-4 w-4" />,
-                    whole: <Award className="h-4 w-4" />,
-                    universal: <BadgeCheck className="h-4 w-4" />,
-                    variable: <Info className="h-4 w-4" />,
-                    senior: <HelpCircle className="h-4 w-4" />,
-                    final: <AlertCircle className="h-4 w-4" />
-                  };
-                  
-                  return (
-                    <div key={module.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+              <div className="space-y-6">
+                {/* Personal Products Section */}
+                <div>
+                  <div className="flex items-center mb-3">
+                    <Users className="h-5 w-5 mr-2 text-primary"/>
+                    <h3 className="text-base font-semibold">Personal Market Products</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {trainingModules
+                      .filter(module => ['term', 'whole', 'universal'].includes(module.id))
+                      .map((module) => {
+                        // This would normally come from a user's progress data
+                        const progress = Math.floor(Math.random() * 101);
+                        const isCompleted = progress === 100;
+                        const icons = {
+                          term: <BookOpen className="h-4 w-4" />,
+                          whole: <Award className="h-4 w-4" />,
+                          universal: <BadgeCheck className="h-4 w-4" />
+                        };
+                        
+                        return (
+                          <div key={module.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center">
+                              <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center mr-3`}>
+                                {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
+                              </div>
+                              <div>
+                                <p className="font-medium">{module.title}</p>
+                                <div className="flex items-center mt-1">
+                                  <Progress value={progress} className="h-2 w-24" />
+                                  <span className="text-xs text-muted-foreground ml-2">{progress}%</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <Button variant={isCompleted ? "outline" : "default"} size="sm">
+                                {isCompleted ? 'Review' : 'Continue'}
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+                
+                {/* Separator */}
+                <Separator className="my-2" />
+                
+                {/* Specialty Markets Section */}
+                <div>
+                  <div className="flex items-center mb-3">
+                    <Target className="h-5 w-5 mr-2 text-primary"/>
+                    <h3 className="text-base font-semibold">Specialty Markets</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {trainingModules
+                      .filter(module => ['variable', 'senior', 'final'].includes(module.id))
+                      .map((module) => {
+                        // This would normally come from a user's progress data
+                        const progress = Math.floor(Math.random() * 101);
+                        const isCompleted = progress === 100;
+                        const icons = {
+                          variable: <Info className="h-4 w-4" />,
+                          senior: <HelpCircle className="h-4 w-4" />,
+                          final: <AlertCircle className="h-4 w-4" />
+                        };
+                        
+                        return (
+                          <div key={module.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center">
+                              <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center mr-3`}>
+                                {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
+                              </div>
+                              <div>
+                                <p className="font-medium">{module.title}</p>
+                                <div className="flex items-center mt-1">
+                                  <Progress value={progress} className="h-2 w-24" />
+                                  <span className="text-xs text-muted-foreground ml-2">{progress}%</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <Button variant={isCompleted ? "outline" : "default"} size="sm">
+                                {isCompleted ? 'Review' : 'Continue'}
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+                
+                {/* Separator */}
+                <Separator className="my-2" />
+                
+                {/* Business Market Section */}
+                <div>
+                  <div className="flex items-center mb-3">
+                    <Briefcase className="h-5 w-5 mr-2 text-primary"/>
+                    <h3 className="text-base font-semibold">Business Market Products</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {/* Note: Current modules don't have business-specific IDs, 
+                        this is a placeholder for future business market modules */}
+                    <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center">
-                        <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center mr-3`}>
-                          {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
+                        <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
+                          <Building2 className="h-4 w-4" />
                         </div>
                         <div>
-                          <p className="font-medium">{module.title}</p>
+                          <p className="font-medium">Business Term Life Insurance</p>
                           <div className="flex items-center mt-1">
-                            <Progress value={progress} className="h-2 w-24" />
-                            <span className="text-xs text-muted-foreground ml-2">{progress}%</span>
+                            <Progress value={35} className="h-2 w-24" />
+                            <span className="text-xs text-muted-foreground ml-2">35%</span>
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <Button variant={isCompleted ? "outline" : "default"} size="sm">
-                          {isCompleted ? 'Review' : 'Continue'}
+                        <Button variant="default" size="sm">
+                          Continue
                         </Button>
                       </div>
                     </div>
-                  );
-                })}
+                    <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center">
+                        <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
+                          <Landmark className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Key Person Insurance</p>
+                          <div className="flex items-center mt-1">
+                            <Progress value={0} className="h-2 w-24" />
+                            <span className="text-xs text-muted-foreground ml-2">0%</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Button variant="default" size="sm">
+                          Start
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
             <CardFooter className="flex-col items-start">
