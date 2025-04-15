@@ -680,7 +680,8 @@ const LeadsPage: React.FC = () => {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Contact</TableHead>
-                    <TableHead>Date of Birth</TableHead>
+                    <TableHead>Date of Birth (Age)</TableHead>
+                    <TableHead>State</TableHead>
                     <TableHead>Lead Source</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Assigned Agent</TableHead>
@@ -701,7 +702,16 @@ const LeadsPage: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          {new Date(lead.dateOfBirth).toLocaleDateString()}
+                          {new Date(lead.dateOfBirth).toLocaleDateString()} 
+                          <span className="text-muted-foreground ml-2">
+                            ({calculateAge(lead.dateOfBirth)} yrs)
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center">
+                            <MapPin size={14} className="mr-1 text-muted-foreground" />
+                            {extractState(lead.address)}
+                          </div>
                         </TableCell>
                         <TableCell>{lead.leadSource}</TableCell>
                         <TableCell>
@@ -725,13 +735,23 @@ const LeadsPage: React.FC = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => setSelectedLead(lead)}
+                              title="Edit lead"
                             >
                               <Pencil size={16} />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
+                              onClick={() => window.confirm("This will open a detailed view of this lead. Continue?") && setSelectedLead(lead)}
+                              title="View lead details"
+                            >
+                              <Eye size={16} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => handleDelete(lead)}
+                              title="Delete lead"
                             >
                               <Trash2 size={16} />
                             </Button>
