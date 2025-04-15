@@ -158,9 +158,12 @@
   <script>
     // Check if user is logged in via localStorage
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('Dashboard page loaded');
       const storedData = localStorage.getItem('clientData');
       
+      console.log('Checking for stored client data...');
       if (!storedData) {
+        console.log('No client data found, redirecting to login');
         // Not logged in, redirect to login page
         window.location.href = '/direct-client-login.html';
         return;
@@ -168,19 +171,50 @@
       
       try {
         // Parse client data
+        console.log('Found stored data, parsing...');
         const clientData = JSON.parse(storedData);
+        console.log('Client data parsed:', clientData);
         
         // Update welcome message
-        document.getElementById('welcomeMessage').textContent = `Welcome, ${clientData.name}`;
+        document.getElementById('welcomeMessage').textContent = `Welcome, ${clientData.name || clientData.fullName}`;
         
         // Update client information fields
-        document.getElementById('clientName').textContent = clientData.name || 'Not provided';
+        document.getElementById('clientName').textContent = clientData.name || clientData.fullName || 'Not provided';
         document.getElementById('clientEmail').textContent = clientData.email || 'Not provided';
         document.getElementById('clientPhone').textContent = clientData.phone || 'Not provided';
         document.getElementById('clientCompany').textContent = clientData.company || 'Not provided';
         
+        // Add policies if available (demonstration - we'll fetch these from the server in a real scenario)
+        if (clientData.id) {
+          console.log('Displaying client ID:', clientData.id);
+          
+          // In a real application, we would fetch policies here
+          // For now, just show a placeholder
+          const policiesContainer = document.querySelector('.card:nth-child(2) .card-body');
+          policiesContainer.innerHTML = `
+            <div class="info-grid">
+              <div class="info-item">
+                <dt>Client ID</dt>
+                <dd>${clientData.id}</dd>
+              </div>
+              <div class="info-item">
+                <dt>Status</dt>
+                <dd>${clientData.status || 'active'}</dd>
+              </div>
+              <div class="info-item">
+                <dt>Last Login</dt>
+                <dd>${new Date(clientData.lastLogin || Date.now()).toLocaleString()}</dd>
+              </div>
+            </div>
+            <p class="placeholder" style="margin-top: 20px; font-style: italic;">
+              Policy information will be available soon.
+            </p>
+          `;
+        }
+        
         // Set up logout button
         document.getElementById('logoutButton').addEventListener('click', function() {
+          console.log('Logging out...');
           // Clear localStorage
           localStorage.removeItem('clientData');
           
