@@ -65,7 +65,7 @@ export default function AgentDetail() {
     mutationFn: async (newCommission: string) => {
       const res = await apiRequest(
         "PATCH", 
-        `/api/agents/${agentId}`, 
+        `/api/agents/${agentId}/commission`, 
         { commissionPercentage: newCommission }
       );
       return await res.json();
@@ -75,7 +75,7 @@ export default function AgentDetail() {
       toast({
         title: "Commission updated",
         description: `Agent commission has been set to ${commissionValue}%`,
-        variant: "success",
+        variant: "default",
       });
       setIsEditingCommission(false);
     },
@@ -337,7 +337,7 @@ export default function AgentDetail() {
               <h3 className="font-medium mb-2">Licensed to Sell in:</h3>
               <div className="flex flex-wrap gap-1 mb-4">
                 {agent.licensedStates ? 
-                  agent.licensedStates.split(',').map((state, idx) => (
+                  agent.licensedStates.split(',').map((state: string, idx: number) => (
                     <span key={idx} className="px-2 py-1 bg-primary/10 text-primary rounded-md text-xs font-medium">
                       {state.trim()}
                     </span>

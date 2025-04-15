@@ -190,6 +190,41 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       handleValidationError(error, res);
     }
   });
+  
+  // Special endpoint for updating agent commission (admin-only)
+  app.patch("/api/agents/:id/commission", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // Validate commission is a valid number
+      const { commissionPercentage } = req.body;
+      if (!commissionPercentage || isNaN(parseFloat(commissionPercentage))) {
+        return res.status(400).json({ message: "Invalid commission percentage" });
+      }
+      
+      // Ensure commission is between 0 and 100
+      const commission = parseFloat(commissionPercentage);
+      if (commission < 0 || commission > 100) {
+        return res.status(400).json({ message: "Commission must be between 0 and 100 percent" });
+      }
+
+      const updatedAgent = await storage.updateAgent(id, { 
+        commissionPercentage: commissionPercentage 
+      });
+      
+      if (!updatedAgent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent commission:", error);
+      res.status(500).json({ message: "Failed to update agent commission" });
+    }
+  });
 
   app.delete("/api/agents/:id", isAdmin, async (req, res) => {
     try {
