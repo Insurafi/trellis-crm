@@ -566,6 +566,91 @@ export class DatabaseStorage implements IStorage {
     );
   }
   
+  // Get weekly commissions for a specific agent/broker
+  async getWeeklyCommissionsByAgent(agentId: number): Promise<any[]> {
+    // Get agent-specific commissions
+    const agentCommissions = await this.getCommissionsByBroker(agentId);
+    
+    // Get user information for this agent
+    const [agent] = await db.select().from(users).where(eq(users.id, agentId));
+    const agentName = agent ? agent.fullName : `Agent #${agentId}`;
+    
+    // Filter to only paid commissions with payment dates
+    const paidCommissions = agentCommissions.filter(comm => 
+      comm.status === 'paid' && comm.paymentDate !== null
+    );
+    
+    // Group commissions by week
+    const weeklyCommissions: Record<string, any> = {};
+    
+    for (const commission of paidCommissions) {
+      if (!commission.paymentDate) continue;
+      
+      // Get the week start date (Sunday)
+      const paymentDate = new Date(commission.paymentDate);
+      const day = paymentDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const diff = paymentDate.getDate() - day;
+      const weekStart = new Date(paymentDate.setDate(diff));
+      const weekKey = weekStart.toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      // Extract amount
+      const amount = parseFloat(commission.amount.replace(/[^0-9.-]+/g, ''));
+      if (isNaN(amount)) continue;
+      
+      // Initialize week if not exists
+      if (!weeklyCommissions[weekKey]) {
+        weeklyCommissions[weekKey] = {
+          weekStartDate: weekKey,
+          weekLabel: `Week of ${new Date(weekKey).toLocaleDateString()}`,
+          totalAmount: 0,
+          agentPayout: 0, // The agent's 60%
+          commissions: [],
+          policyTypes: new Set(),
+          policyTypeList: []
+        };
+      }
+      
+      // Add commission to the week
+      weeklyCommissions[weekKey].totalAmount += amount;
+      weeklyCommissions[weekKey].agentPayout += amount * 0.6; // 60% to agent
+      weeklyCommissions[weekKey].commissions.push(commission);
+      
+      // Track policy types
+      if (commission.policyType) {
+        weeklyCommissions[weekKey].policyTypes.add(commission.policyType);
+      }
+    }
+    
+    // Convert to array and sort by week (most recent first)
+    const result = Object.values(weeklyCommissions).map(week => {
+      // Convert Set to Array for policy types
+      week.policyTypeList = Array.from(week.policyTypes);
+      delete week.policyTypes; // Remove the Set
+      
+      // Format currency values
+      week.totalAmount = new Intl.NumberFormat('en-US', {
+        style: 'currency', 
+        currency: 'USD'
+      }).format(week.totalAmount);
+      
+      week.agentPayout = new Intl.NumberFormat('en-US', {
+        style: 'currency', 
+        currency: 'USD'
+      }).format(week.agentPayout);
+      
+      // Add agent name to each week
+      week.agentName = agentName;
+      week.numPolicies = week.commissions.length;
+      
+      return week;
+    });
+    
+    // Sort by week start date (descending)
+    return result.sort((a, b) => 
+      new Date(b.weekStartDate).getTime() - new Date(a.weekStartDate).getTime()
+    );
+  }
+  
   // Communication Templates
   async getCommunicationTemplates(): Promise<CommunicationTemplate[]> {
     return await db.select().from(communicationTemplates);
