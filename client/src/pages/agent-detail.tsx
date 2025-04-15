@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState, useRef } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { 
   ArrowLeft,
@@ -15,8 +15,13 @@ import {
   BookOpen,
   Edit,
   BarChart4,
-  PlusCircle
+  PlusCircle,
+  Save,
+  Pencil,
+  X,
 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
@@ -35,11 +40,52 @@ export default function AgentDetail() {
   const [_, params] = useRoute("/agents/:id");
   const agentId = params?.id;
   const { user } = useAuth();
+  const { toast } = useToast();
+  
+  // Commission editing
+  const [isEditingCommission, setIsEditingCommission] = useState(false);
+  const [commissionValue, setCommissionValue] = useState("60.00");
+  const commissionInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch agent data
   const { data: agent, isLoading: isAgentLoading } = useQuery<any>({
     queryKey: ["/api/agents", agentId],
-    enabled: !!agentId,
+    enabled: !!agentId
+  });
+  
+  // Update commission value when agent data loads
+  useEffect(() => {
+    if (agent?.commissionPercentage) {
+      setCommissionValue(agent.commissionPercentage);
+    }
+  }, [agent]);
+  
+  // Update agent commission
+  const updateCommissionMutation = useMutation({
+    mutationFn: async (newCommission: string) => {
+      const res = await apiRequest(
+        "PATCH", 
+        `/api/agents/${agentId}`, 
+        { commissionPercentage: newCommission }
+      );
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/agents", agentId] });
+      toast({
+        title: "Commission updated",
+        description: `Agent commission has been set to ${commissionValue}%`,
+        variant: "success",
+      });
+      setIsEditingCommission(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Update failed",
+        description: "Unable to update agent commission. Please try again.",
+        variant: "destructive",
+      });
+    }
   });
 
   // Fetch agent's clients
@@ -230,6 +276,60 @@ export default function AgentDetail() {
               <div className="col-span-2">
                 <p className="text-muted-foreground">Upline Agent</p>
                 <p className="font-medium">{agent.uplineAgent || "None"}</p>
+              </div>
+              <div className="col-span-2 mt-2">
+                <div className="flex justify-between items-center">
+                  <p className="text-muted-foreground">Commission</p>
+                  {user?.role === 'admin' && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 px-2"
+                      onClick={() => {
+                        setIsEditingCommission(!isEditingCommission);
+                        // Focus the input when editing starts
+                        if (!isEditingCommission) {
+                          setTimeout(() => commissionInputRef.current?.focus(), 0);
+                        }
+                      }}
+                    >
+                      {isEditingCommission ? (
+                        <X className="h-3.5 w-3.5" />
+                      ) : (
+                        <Pencil className="h-3.5 w-3.5" />
+                      )}
+                    </Button>
+                  )}
+                </div>
+                
+                {isEditingCommission ? (
+                  <div className="flex mt-1">
+                    <input 
+                      ref={commissionInputRef}
+                      type="number" 
+                      value={commissionValue}
+                      onChange={(e) => setCommissionValue(e.target.value)}
+                      className="w-full px-2 py-1 text-sm border rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary" 
+                      min="0"
+                      max="100"
+                      step="0.01"
+                    />
+                    <Button 
+                      size="sm"
+                      className="rounded-l-none h-[30px]"
+                      disabled={updateCommissionMutation.isPending}
+                      onClick={() => updateCommissionMutation.mutate(commissionValue)}
+                    >
+                      {updateCommissionMutation.isPending ? (
+                        <div className="h-4 w-4 border-t-2 border-white rounded-full animate-spin" />
+                      ) : (
+                        <Save className="h-3.5 w-3.5" />
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="font-medium">{agent.commissionPercentage || "60.00"}%</p>
+                )}
               </div>
             </div>
 
