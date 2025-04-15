@@ -277,7 +277,7 @@ export default function AgentDetail() {
               </div>
               <div className="col-span-2">
                 <p className="text-muted-foreground">Upline Agent</p>
-                <p className="font-medium">{agent.uplineAgent || "None"}</p>
+                <p className="font-medium">{"Insurafi"}</p>
               </div>
               <div className="col-span-2 mt-3 bg-primary/5 rounded-lg p-3 border border-primary/10">
                 <div className="flex justify-between items-center">
