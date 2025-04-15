@@ -354,7 +354,7 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(pipelineOpportunities)
-      .where(eq(pipelineOpportunities.agentId, agentId));
+      .where(eq(pipelineOpportunities.assignedTo, agentId));
   }
   
   async getPipelineOpportunity(id: number): Promise<PipelineOpportunity | undefined> {
