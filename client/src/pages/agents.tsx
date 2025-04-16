@@ -205,22 +205,65 @@ const AgentsPage: React.FC = () => {
   // Set up edit form when an agent is selected
   React.useEffect(() => {
     if (selectedAgent) {
-      editForm.reset({
-        licenseNumber: selectedAgent.licenseNumber,
-        licenseExpiration: formatDate(selectedAgent.licenseExpiration),
-        npn: selectedAgent.npn || "",
-        phoneNumber: selectedAgent.phoneNumber,
-        address: selectedAgent.address || "",
-        carrierAppointments: selectedAgent.carrierAppointments || "",
-        uplineAgentId: selectedAgent.uplineAgentId || null,
-        commissionPercentage: selectedAgent.commissionPercentage || "0.00",
-        overridePercentage: selectedAgent.overridePercentage || "0.00",
-        specialties: selectedAgent.specialties || "",
-        notes: selectedAgent.notes || "",
-      });
-      setIsEditDialogOpen(true);
+      // Fetch user data to get firstName and lastName
+      const fetchUserData = async () => {
+        try {
+          const userResponse = await apiRequest("GET", `/api/users/${selectedAgent.userId}`);
+          const userData = userResponse;
+          
+          editForm.reset({
+            firstName: userData.firstName || "",
+            lastName: userData.lastName || "",
+            licenseNumber: selectedAgent.licenseNumber,
+            licenseExpiration: formatDate(selectedAgent.licenseExpiration),
+            npn: selectedAgent.npn || "",
+            phoneNumber: selectedAgent.phoneNumber,
+            address: selectedAgent.address || "",
+            city: selectedAgent.city || "",
+            state: selectedAgent.state || "",
+            zipCode: selectedAgent.zipCode || "",
+            carrierAppointments: selectedAgent.carrierAppointments || "",
+            uplineAgentId: selectedAgent.uplineAgentId || null,
+            commissionPercentage: selectedAgent.commissionPercentage || "0.00",
+            overridePercentage: selectedAgent.overridePercentage || "0.00",
+            specialties: selectedAgent.specialties || "",
+            notes: selectedAgent.notes || "",
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load user data",
+            variant: "destructive",
+          });
+          
+          // Set form with available data even if user fetch fails
+          editForm.reset({
+            firstName: "",
+            lastName: "",
+            licenseNumber: selectedAgent.licenseNumber,
+            licenseExpiration: formatDate(selectedAgent.licenseExpiration),
+            npn: selectedAgent.npn || "",
+            phoneNumber: selectedAgent.phoneNumber,
+            address: selectedAgent.address || "",
+            city: selectedAgent.city || "",
+            state: selectedAgent.state || "",
+            zipCode: selectedAgent.zipCode || "",
+            carrierAppointments: selectedAgent.carrierAppointments || "",
+            uplineAgentId: selectedAgent.uplineAgentId || null,
+            commissionPercentage: selectedAgent.commissionPercentage || "0.00",
+            overridePercentage: selectedAgent.overridePercentage || "0.00",
+            specialties: selectedAgent.specialties || "",
+            notes: selectedAgent.notes || "",
+          });
+        }
+        
+        setIsEditDialogOpen(true);
+      };
+      
+      fetchUserData();
     }
-  }, [selectedAgent, editForm]);
+  }, [selectedAgent, editForm, toast]);
 
   // Handle add form submission
   const onAddSubmit = (data: AgentFormValues) => {
@@ -264,6 +307,35 @@ const AgentsPage: React.FC = () => {
             </DialogHeader>
             <Form {...addForm}>
               <form onSubmit={addForm.handleSubmit(onAddSubmit)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Smith" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={addForm.control}
@@ -327,14 +399,56 @@ const AgentsPage: React.FC = () => {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Street Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Insurance Ave, City, State ZIP" {...field} />
+                        <Input placeholder="123 Insurance Ave" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input placeholder="New York" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addForm.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>
+                          <Input placeholder="NY" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addForm.control}
+                    name="zipCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ZIP Code</FormLabel>
+                        <FormControl>
+                          <Input placeholder="10001" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 
                 <FormField
                   control={addForm.control}
@@ -637,6 +751,35 @@ const AgentsPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={editForm.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Smith" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={editForm.control}
                   name="licenseNumber"
                   render={({ field }) => (
                     <FormItem>
@@ -697,7 +840,7 @@ const AgentsPage: React.FC = () => {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>Street Address</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -705,6 +848,48 @@ const AgentsPage: React.FC = () => {
                   </FormItem>
                 )}
               />
+              
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={editForm.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="New York" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State</FormLabel>
+                      <FormControl>
+                        <Input placeholder="NY" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="zipCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ZIP Code</FormLabel>
+                      <FormControl>
+                        <Input placeholder="10001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
               <FormField
                 control={editForm.control}
