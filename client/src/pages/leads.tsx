@@ -678,8 +678,8 @@ const LeadsPage: React.FC = () => {
                     <FormItem>
                       <FormLabel>Assigned Agent</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(value ? parseInt(value) : null)}
-                        value={field.value ? field.value.toString() : ""}
+                        onValueChange={(value) => field.onChange(value !== "none" ? parseInt(value) : null)}
+                        value={field.value ? field.value.toString() : "none"}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -687,7 +687,7 @@ const LeadsPage: React.FC = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">No agent assigned</SelectItem>
+                          <SelectItem value="none">No agent assigned</SelectItem>
                           {agents?.map((agent: any) => (
                             <SelectItem key={agent.id} value={agent.id.toString()}>
                               {agent.fullName || agent.name || `${agent.firstName || ''} ${agent.lastName || ''}`}
@@ -1176,7 +1176,7 @@ const LeadsPage: React.FC = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">No agent assigned</SelectItem>
+                        <SelectItem value="none">No agent assigned</SelectItem>
                         {agents?.map((agent: any) => (
                           <SelectItem key={agent.id} value={agent.id.toString()}>
                             {agent.fullName || agent.name || `${agent.firstName || ''} ${agent.lastName || ''}`}
