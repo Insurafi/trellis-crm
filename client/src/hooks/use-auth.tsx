@@ -65,10 +65,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation<SelectUser, Error, InsertUser>({
     mutationFn: async (credentials: InsertUser) => {
-      const response = await apiRequest("POST", "/api/register", credentials);
-      return response;
+      console.log("Sending registration request with data:", { 
+        ...credentials, 
+        password: "***" // Hide password in logs
+      });
+      
+      try {
+        const response = await apiRequest("POST", "/api/register", credentials);
+        console.log("Registration API response:", response);
+        return response;
+      } catch (error) {
+        console.error("Registration API error:", error);
+        throw error;
+      }
     },
     onSuccess: (user: SelectUser) => {
+      console.log("Registration successful:", user);
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Registration successful",
@@ -79,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Registration error:", error);
       toast({
         title: "Registration failed",
-        description: error.message,
+        description: error.message || "There was a problem creating your account. Please try again.",
         variant: "destructive",
       });
     },

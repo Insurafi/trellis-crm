@@ -20,6 +20,8 @@ const loginSchema = z.object({
 const registerSchema = insertUserSchema.extend({
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+  // Make sure fullName is required
+  fullName: z.string().min(2, "Full name is required"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -63,8 +65,16 @@ export default function AuthPage() {
   }
 
   function onRegisterSubmit(data: RegisterFormData) {
+    // Log form data
+    console.log("Registration form data:", data);
+    
+    // Check for form validation errors
+    console.log("Form errors:", registerForm.formState.errors);
+    
     // Remove confirmPassword before submitting
     const { confirmPassword, ...registerData } = data;
+    console.log("Data being sent to API:", registerData);
+    
     registerMutation.mutate(registerData);
   }
 
