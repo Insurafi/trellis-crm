@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Test registration with curl
-curl -X POST http://localhost:3000/api/register \
+echo "Testing registration API..."
+curl -X POST http://localhost:5000/api/register \
   -H "Content-Type: application/json" \
   -d '{
     "username": "testuser1",
@@ -10,4 +11,4 @@ curl -X POST http://localhost:3000/api/register \
     "fullName": "Test User",
     "role": "agent",
     "active": true
-  }'
+  }' -v
