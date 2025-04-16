@@ -51,7 +51,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Lead } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, UserPlus, Check, X, Clock, Eye, MapPin } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Check, X, Clock, Eye, MapPin, FileText } from "lucide-react";
 
 // Form schema
 const leadFormSchema = z.object({
