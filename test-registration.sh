@@ -7,7 +7,7 @@ echo "Registering test user..."
 # Make the API call
 curl -X POST \
   -H "Content-Type: application/json" \
-  -d '{"username":"testagent2","fullName":"Test Agent 2","email":"agent2@example.com","password":"password123","role":"agent"}' \
+  -d '{"username":"testagent3","fullName":"Test Agent 3","email":"agent3@example.com","password":"password123","role":"agent"}' \
   http://localhost:5000/api/register
 
 echo -e "\n\nRegistration complete!"
