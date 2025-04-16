@@ -162,11 +162,18 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
   app.post("/api/agents", isAdminOrTeamLeader, async (req, res) => {
     try {
+      // Log the incoming data for debugging
+      console.log("Received agent creation data:", req.body);
+      
       const agentData = insertAgentSchema.parse(req.body);
       let userId = agentData.userId;
       
+      // Store firstName and lastName for later use (we'll need to attach these to the response)
+      const firstName = agentData.firstName || '';
+      const lastName = agentData.lastName || '';
+      
       // Create user account if login credentials provided (username and password)
-      if (agentData.username && agentData.password && agentData.firstName && agentData.lastName) {
+      if (agentData.username && agentData.password && firstName && lastName) {
         try {
           const { username, password, email } = agentData;
           
@@ -178,8 +185,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             username,
             password: hashedPassword,
             email: email || '',
-            firstName: agentData.firstName,
-            lastName: agentData.lastName,
+            firstName: firstName,
+            lastName: lastName,
             role: 'agent',
             active: true
           });
@@ -203,13 +210,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
       
       // Always use the first and last name from the form for the agent record
-      if (agentData.firstName && agentData.lastName) {
+      if (firstName && lastName) {
         try {
           // If there's a userId but we didn't just create it above, update that user's name
           if (userId && !agentData.username) { // If username exists, we created the user above
             await storage.updateUser(userId, {
-              firstName: agentData.firstName,
-              lastName: agentData.lastName
+              firstName: firstName,
+              lastName: lastName
             });
           }
           
