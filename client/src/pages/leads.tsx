@@ -327,7 +327,7 @@ const LeadsPage: React.FC = () => {
               <span>Add Lead</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto custom-scrollbar">
             <DialogHeader>
               <DialogTitle>Add New Lead</DialogTitle>
               <DialogDescription>
@@ -933,7 +933,7 @@ const LeadsPage: React.FC = () => {
 
       {/* View Lead Detail Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto custom-scrollbar">
           <DialogHeader>
             <DialogTitle>Lead Details</DialogTitle>
             <DialogDescription>
@@ -942,8 +942,7 @@ const LeadsPage: React.FC = () => {
           </DialogHeader>
           
           {selectedLead && (
-            <div className="max-h-[65vh] overflow-y-auto pr-2 custom-scrollbar">
-              <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 {/* Personal Information */}
                 <div className="border rounded-lg p-4 bg-gray-50">
                   <h3 className="text-md font-semibold mb-3 text-primary">Personal Information</h3>
@@ -1074,7 +1073,6 @@ const LeadsPage: React.FC = () => {
                     <p className="text-sm whitespace-pre-wrap">{selectedLead.notes}</p>
                   </div>
                 )}
-              </div>
             </div>
           )}
           
@@ -1104,7 +1102,7 @@ const LeadsPage: React.FC = () => {
       
       {/* Edit Lead Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto custom-scrollbar">
           <DialogHeader>
             <DialogTitle>Edit Lead</DialogTitle>
             <DialogDescription>
