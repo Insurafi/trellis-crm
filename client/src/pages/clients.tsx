@@ -80,7 +80,6 @@ export default function Clients() {
       name: "",
       email: "",
       phone: "",
-      company: "",
       address: "",
       status: "active",
       notes: "",
@@ -117,7 +116,6 @@ export default function Clients() {
   // Filter clients based on search term
   const filteredClients = clients?.filter(client => 
     client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -205,35 +203,19 @@ export default function Clients() {
                     />
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="company"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Company</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Company Name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Input placeholder="(555) 123-4567" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   
                   <FormField
                     control={form.control}
@@ -356,7 +338,6 @@ export default function Clients() {
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
-                    <TableHead>Company</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -376,7 +357,6 @@ export default function Clients() {
                         </TableCell>
                         <TableCell>{client.email}</TableCell>
                         <TableCell>{client.phone || "—"}</TableCell>
-                        <TableCell>{client.company || "—"}</TableCell>
                         <TableCell>
                           <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             client.status === "active" ? "bg-green-100 text-green-800" : 
