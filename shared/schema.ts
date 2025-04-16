@@ -8,7 +8,9 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  fullName: text("full_name").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  fullName: text("full_name"), // Kept for backward compatibility
   email: text("email").notNull(),
   role: text("role").default("agent"), // Role can be: 'admin', 'agent', 'team_leader', or 'support'
   avatarUrl: text("avatar_url"),
@@ -19,7 +21,9 @@ export const users = pgTable("users", {
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
-  fullName: true,
+  firstName: true,
+  lastName: true,
+  fullName: true, // Keeping for backward compatibility
   email: true,
   role: true,
   avatarUrl: true,
@@ -417,6 +421,9 @@ export const agents = pgTable("agents", {
   npn: text("npn"), // National Producer Number
   phoneNumber: text("phone_number").notNull(),
   address: text("address"),
+  city: text("city"),
+  state: text("state"),
+  zipCode: text("zip_code"),
   carrierAppointments: text("carrier_appointments"), // Comma-separated list or JSON in practice 
   uplineAgentId: integer("upline_agent_id"),
   commissionPercentage: decimal("commission_percentage", { precision: 5, scale: 2 }),
@@ -435,6 +442,9 @@ export const insertAgentSchema = createInsertSchema(agents).pick({
   npn: true,
   phoneNumber: true, 
   address: true,
+  city: true,
+  state: true,
+  zipCode: true,
   carrierAppointments: true,
   uplineAgentId: true,
   commissionPercentage: true,

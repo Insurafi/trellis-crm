@@ -59,11 +59,16 @@ import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Form schema
 const agentFormSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   licenseNumber: z.string().min(1, "License number is required"),
   licenseExpiration: z.string().min(1, "License expiration date is required"),
   npn: z.string().min(1, "NPN is required"),
   phoneNumber: z.string().min(1, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  zipCode: z.string().min(1, "ZIP code is required"),
   carrierAppointments: z.string(),
   uplineAgentId: z.number().nullable().optional(),
   commissionPercentage: z.string(),
@@ -167,11 +172,16 @@ const AgentsPage: React.FC = () => {
   const addForm = useForm<AgentFormValues>({
     resolver: zodResolver(agentFormSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
       licenseNumber: "",
       licenseExpiration: "",
       npn: "",
       phoneNumber: "",
       address: "",
+      city: "",
+      state: "",
+      zipCode: "",
       carrierAppointments: "",
       uplineAgentId: null,
       commissionPercentage: "70.00",
