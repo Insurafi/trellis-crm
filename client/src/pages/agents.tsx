@@ -119,8 +119,23 @@ const AgentsPage: React.FC = () => {
 
   // Add agent mutation
   const addAgentMutation = useMutation({
-    mutationFn: (newAgent: AgentFormValues) =>
-      apiRequest("POST", "/api/agents", newAgent),
+    mutationFn: (newAgent: AgentFormValues) => {
+      // Log the data being sent to ensure first/last name are included
+      console.log("Submitting agent data:", JSON.stringify(newAgent, null, 2));
+      
+      // Make sure firstName and lastName are not empty
+      if (!newAgent.firstName || !newAgent.lastName) {
+        console.error("Missing firstName or lastName in agent data");
+        toast({
+          title: "Error",
+          description: "First name and last name are required",
+          variant: "destructive",
+        });
+        throw new Error("First name and last name are required");
+      }
+      
+      return apiRequest("POST", "/api/agents", newAgent);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
@@ -132,7 +147,7 @@ const AgentsPage: React.FC = () => {
     onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to add agent",
+        description: "Failed to add agent: " + (error instanceof Error ? error.message : "Unknown error"),
         variant: "destructive",
       });
     },
@@ -140,8 +155,23 @@ const AgentsPage: React.FC = () => {
 
   // Update agent mutation
   const updateAgentMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: AgentFormValues }) =>
-      apiRequest("PUT", `/api/agents/${id}`, data),
+    mutationFn: ({ id, data }: { id: number; data: AgentFormValues }) => {
+      // Log the data being sent to ensure first/last name are included
+      console.log("Updating agent data:", JSON.stringify(data, null, 2));
+      
+      // Make sure firstName and lastName are not empty
+      if (!data.firstName || !data.lastName) {
+        console.error("Missing firstName or lastName in agent update data");
+        toast({
+          title: "Error",
+          description: "First name and last name are required",
+          variant: "destructive",
+        });
+        throw new Error("First name and last name are required");
+      }
+      
+      return apiRequest("PUT", `/api/agents/${id}`, data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
@@ -154,7 +184,7 @@ const AgentsPage: React.FC = () => {
     onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to update agent",
+        description: "Failed to update agent: " + (error instanceof Error ? error.message : "Unknown error"),
         variant: "destructive",
       });
     },
