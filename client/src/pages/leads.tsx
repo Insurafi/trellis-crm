@@ -101,10 +101,7 @@ const LeadsPage: React.FC = () => {
   // Add lead mutation
   const addLeadMutation = useMutation({
     mutationFn: (newLead: LeadFormValues) =>
-      apiRequest("/api/leads", {
-        method: "POST",
-        data: newLead,
-      }),
+      apiRequest("POST", "/api/leads", newLead),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
       toast({
