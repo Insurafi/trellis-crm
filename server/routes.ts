@@ -1107,13 +1107,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users Management Routes
   app.get("/api/users", isAuthenticated, async (req, res) => {
     try {
+      // Only allow admins to view all users
+      if (req.user?.role !== 'admin' && req.user?.role !== 'team_leader') {
+        return res.status(403).json({ message: "Access forbidden: Requires admin or team leader access" });
+      }
+      
       if (req.query.role) {
         // If a role is specified, use the existing method
+        console.log(`Fetching users with role: ${req.query.role}`);
         const users = await storage.getUsersByRole(req.query.role as string);
         return res.json(users);
       } else {
         // Otherwise get all users
+        console.log("Fetching all users");
         const users = await storage.getAllUsers();
+        console.log(`Found ${users.length} users`);
         return res.json(users);
       }
     } catch (error) {
