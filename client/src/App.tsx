@@ -111,6 +111,7 @@ function Router() {
       <Route path="/client-api-test" component={DirectClientLogin} />
       <Route path="/final-client-test" component={FinalClientTest} />
       <Route path="/client-dashboard" component={ClientDashboard} />
+      <Route path="/bypass-login" component={BypassLogin} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -190,7 +191,7 @@ function AppLayout() {
     location === '/client-api-test' || location === '/final-client-test' || 
     location === '/simple-client-login' || location === '/direct-client-login' ||
     location === '/test-client-login' || location === '/client-login-new' ||
-    location === '/client-dashboard-new';
+    location === '/client-dashboard-new' || location === '/bypass-login';
 
   return isClientPortalPage ? <ClientPortalLayout /> : <MainAppLayout />;
 }
