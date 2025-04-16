@@ -1107,8 +1107,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users Management Routes
   app.get("/api/users", isAuthenticated, async (req, res) => {
     try {
-      const users = await storage.getUsersByRole(req.query.role as string || "all");
-      res.json(users);
+      if (req.query.role) {
+        // If a role is specified, use the existing method
+        const users = await storage.getUsersByRole(req.query.role as string);
+        return res.json(users);
+      } else {
+        // Otherwise get all users
+        const users = await storage.getAllUsers();
+        return res.json(users);
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
       res.status(500).json({ message: "Failed to fetch users" });
@@ -1315,16 +1322,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-    // Users management endpoint
-  app.get("/api/users", isAuthenticated, isAdmin, async (req, res) => {
-    try {
-      const users = await storage.getAllUsers();
-      res.json(users);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      res.status(500).json({ message: "Failed to fetch users" });
-    }
-  });
+    // Commented out duplicate route that was causing issues
+  // app.get("/api/users", isAuthenticated, isAdmin, async (req, res) => {
+  //   try {
+  //     const users = await storage.getAllUsers();
+  //     res.json(users);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //     res.status(500).json({ message: "Failed to fetch users" });
+  //   }
+  // });
   
   registerAgentLeadsPolicyRoutes(app);
   registerAnalyticsRoutes(app);
