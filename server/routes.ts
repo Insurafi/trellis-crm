@@ -1114,9 +1114,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username: req.user?.username 
       });
       
-      // Allow admins and team leaders to view all users, with a fallback to provide empty array
-      // instead of an error (this helps prevent UI errors for role-related issues)
-      if (req.user?.role !== 'admin' && req.user?.role !== 'team_leader') {
+      // FIX: Administrator = admin in role check - this was causing admin users to not see the team management data
+      if (req.user?.role !== 'admin' && req.user?.role !== 'Administrator' && req.user?.role !== 'team_leader') {
         console.log(`User ${req.user?.username} (role: ${req.user?.role}) is not authorized to view all users`);
         console.log("Returning empty array instead of access error for better UX");
         // Return empty array instead of error for better front-end experience
