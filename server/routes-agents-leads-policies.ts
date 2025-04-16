@@ -150,6 +150,29 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   app.post("/api/agents", isAdminOrTeamLeader, async (req, res) => {
     try {
       const agentData = insertAgentSchema.parse(req.body);
+      
+      // First, we need to create a user account if firstName and lastName are provided
+      if (agentData.firstName && agentData.lastName) {
+        try {
+          // Create or update the user record
+          const userId = agentData.userId;
+          if (userId) {
+            // Update the existing user with the new first/last name
+            await storage.updateUser(userId, {
+              firstName: agentData.firstName,
+              lastName: agentData.lastName
+            });
+            
+            // Remove first/last name from agentData to avoid duplication
+            delete agentData.firstName;
+            delete agentData.lastName;
+          }
+        } catch (userError) {
+          console.error("Error updating user data for agent:", userError);
+          // Continue with agent creation even if user update fails
+        }
+      }
+      
       const newAgent = await storage.createAgent(agentData);
       res.status(201).json(newAgent);
     } catch (error) {
@@ -165,6 +188,30 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
 
       const updateData = insertAgentSchema.partial().parse(req.body);
+      
+      // First, handle firstName/lastName updates if provided
+      if (updateData.firstName || updateData.lastName) {
+        try {
+          // Get the agent to find the associated user
+          const agent = await storage.getAgent(id);
+          if (agent && agent.userId) {
+            // Update the user's first/last name
+            const userUpdateData: any = {};
+            if (updateData.firstName) userUpdateData.firstName = updateData.firstName;
+            if (updateData.lastName) userUpdateData.lastName = updateData.lastName;
+            
+            await storage.updateUser(agent.userId, userUpdateData);
+            
+            // Remove first/last name from agentData to avoid duplication
+            delete updateData.firstName;
+            delete updateData.lastName;
+          }
+        } catch (userError) {
+          console.error("Error updating user data for agent:", userError);
+          // Continue with agent update even if user update fails
+        }
+      }
+
       const updatedAgent = await storage.updateAgent(id, updateData);
       
       if (!updatedAgent) {

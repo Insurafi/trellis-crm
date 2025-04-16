@@ -452,6 +452,10 @@ export const insertAgentSchema = createInsertSchema(agents).pick({
   specialties: true,
   licensedStates: true,
   notes: true,
+}).extend({
+  // Add these fields temporarily for form handling, they'll be processed separately
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
 });
 
 export type InsertAgent = z.infer<typeof insertAgentSchema>;
