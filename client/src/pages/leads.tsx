@@ -523,11 +523,63 @@ const LeadsPage: React.FC = () => {
                     control={addForm.control}
                     name="medicalConditions"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Medical Conditions</FormLabel>
-                        <FormControl>
-                          <Input placeholder="None" {...field} />
-                        </FormControl>
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap gap-2">
+                            {["Heart Disease", "Diabetes", "Cancer", "High Blood Pressure", "High Cholesterol", "Hepatitis"].map((condition) => (
+                              <label key={condition} className="flex items-center space-x-2 border rounded px-3 py-1 cursor-pointer hover:bg-accent">
+                                <input
+                                  type="checkbox"
+                                  checked={field.value?.includes(condition)}
+                                  onChange={(e) => {
+                                    const currentValue = field.value || "";
+                                    const conditions = currentValue ? currentValue.split(", ").filter(c => c.trim() !== "") : [];
+                                    
+                                    if (e.target.checked) {
+                                      if (!conditions.includes(condition)) {
+                                        conditions.push(condition);
+                                      }
+                                    } else {
+                                      const index = conditions.indexOf(condition);
+                                      if (index !== -1) {
+                                        conditions.splice(index, 1);
+                                      }
+                                    }
+                                    
+                                    field.onChange(conditions.join(", "));
+                                  }}
+                                  className="h-4 w-4"
+                                />
+                                <span>{condition}</span>
+                              </label>
+                            ))}
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <label className="flex items-center space-x-2">
+                              <span>Other:</span>
+                              <Input 
+                                placeholder="Additional conditions" 
+                                value={field.value?.split(", ").filter(c => 
+                                  !["Heart Disease", "Diabetes", "Cancer", "High Blood Pressure", "High Cholesterol", "Hepatitis"].includes(c)
+                                ).join(", ") || ""}
+                                onChange={(e) => {
+                                  const currentValue = field.value || "";
+                                  const conditions = currentValue ? currentValue.split(", ").filter(c => 
+                                    ["Heart Disease", "Diabetes", "Cancer", "High Blood Pressure", "High Cholesterol", "Hepatitis"].includes(c)
+                                  ) : [];
+                                  
+                                  if (e.target.value.trim() !== "") {
+                                    conditions.push(e.target.value.trim());
+                                  }
+                                  
+                                  field.onChange(conditions.join(", "));
+                                }}
+                                className="flex-1"
+                              />
+                            </label>
+                          </div>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -1065,11 +1117,63 @@ const LeadsPage: React.FC = () => {
                   control={editForm.control}
                   name="medicalConditions"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Medical Conditions</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          {["Heart Disease", "Diabetes", "Cancer", "High Blood Pressure", "High Cholesterol", "Hepatitis"].map((condition) => (
+                            <label key={condition} className="flex items-center space-x-2 border rounded px-3 py-1 cursor-pointer hover:bg-accent">
+                              <input
+                                type="checkbox"
+                                checked={field.value?.includes(condition)}
+                                onChange={(e) => {
+                                  const currentValue = field.value || "";
+                                  const conditions = currentValue ? currentValue.split(", ").filter(c => c.trim() !== "") : [];
+                                  
+                                  if (e.target.checked) {
+                                    if (!conditions.includes(condition)) {
+                                      conditions.push(condition);
+                                    }
+                                  } else {
+                                    const index = conditions.indexOf(condition);
+                                    if (index !== -1) {
+                                      conditions.splice(index, 1);
+                                    }
+                                  }
+                                  
+                                  field.onChange(conditions.join(", "));
+                                }}
+                                className="h-4 w-4"
+                              />
+                              <span>{condition}</span>
+                            </label>
+                          ))}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label className="flex items-center space-x-2">
+                            <span>Other:</span>
+                            <Input 
+                              placeholder="Additional conditions" 
+                              value={field.value?.split(", ").filter(c => 
+                                !["Heart Disease", "Diabetes", "Cancer", "High Blood Pressure", "High Cholesterol", "Hepatitis"].includes(c)
+                              ).join(", ") || ""}
+                              onChange={(e) => {
+                                const currentValue = field.value || "";
+                                const conditions = currentValue ? currentValue.split(", ").filter(c => 
+                                  ["Heart Disease", "Diabetes", "Cancer", "High Blood Pressure", "High Cholesterol", "Hepatitis"].includes(c)
+                                ) : [];
+                                
+                                if (e.target.value.trim() !== "") {
+                                  conditions.push(e.target.value.trim());
+                                }
+                                
+                                field.onChange(conditions.join(", "));
+                              }}
+                              className="flex-1"
+                            />
+                          </label>
+                        </div>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
