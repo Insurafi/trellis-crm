@@ -85,6 +85,7 @@ const LeadsPage: React.FC = () => {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   // Fetch leads
@@ -242,7 +243,7 @@ const LeadsPage: React.FC = () => {
 
   // Set up edit form when a lead is selected
   React.useEffect(() => {
-    if (selectedLead) {
+    if (selectedLead && isEditDialogOpen) {
       editForm.reset({
         firstName: selectedLead.firstName,
         lastName: selectedLead.lastName,
@@ -267,9 +268,8 @@ const LeadsPage: React.FC = () => {
         status: selectedLead.status,
         notes: selectedLead.notes || "",
       });
-      setIsEditDialogOpen(true);
     }
-  }, [selectedLead, editForm]);
+  }, [selectedLead, editForm, isEditDialogOpen]);
 
   // Handle add form submission
   const onAddSubmit = (data: LeadFormValues) => {
@@ -876,7 +876,10 @@ const LeadsPage: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => window.confirm("This will open a detailed view of this lead. Continue?") && setSelectedLead(lead)}
+                              onClick={() => {
+                                setSelectedLead(lead);
+                                setIsViewDialogOpen(true);
+                              }}
                               title="View lead details"
                             >
                               <Eye size={16} />
@@ -925,6 +928,177 @@ const LeadsPage: React.FC = () => {
         </Card>
       )}
 
+      {/* View Lead Detail Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Lead Details</DialogTitle>
+            <DialogDescription>
+              Detailed information about this lead.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedLead && (
+            <div className="max-h-[65vh] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="grid grid-cols-1 gap-6">
+                {/* Personal Information */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <h3 className="text-md font-semibold mb-3 text-primary">Personal Information</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Name</p>
+                      <p className="text-sm">{selectedLead.firstName} {selectedLead.lastName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Date of Birth</p>
+                      <p className="text-sm">{new Date(selectedLead.dateOfBirth).toLocaleDateString()} (Age: {calculateAge(selectedLead.dateOfBirth)})</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Email</p>
+                      <p className="text-sm">{selectedLead.email}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Phone</p>
+                      <p className="text-sm">{selectedLead.phoneNumber}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Address Information */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <h3 className="text-md font-semibold mb-3 text-primary">Address</h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Street Address</p>
+                      <p className="text-sm">{selectedLead.address}</p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">City</p>
+                        <p className="text-sm">{selectedLead.city}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">State</p>
+                        <p className="text-sm">{selectedLead.state}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">ZIP Code</p>
+                        <p className="text-sm">{selectedLead.zipCode}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Health Information */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <h3 className="text-md font-semibold mb-3 text-primary">Health Information</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Height</p>
+                      <p className="text-sm">{selectedLead.height || "Not provided"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Weight</p>
+                      <p className="text-sm">{selectedLead.weight || "Not provided"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Smoker Status</p>
+                      <p className="text-sm">{selectedLead.smokerStatus}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-sm font-medium text-muted-foreground">Medical Conditions</p>
+                      <p className="text-sm">{selectedLead.medicalConditions || "None"}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-sm font-medium text-muted-foreground">Family History</p>
+                      <p className="text-sm">{selectedLead.familyHistory || "None provided"}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Insurance Information */}
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <h3 className="text-md font-semibold mb-3 text-primary">Insurance Information</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Status</p>
+                      <div className="mt-1">
+                        <StatusBadge status={selectedLead.status} />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Lead Source</p>
+                      <p className="text-sm">{selectedLead.leadSource}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Income Range</p>
+                      <p className="text-sm">{selectedLead.incomeRange || "Not provided"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Insurance Type Interest</p>
+                      <p className="text-sm">{selectedLead.insuranceTypeInterest}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Existing Coverage</p>
+                      <p className="text-sm">{selectedLead.existingCoverage || "None"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Coverage Needs</p>
+                      <p className="text-sm">{selectedLead.coverageNeeds || "Not specified"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Assigned Agent</p>
+                      <p className="text-sm">
+                        {selectedLead.assignedAgentId ? 
+                          (() => {
+                            const agent = agents?.find((a: any) => a.id === selectedLead.assignedAgentId);
+                            return agent ? 
+                              (agent.fullName || agent.name || `${agent.firstName} ${agent.lastName}`) : 
+                              `Agent #${selectedLead.assignedAgentId}`;
+                          })()
+                          : 
+                          "Unassigned"
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Notes */}
+                {selectedLead.notes && (
+                  <div className="border rounded-lg p-4 bg-gray-50">
+                    <h3 className="text-md font-semibold mb-3 text-primary">Notes</h3>
+                    <p className="text-sm whitespace-pre-wrap">{selectedLead.notes}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex justify-end gap-2 mt-4 border-t pt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsViewDialogOpen(false);
+                setIsEditDialogOpen(true);
+              }}
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              Edit Lead
+            </Button>
+            <Button 
+              onClick={() => {
+                const quoteUrl = "https://rbrokers.com/quote-and-apply/";
+                window.open(quoteUrl, "_blank", "noopener=yes,noreferrer=yes");
+              }}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Create Quote
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {/* Edit Lead Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
