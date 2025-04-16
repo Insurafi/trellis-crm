@@ -240,10 +240,10 @@ export default function Quotes() {
             variant="default" 
             size="lg" 
             className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-2 text-base h-auto"
-            onClick={() => window.open('https://my.ninjaquoter.com/agent_quoter', '_blank')}
+            onClick={() => window.open('https://rbrokers.com/quote-and-apply/', '_blank')}
           >
             <ExternalLink className="mr-2 h-5 w-5" />
-            Get Quote with NinjaQuoter
+            Get Quote Online
           </Button>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-400" />
@@ -392,21 +392,21 @@ export default function Quotes() {
         </div>
       </div>
 
-      {/* NinjaQuoters Integration */}
+      {/* Online Quoting Integration */}
       <Card className="mb-6 border-blue-200 bg-gradient-to-r from-blue-50 to-white">
         <CardHeader>
           <CardTitle className="flex items-center">
             <ExternalLink className="mr-2 h-5 w-5 text-blue-600" />
-            NinjaQuoter Integration
+            Online Quote Integration
           </CardTitle>
           <CardDescription>
-            Generate fast and accurate life insurance quotes for your clients through our partner, NinjaQuoters.
+            Generate fast and accurate life insurance quotes for your clients through our secure online portal.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-lg font-medium mb-2">Benefits of NinjaQuoters</h3>
+              <h3 className="text-lg font-medium mb-2">Benefits of Online Quoting</h3>
               <ul className="space-y-2">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
@@ -431,10 +431,10 @@ export default function Quotes() {
                 variant="default" 
                 size="lg" 
                 className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 text-base h-auto"
-                onClick={() => window.open('https://my.ninjaquoter.com/agent_quoter', '_blank')}
+                onClick={() => window.open('https://rbrokers.com/quote-and-apply/', '_blank')}
               >
                 <ExternalLink className="mr-2 h-5 w-5" />
-                Go to NinjaQuoter Quote Engine
+                Go to Quote and Apply Engine
               </Button>
               <p className="text-sm text-neutral-500 mt-3 text-center">
                 Opens in a new window for a seamless quoting experience
