@@ -104,36 +104,76 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
+      console.log("Registration attempt for username:", req.body.username);
+      
+      // Validate required fields
+      if (!req.body.username || !req.body.password || !req.body.email) {
+        return res.status(400).json({ 
+          message: "Missing required fields. Username, password, and email are required." 
+        });
+      }
+      
       const existingUser = await storage.getUserByUsername(req.body.username);
       if (existingUser) {
+        console.log("Registration failed: Username already exists:", req.body.username);
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      const user = await storage.createUser({
+      // Ensure role is set
+      const userData = {
         ...req.body,
+        role: req.body.role || "agent", // Default to agent if no role provided
         password: await hashPassword(req.body.password),
+      };
+      
+      console.log("Creating user with data:", { 
+        ...userData, 
+        password: "******" // Don't log the actual password
       });
+      
+      const user = await storage.createUser(userData);
+      
+      console.log("User created successfully:", user.id);
 
       req.login(user, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error("Login after registration failed:", err);
+          return next(err);
+        }
         // Don't include password in response
         const { password, ...userWithoutPassword } = user;
         res.status(201).json(userWithoutPassword);
       });
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(500).json({ message: "Failed to create user" });
+      res.status(500).json({ 
+        message: "Failed to create user",
+        details: process.env.NODE_ENV !== 'production' ? String(error) : undefined
+      });
     }
   });
 
   app.post("/api/login", (req, res, next) => {
+    console.log("Login attempt for username:", req.body.username);
+    
     passport.authenticate("local", (err: Error, user: SelectUser, info: { message: string }) => {
-      if (err) return next(err);
-      if (!user) {
-        return res.status(401).json({ message: info.message || "Invalid username or password" });
+      if (err) {
+        console.error("Login authentication error:", err);
+        return next(err);
       }
+      
+      if (!user) {
+        console.log("Login failed for username:", req.body.username, "- Reason:", info?.message || "Invalid credentials");
+        return res.status(401).json({ message: info?.message || "Invalid username or password" });
+      }
+      
+      console.log("Login successful for user:", user.id, user.username);
+      
       req.login(user, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error("Session creation error during login:", err);
+          return next(err);
+        }
         // Don't include password in response
         const { password, ...userWithoutPassword } = user;
         return res.json(userWithoutPassword);
