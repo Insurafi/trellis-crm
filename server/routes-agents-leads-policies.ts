@@ -585,4 +585,54 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       res.status(500).json({ message: "Failed to delete policy" });
     }
   });
+
+  // Allow agents to update their own profile information
+  app.patch("/api/agents/profile", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+      
+      const agent = await storage.getAgentByUserId(req.user.id);
+      
+      if (!agent) {
+        return res.status(404).json({ message: "Agent profile not found" });
+      }
+      
+      // Only allow updating specific fields that agents should be able to manage themselves
+      const allowedFields = [
+        "phoneNumber", 
+        "address", 
+        "city", 
+        "state", 
+        "zipCode", 
+        "licensedStates", 
+        "licenseNumber",
+        "licenseExpiration",
+        "npn"
+      ];
+      
+      const updatedData: any = {};
+      for (const field of allowedFields) {
+        if (req.body[field] !== undefined) {
+          updatedData[field] = req.body[field];
+        }
+      }
+      
+      if (Object.keys(updatedData).length === 0) {
+        return res.status(400).json({ message: "No valid fields to update" });
+      }
+      
+      const updatedAgent = await storage.updateAgent(agent.id, updatedData);
+      
+      if (!updatedAgent) {
+        return res.status(500).json({ message: "Failed to update agent profile" });
+      }
+      
+      return res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent profile:", error);
+      return res.status(500).json({ message: "Error updating agent profile" });
+    }
+  });
 }
