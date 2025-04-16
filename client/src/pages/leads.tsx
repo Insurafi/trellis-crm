@@ -820,7 +820,7 @@ const LeadsPage: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => window.open("https://my.ninjaquoter.com/agent_quoter", "_blank")}
+                              onClick={() => window.open("https://rbrokers.com/quote-and-apply/", "_blank")}
                               title="Create Quote"
                             >
                               <FileText size={16} />
