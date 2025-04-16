@@ -59,16 +59,28 @@ import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Form schema
 const agentFormSchema = z.object({
+  // Personal information
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
+  
+  // Login credentials (for creating a new user account)
+  username: z.string().min(3, "Username must be at least 3 characters").optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").optional(),
+  email: z.string().email("Invalid email address").optional(),
+  
+  // Agent professional details
   licenseNumber: z.string().min(1, "License number is required"),
   licenseExpiration: z.string().min(1, "License expiration date is required"),
   npn: z.string().min(1, "NPN is required"),
   phoneNumber: z.string().min(1, "Phone number is required"),
+  
+  // Address information
   address: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zipCode: z.string().min(1, "ZIP code is required"),
+  
+  // Agency details
   carrierAppointments: z.string(),
   uplineAgentId: z.number().nullable().optional(),
   commissionPercentage: z.string(),
@@ -172,8 +184,16 @@ const AgentsPage: React.FC = () => {
   const addForm = useForm<AgentFormValues>({
     resolver: zodResolver(agentFormSchema),
     defaultValues: {
+      // Personal information
       firstName: "",
       lastName: "",
+      
+      // Login credentials
+      username: "",
+      password: "",
+      email: "",
+      
+      // Agent details
       licenseNumber: "",
       licenseExpiration: "",
       npn: "",
@@ -334,6 +354,62 @@ const AgentsPage: React.FC = () => {
                       </FormItem>
                     )}
                   />
+                </div>
+                
+                {/* Login credential fields */}
+                <div className="space-y-2">
+                  <h3 className="text-lg font-medium">Login Credentials</h3>
+                  <p className="text-sm text-muted-foreground">Create login credentials for this agent to access the system.</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={addForm.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input placeholder="agent_username" {...field} />
+                        </FormControl>
+                        <FormDescription>The agent will use this to log in</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="agent@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={addForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="********" {...field} />
+                      </FormControl>
+                      <FormDescription>Minimum 6 characters</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="space-y-2">
+                  <h3 className="text-lg font-medium">Agent Details</h3>
+                  <p className="text-sm text-muted-foreground">Professional and license information.</p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">

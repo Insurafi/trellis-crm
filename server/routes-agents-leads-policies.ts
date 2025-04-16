@@ -163,27 +163,68 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   app.post("/api/agents", isAdminOrTeamLeader, async (req, res) => {
     try {
       const agentData = insertAgentSchema.parse(req.body);
+      let userId = agentData.userId;
       
-      // First, we need to create a user account if firstName and lastName are provided
+      // Create user account if login credentials provided (username and password)
+      if (agentData.username && agentData.password && agentData.firstName && agentData.lastName) {
+        try {
+          const { username, password, email } = agentData;
+          
+          // Hash the password before storing
+          const hashedPassword = await storage.hashPassword(password);
+          
+          // Create a new user with agent role
+          const newUser = await storage.createUser({
+            username,
+            password: hashedPassword,
+            email: email || '',
+            firstName: agentData.firstName,
+            lastName: agentData.lastName,
+            role: 'agent',
+            active: true
+          });
+          
+          console.log(`Created new user account for agent: ${newUser.username} (ID: ${newUser.id})`);
+          
+          // Set the userId for the agent record
+          userId = newUser.id;
+          
+          // Remove login credentials from agentData since they're now in the user record
+          delete agentData.username;
+          delete agentData.password;
+          delete agentData.email;
+        } catch (userError) {
+          console.error("Error creating user account for agent:", userError);
+          return res.status(400).json({ 
+            message: "Failed to create user account for agent", 
+            details: userError.message 
+          });
+        }
+      }
+      
+      // Always use the first and last name from the form for the agent record
       if (agentData.firstName && agentData.lastName) {
         try {
-          // Create or update the user record
-          const userId = agentData.userId;
-          if (userId) {
-            // Update the existing user with the new first/last name
+          // If there's a userId but we didn't just create it above, update that user's name
+          if (userId && !agentData.username) { // If username exists, we created the user above
             await storage.updateUser(userId, {
               firstName: agentData.firstName,
               lastName: agentData.lastName
             });
-            
-            // Remove first/last name from agentData to avoid duplication
-            delete agentData.firstName;
-            delete agentData.lastName;
           }
+          
+          // Remove first/last name from agentData - these go in User table, not Agent table
+          delete agentData.firstName;
+          delete agentData.lastName;
         } catch (userError) {
           console.error("Error updating user data for agent:", userError);
           // Continue with agent creation even if user update fails
         }
+      }
+      
+      // Set the userId for the agent (either from original data or newly created user)
+      if (userId) {
+        agentData.userId = userId;
       }
       
       const newAgent = await storage.createAgent(agentData);
