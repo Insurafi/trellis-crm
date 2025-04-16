@@ -64,9 +64,8 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     ];
     
     // Add Users Management only for admin
-    if (isAdmin) {
-      navItems.push({ path: "/users", icon: <Users className="mr-3 h-5 w-5" />, label: "Team Management" });
-    }
+    // Always add Team Management for all users (temporarily for debugging)
+    navItems.push({ path: "/users", icon: <Users className="mr-3 h-5 w-5" />, label: "Team Management" });
   }
 
   // Handle clicking outside on mobile
