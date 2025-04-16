@@ -17,7 +17,8 @@ import {
   UserSearch,
   Shield,
   GraduationCap,
-  LineChart
+  LineChart,
+  UserCog
 } from "lucide-react";
 
 interface SidebarProps {
@@ -51,6 +52,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     // Agent-specific navigation
     navItems = [
       { path: "/agent-dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Dashboard" },
+      { path: "/agent-profile", icon: <UserCog className="mr-3 h-5 w-5" />, label: "My Profile" },
       ...baseNavItems
     ];
   } else {

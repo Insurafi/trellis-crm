@@ -193,11 +193,11 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
           delete agentData.username;
           delete agentData.password;
           delete agentData.email;
-        } catch (userError) {
+        } catch (userError: any) {
           console.error("Error creating user account for agent:", userError);
           return res.status(400).json({ 
             message: "Failed to create user account for agent", 
-            details: userError.message 
+            details: userError.message || 'Unknown error'
           });
         }
       }
@@ -216,7 +216,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
           // Remove first/last name from agentData - these go in User table, not Agent table
           delete agentData.firstName;
           delete agentData.lastName;
-        } catch (userError) {
+        } catch (userError: any) {
           console.error("Error updating user data for agent:", userError);
           // Continue with agent creation even if user update fails
         }
@@ -260,7 +260,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             delete updateData.firstName;
             delete updateData.lastName;
           }
-        } catch (userError) {
+        } catch (userError: any) {
           console.error("Error updating user data for agent:", userError);
           // Continue with agent update even if user update fails
         }
