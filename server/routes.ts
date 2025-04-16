@@ -22,11 +22,13 @@ import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
 import { setupClientAuth, isAuthenticatedClient, comparePasswords } from "./client-auth";
+import { setupSimpleRegister } from "./simple-register";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize authentication systems
   setupAuth(app);
   setupClientAuth(app);
+  setupSimpleRegister(app);
   
   // Serve static HTML files
   app.get("/pure-client-login", (req, res) => {
