@@ -73,10 +73,10 @@ export default function AuthPage() {
         <Card className="border-0 shadow-none">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl font-bold">
-              Insurance CRM Platform
+              Trellis
             </CardTitle>
             <CardDescription>
-              Sign in or create an account to access the insurance broker management system
+              Sign in or create an account to access Trellis - insurance broker management system
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -208,7 +208,7 @@ export default function AuthPage() {
             <div className="bg-primary-foreground/10 p-3 rounded-full w-fit">
               <ShieldCheck className="h-12 w-12" />
             </div>
-            <h1 className="text-4xl font-bold">Insurance Broker CRM</h1>
+            <h1 className="text-4xl font-bold">Trellis</h1>
             <p className="text-xl opacity-90">
               Streamline your insurance operations with our comprehensive CRM built specifically for brokers.
             </p>
