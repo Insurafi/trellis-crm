@@ -63,9 +63,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       { path: "/analytics", icon: <LineChart className="mr-3 h-5 w-5" />, label: "Analytics" },
     ];
     
-    // Add Users Management only for admin or team leader
-    if (isAdmin || isTeamLeader) {
-      navItems.push({ path: "/users", icon: <Settings className="mr-3 h-5 w-5" />, label: "Users Management" });
+    // Add Users Management only for admin
+    if (isAdmin) {
+      navItems.push({ path: "/users", icon: <Users className="mr-3 h-5 w-5" />, label: "Team Management" });
     }
   }
 
