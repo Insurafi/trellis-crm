@@ -395,7 +395,9 @@ export default function Clients() {
                                   Edit
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>View Documents</DropdownMenuItem>
-                                <DropdownMenuItem>Create Quote</DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                  <a href="https://my.ninjaquoter.com/agent_quoter" target="_blank" rel="noopener noreferrer">Create Quote</a>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Schedule Meeting</DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-red-600">
