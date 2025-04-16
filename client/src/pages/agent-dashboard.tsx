@@ -65,19 +65,19 @@ export default function AgentDashboard() {
 
   // Fetch leads for this agent
   const { data: agentLeads = [], isLoading: isLeadsLoading } = useQuery<any[]>({
-    queryKey: ["/api/leads/by-agent", agentData?.id],
+    queryKey: [`/api/leads/by-agent/${agentData?.id}`],
     enabled: hasValidAgentId,
   });
   
   // Fetch policies for this agent
   const { data: agentPolicies = [], isLoading: isPoliciesLoading } = useQuery<any[]>({
-    queryKey: ["/api/policies/by-agent", agentData?.id],
+    queryKey: [`/api/policies/by-agent/${agentData?.id}`],
     enabled: hasValidAgentId,
   });
 
   // Fetch commissions for this agent
   const { data: agentCommissions = [], isLoading: isCommissionsLoading } = useQuery<any[]>({
-    queryKey: ["/api/commissions/by-agent", agentData?.id],
+    queryKey: [`/api/commissions/weekly/by-agent/${agentData?.id}`],
     enabled: hasValidAgentId,
   });
 
