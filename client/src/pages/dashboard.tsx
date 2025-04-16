@@ -7,15 +7,18 @@ import ClientReviews from "@/components/ui/client-reviews";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Dashboard() {
+  const { user } = useAuth();
+
   return (
     <div className="pt-0 md:pt-6 pb-6 px-4 md:px-8 md:mt-0 mt-16">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-neutral-600">Welcome back, Alex! Here's what's happening today.</p>
+          <p className="mt-1 text-sm text-neutral-600">Welcome back, {user?.fullName || "Admin"}! Here's what's happening today.</p>
         </div>
         <div className="mt-4 md:mt-0 flex space-x-3">
           <Button className="inline-flex items-center" asChild>
@@ -23,10 +26,6 @@ export default function Dashboard() {
               <ExternalLink className="mr-2 h-4 w-4" />
               Client Portal
             </Link>
-          </Button>
-          <Button className="inline-flex items-center">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Client
           </Button>
           <Button variant="outline" className="inline-flex items-center">
             <Filter className="mr-2 h-4 w-4" />

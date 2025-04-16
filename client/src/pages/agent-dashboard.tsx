@@ -63,78 +63,6 @@ export default function AgentDashboard() {
   const [monthlyQuota, setMonthlyQuota] = useState(85);
   const [yearlyQuota, setYearlyQuota] = useState(62);
   const [isLoading, setIsLoading] = useState(true);
-  const [showClientModal, setShowClientModal] = useState(false);
-  const [clientFormData, setClientFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    notes: ""
-  });
-
-  // Handle client form input changes
-  const handleClientInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setClientFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // Client creation mutation
-  const createClientMutation = useMutation({
-    mutationFn: async (clientData: typeof clientFormData) => {
-      const res = await apiRequest(
-        "POST", 
-        "/api/clients", 
-        clientData
-      );
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to create client");
-      }
-      return await res.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Client created successfully",
-        variant: "default",
-      });
-      // Reset form and close modal
-      setClientFormData({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        notes: ""
-      });
-      setShowClientModal(false);
-      // Invalidate the clients query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error creating client",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  });
-
-  // Handle client form submission
-  const handleCreateClient = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!clientFormData.name || !clientFormData.email) {
-      toast({
-        title: "Error",
-        description: "Name and email are required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-    createClientMutation.mutate(clientFormData);
-  };
 
   // Fetch agent details for the current user
   const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
@@ -266,13 +194,6 @@ export default function AgentDashboard() {
             <Button variant="secondary">
               <Users className="mr-2 h-4 w-4" />
               New Lead
-            </Button>
-            <Button 
-              variant="secondary"
-              onClick={() => setShowClientModal(true)}
-            >
-              <User className="mr-2 h-4 w-4" />
-              New Client
             </Button>
           </div>
         </div>
