@@ -348,7 +348,7 @@ const AgentsPage: React.FC = () => {
               <span>Add Agent</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Agent</DialogTitle>
               <DialogDescription>
@@ -845,7 +845,7 @@ const AgentsPage: React.FC = () => {
       
       {/* Edit Agent Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Agent</DialogTitle>
             <DialogDescription>
