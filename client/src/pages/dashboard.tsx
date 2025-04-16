@@ -17,7 +17,7 @@ export default function Dashboard() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-neutral-900">Admin Dashboard</h1>
           <p className="mt-1 text-sm text-neutral-600">Welcome back, {user?.fullName || "Admin"}! Here's what's happening today.</p>
         </div>
         <div className="mt-4 md:mt-0 flex space-x-3">
