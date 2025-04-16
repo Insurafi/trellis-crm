@@ -3,7 +3,7 @@ import { storage } from "./storage";
 import { insertAgentSchema, insertLeadSchema, insertPolicySchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { isAuthenticated, isAdmin, isAdminOrTeamLeader } from "./auth";
+import { isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
 
 export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Error handling middleware for validation errors
@@ -171,7 +171,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
           const { username, password, email } = agentData;
           
           // Hash the password before storing
-          const hashedPassword = await storage.hashPassword(password);
+          const hashedPassword = await hashPassword(password);
           
           // Create a new user with agent role
           const newUser = await storage.createUser({
