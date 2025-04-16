@@ -16,7 +16,7 @@ const MobileHeader = ({ onMenuClick }: MobileHeaderProps) => {
           >
             <Menu className="h-6 w-6" />
           </button>
-          <span className="ml-3 text-xl font-bold text-primary">ClientFlow</span>
+          <span className="ml-3 text-xl font-bold text-primary">Trellis</span>
         </div>
         <div>
           <button className="text-neutral-500 hover:text-neutral-700 focus:outline-none ml-4">
