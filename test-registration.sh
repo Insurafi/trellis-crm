@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# Test registration with curl
-echo "Testing registration API..."
-curl -X POST http://localhost:5000/api/register \
+# Test registration script for Trellis
+
+echo "Registering test user..."
+
+# Make the API call
+curl -X POST \
   -H "Content-Type: application/json" \
-  -d '{
-    "username": "testuser1",
-    "password": "password123",
-    "email": "test@example.com",
-    "fullName": "Test User",
-    "role": "agent",
-    "active": true
-  }' -v
+  -d '{"username":"testagent2","fullName":"Test Agent 2","email":"agent2@example.com","password":"password123","role":"agent"}' \
+  http://localhost:5000/api/register
+
+echo -e "\n\nRegistration complete!"
