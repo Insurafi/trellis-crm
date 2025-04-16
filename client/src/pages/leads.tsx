@@ -61,6 +61,7 @@ const leadFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().min(1, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zipCode: z.string().min(1, "ZIP code is required"),
   height: z.string().optional(),
@@ -249,6 +250,7 @@ const LeadsPage: React.FC = () => {
         email: selectedLead.email,
         phoneNumber: selectedLead.phoneNumber,
         address: selectedLead.address,
+        city: selectedLead.city || "",
         state: selectedLead.state || "",
         zipCode: selectedLead.zipCode || "",
         height: selectedLead.height || "",
@@ -608,9 +610,6 @@ const LeadsPage: React.FC = () => {
                           <SelectItem value="Whole Life">Whole Life</SelectItem>
                           <SelectItem value="Final Expense">Final Expense</SelectItem>
                           <SelectItem value="IUL">Indexed Universal Life (IUL)</SelectItem>
-                          <SelectItem value="Disability">Disability Insurance</SelectItem>
-                          <SelectItem value="Long-Term Care">Long-Term Care</SelectItem>
-                          <SelectItem value="Medicare Supplement">Medicare Supplement</SelectItem>
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
@@ -1110,9 +1109,6 @@ const LeadsPage: React.FC = () => {
                         <SelectItem value="Whole Life">Whole Life</SelectItem>
                         <SelectItem value="Final Expense">Final Expense</SelectItem>
                         <SelectItem value="IUL">Indexed Universal Life (IUL)</SelectItem>
-                        <SelectItem value="Disability">Disability Insurance</SelectItem>
-                        <SelectItem value="Long-Term Care">Long-Term Care</SelectItem>
-                        <SelectItem value="Medicare Supplement">Medicare Supplement</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
