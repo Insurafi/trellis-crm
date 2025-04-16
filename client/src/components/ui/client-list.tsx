@@ -90,9 +90,6 @@ const ClientList = () => {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>View Documents</DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                  <a href="https://my.ninjaquoter.com/agent_quoter" target="_blank" rel="noopener noreferrer">Create Quote</a>
-                </DropdownMenuItem>
                   <DropdownMenuItem>Add Task</DropdownMenuItem>
                   <DropdownMenuItem>Schedule Meeting</DropdownMenuItem>
                 </DropdownMenuContent>
