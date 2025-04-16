@@ -868,7 +868,10 @@ const LeadsPage: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setSelectedLead(lead)}
+                              onClick={() => {
+                                setSelectedLead(lead);
+                                setIsEditDialogOpen(true);
+                              }}
                               title="Edit lead"
                             >
                               <Pencil size={16} />
