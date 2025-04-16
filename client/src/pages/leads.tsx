@@ -895,7 +895,7 @@ const LeadsPage: React.FC = () => {
                         <TableCell>
                           <div className="flex items-center">
                             <MapPin size={14} className="mr-1 text-muted-foreground" />
-                            {extractState(lead.address)}
+                            {lead.state || "N/A"}
                           </div>
                         </TableCell>
                         <TableCell>
