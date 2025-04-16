@@ -46,7 +46,8 @@ export default function UsersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     role: "agent",
@@ -60,12 +61,20 @@ export default function UsersPage() {
   // Create user mutation
   const createUserMutation = useMutation({
     mutationFn: async (userData: typeof formData) => {
+      // Combine first name and last name into fullName
+      const userDataWithFullName = {
+        ...userData,
+        fullName: `${userData.firstName} ${userData.lastName}`
+      };
+      delete userDataWithFullName.firstName;
+      delete userDataWithFullName.lastName;
+      
       const res = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userDataWithFullName),
       });
 
       if (!res.ok) {
@@ -84,7 +93,8 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/users"] });
       setFormData({
         username: "",
-        fullName: "",
+        firstName: "",
+        lastName: "",
         email: "",
         password: "",
         role: "agent",
@@ -150,15 +160,27 @@ export default function UsersPage() {
                     required
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="fullName">Full Name</Label>
-                  <Input
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
