@@ -100,7 +100,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           {/* Logo */}
           <div className="flex items-center h-16 px-4 border-b border-neutral-200">
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-primary">ClientFlow</span>
+              <span className="text-2xl font-bold text-primary">Trellis</span>
             </div>
           </div>
           

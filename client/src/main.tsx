@@ -3,7 +3,7 @@ import App from "./App";
 import "./index.css";
 
 // Add document title and meta description
-document.title = "ClientFlow - Insurance Broker CRM";
+document.title = "Trellis - Insurance Broker CRM";
 // Add favicon
 const favicon = document.createElement("link");
 favicon.rel = "icon";
