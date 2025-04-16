@@ -885,7 +885,15 @@ const LeadsPage: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => window.open("https://rbrokers.com/quote-and-apply/", "_blank")}
+                              onClick={() => {
+                                const quoteUrl = "https://rbrokers.com/quote-and-apply/";
+                                // Open in a new tab with explicit features param
+                                const newWindow = window.open(quoteUrl, "_blank", "noopener=yes,noreferrer=yes");
+                                // Fall back method if the above doesn't work
+                                if (newWindow) {
+                                  newWindow.opener = null;
+                                }
+                              }}
                               title="Create Quote"
                             >
                               <FileText size={16} />
