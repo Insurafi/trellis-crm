@@ -130,14 +130,32 @@ export default function Calendar() {
 
   const createEventMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      // Convert string times to Date objects
-      const transformedValues = {
-        ...values,
-        startTime: new Date(values.startTime).toISOString(),
-        endTime: new Date(values.endTime).toISOString(),
-      };
+      try {
+        // Ensure valid dates before conversion
+        if (!values.startTime || !values.endTime) {
+          throw new Error("Start time and end time are required");
+        }
+        
+        // Safely convert string times to ISO date strings
+        const startDate = new Date(values.startTime);
+        const endDate = new Date(values.endTime);
+        
+        // Validate that the dates are valid
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+          throw new Error("Invalid date format");
+        }
+        
+        const transformedValues = {
+          ...values,
+          startTime: startDate.toISOString(),
+          endTime: endDate.toISOString(),
+        };
 
-      return await apiRequest("POST", "/api/calendar/events", transformedValues);
+        return await apiRequest("POST", "/api/calendar/events", transformedValues);
+      } catch (error) {
+        console.error("Date conversion error:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/calendar/events'] });
