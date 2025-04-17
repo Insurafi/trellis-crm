@@ -86,6 +86,7 @@ export interface IStorage {
   // Tasks
   getTasks(): Promise<Task[]>;
   getTasksByClient(clientId: number): Promise<Task[]>;
+  getTasksByAssignedUser(userId: number): Promise<Task[]>;
   getTask(id: number): Promise<Task | undefined>;
   createTask(task: InsertTask): Promise<Task>;
   updateTask(id: number, task: Partial<InsertTask>): Promise<Task | undefined>;
