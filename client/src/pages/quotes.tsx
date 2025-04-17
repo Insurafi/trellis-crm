@@ -229,6 +229,19 @@ export default function Quotes() {
 
   return (
     <div className="pt-0 md:pt-6 pb-6 px-4 md:px-8 md:mt-0 mt-16">
+      {/* Modern Quote Button */}
+      <div className="mb-6 flex justify-center">
+        <a 
+          href="https://rbrokers.com/quote-and-apply/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center font-semibold px-12 py-4 text-xl h-auto bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full border-0"
+        >
+          <PlusCircle className="mr-3 h-6 w-6" />
+          QUOTE AND APPLY
+        </a>
+      </div>
+      
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>

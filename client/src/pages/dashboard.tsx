@@ -71,15 +71,15 @@ export default function Dashboard() {
       
       {/* Modern Quote Button */}
       <div className="my-6 flex justify-center">
-        <Button 
-          className="font-semibold px-12 py-4 text-xl h-auto bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full border-0"
-          onClick={() => {
-            window.open("https://rbrokers.com/quote-and-apply/", "_blank", "noopener=yes,noreferrer=yes");
-          }}
+        <a 
+          href="https://rbrokers.com/quote-and-apply/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center font-semibold px-12 py-4 text-xl h-auto bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full border-0"
         >
           <Plus className="mr-3 h-6 w-6" />
           QUOTE AND APPLY
-        </Button>
+        </a>
       </div>
     </div>
   );

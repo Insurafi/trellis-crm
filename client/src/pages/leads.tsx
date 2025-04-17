@@ -941,22 +941,15 @@ const LeadsPage: React.FC = () => {
                               <Eye size={16} />
                             </Button>
 
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                const quoteUrl = "https://rbrokers.com/quote-and-apply/";
-                                // Open in a new tab with explicit features param
-                                const newWindow = window.open(quoteUrl, "_blank", "noopener=yes,noreferrer=yes");
-                                // Fall back method if the above doesn't work
-                                if (newWindow) {
-                                  newWindow.opener = null;
-                                }
-                              }}
+                            <a
+                              href="https://rbrokers.com/quote-and-apply/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground"
                               title="Create Quote"
                             >
                               <FileText size={16} />
-                            </Button>
+                            </a>
                             
                             <Button
                               variant="ghost"
@@ -1140,15 +1133,15 @@ const LeadsPage: React.FC = () => {
               <Pencil className="h-4 w-4 mr-2" />
               Edit Lead
             </Button>
-            <Button 
-              onClick={() => {
-                const quoteUrl = "https://rbrokers.com/quote-and-apply/";
-                window.open(quoteUrl, "_blank", "noopener=yes,noreferrer=yes");
-              }}
+            <a 
+              href="https://rbrokers.com/quote-and-apply/"
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
             >
               <FileText className="h-4 w-4 mr-2" />
               Create Quote
-            </Button>
+            </a>
           </DialogFooter>
         </DialogContent>
       </Dialog>
