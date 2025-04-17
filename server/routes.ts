@@ -1465,6 +1465,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test email endpoint
+  app.post("/api/test-email", isAuthenticated, async (req, res) => {
+    try {
+      const { to, from = "admin@trellis-crm.com", subject = "Test Email from Trellis CRM" } = req.body;
+      
+      if (!to) {
+        return res.status(400).json({ message: "Recipient email address (to) is required" });
+      }
+      
+      console.log(`Attempting to send test email to ${to}...`);
+      
+      const success = await sendEmail({
+        to,
+        from,
+        subject,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #4a6cf7;">Trellis CRM</h1>
+            </div>
+            
+            <p>Hello!</p>
+            
+            <p>This is a test email from the Trellis CRM system to verify that our email service is working correctly.</p>
+            
+            <p>If you received this email, it means the SendGrid integration is working properly.</p>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #777; font-size: 12px;">
+              <p>This is an automated message from Trellis CRM. Please do not reply to this email.</p>
+            </div>
+          </div>
+        `
+      });
+      
+      if (success) {
+        console.log(`✅ Test email sent successfully to ${to}`);
+        return res.json({ success: true, message: `Email sent successfully to ${to}` });
+      } else {
+        console.error(`❌ Failed to send test email to ${to}`);
+        return res.status(500).json({ success: false, message: "Failed to send email" });
+      }
+    } catch (error) {
+      console.error("Error sending test email:", error);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
