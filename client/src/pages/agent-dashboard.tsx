@@ -62,22 +62,37 @@ export default function AgentDashboard() {
 
   // Check if agent ID is valid for data fetching (must be a positive integer)
   const hasValidAgentId = agentData && agentData.id !== undefined && agentData.id !== null && agentData.id > 0;
+  
+  // Use the agent ID only after it's been loaded and validated
+  const agentId = hasValidAgentId ? agentData.id : null;
 
   // Fetch leads for this agent
   const { data: agentLeads = [], isLoading: isLeadsLoading } = useQuery<any[]>({
-    queryKey: [`/api/leads/by-agent/${agentData?.id}`],
+    queryKey: ["/api/leads/by-agent", agentId],
+    queryFn: () => {
+      if (!agentId) return Promise.resolve([]);
+      return fetch(`/api/leads/by-agent/${agentId}`).then(res => res.json());
+    },
     enabled: hasValidAgentId,
   });
   
   // Fetch policies for this agent
   const { data: agentPolicies = [], isLoading: isPoliciesLoading } = useQuery<any[]>({
-    queryKey: [`/api/policies/by-agent/${agentData?.id}`],
+    queryKey: ["/api/policies/by-agent", agentId],
+    queryFn: () => {
+      if (!agentId) return Promise.resolve([]);
+      return fetch(`/api/policies/by-agent/${agentId}`).then(res => res.json());
+    },
     enabled: hasValidAgentId,
   });
 
   // Fetch commissions for this agent
   const { data: agentCommissions = [], isLoading: isCommissionsLoading } = useQuery<any[]>({
-    queryKey: [`/api/commissions/weekly/by-agent/${agentData?.id}`],
+    queryKey: ["/api/commissions/weekly/by-agent", agentId],
+    queryFn: () => {
+      if (!agentId) return Promise.resolve([]);
+      return fetch(`/api/commissions/weekly/by-agent/${agentId}`).then(res => res.json());
+    },
     enabled: hasValidAgentId,
   });
 
