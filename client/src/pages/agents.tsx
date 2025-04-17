@@ -64,10 +64,10 @@ const agentFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   
-  // Login credentials (for creating a new user account)
-  username: z.string().min(3, "Username must be at least 3 characters").optional(),
-  password: z.string().min(6, "Password must be at least 6 characters").optional(),
-  email: z.string().email("Invalid email address").optional(),
+  // Login credentials (for creating a new user account - completely optional)
+  username: z.string().min(3, "Username must be at least 3 characters").optional().or(z.literal('')),
+  password: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal('')),
+  email: z.string().email("Invalid email address").optional().or(z.literal('')),
   
   // Agent professional details - Now optional for simplified creation
   licenseNumber: z.string().optional(),
@@ -419,8 +419,8 @@ const AgentsPage: React.FC = () => {
                 
                 {/* Login credential fields */}
                 <div className="space-y-2">
-                  <h3 className="text-lg font-medium">Login Credentials</h3>
-                  <p className="text-sm text-muted-foreground">Create login credentials for this agent to access the system.</p>
+                  <h3 className="text-lg font-medium">Login Credentials (Optional)</h3>
+                  <p className="text-sm text-muted-foreground">Create login credentials for this agent to access the system. If you leave these blank, the system will generate them for you.</p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">

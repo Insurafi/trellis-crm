@@ -160,7 +160,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
 
 
-  app.post("/api/agents", isAdminOrTeamLeader, async (req, res) => {
+  app.post("/api/agents", isAuthenticated, async (req, res) => {
     try {
       // Log the incoming data for debugging
       console.log("Received agent creation data:", req.body);
