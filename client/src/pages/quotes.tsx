@@ -249,23 +249,6 @@ export default function Quotes() {
           <p className="mt-1 text-sm text-neutral-600">Generate and manage insurance quotes for clients</p>
         </div>
         <div className="mt-4 md:mt-0 flex flex-col md:flex-row gap-3">
-          <Button 
-            variant="default" 
-            size="lg" 
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-2 text-base h-auto"
-            onClick={() => {
-              const quoteUrl = "https://rbrokers.com/quote-and-apply/";
-              // Open in a new tab with explicit features param
-              const newWindow = window.open(quoteUrl, "_blank", "noopener=yes,noreferrer=yes");
-              // Fall back method if the above doesn't work
-              if (newWindow) {
-                newWindow.opener = null;
-              }
-            }}
-          >
-            <ExternalLink className="mr-2 h-5 w-5" />
-            Get Quote Online
-          </Button>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-400" />
             <Input
@@ -279,7 +262,7 @@ export default function Quotes() {
             <DialogTrigger asChild>
               <Button>
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Create Quote
+                Add Quote Record
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
@@ -448,23 +431,15 @@ export default function Quotes() {
               </ul>
             </div>
             <div className="flex flex-col justify-center">
-              <Button 
-                variant="default" 
-                size="lg" 
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 text-base h-auto"
-                onClick={() => {
-                  const quoteUrl = "https://rbrokers.com/quote-and-apply/";
-                  // Open in a new tab with explicit features param
-                  const newWindow = window.open(quoteUrl, "_blank", "noopener=yes,noreferrer=yes");
-                  // Fall back method if the above doesn't work
-                  if (newWindow) {
-                    newWindow.opener = null;
-                  }
-                }}
+              <a
+                href="https://rbrokers.com/quote-and-apply/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center font-semibold px-6 py-3 text-base h-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-md shadow-sm hover:shadow-md transition-all duration-200"
               >
                 <ExternalLink className="mr-2 h-5 w-5" />
                 Go to Quote and Apply Engine
-              </Button>
+              </a>
               <p className="text-sm text-neutral-500 mt-3 text-center">
                 Opens in a new window for a seamless quoting experience
               </p>
