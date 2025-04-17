@@ -406,8 +406,8 @@ const LeadsPage: React.FC = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="M">Male</SelectItem>
-                            <SelectItem value="F">Female</SelectItem>
+                            <SelectItem value="m">Male</SelectItem>
+                            <SelectItem value="f">Female</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
