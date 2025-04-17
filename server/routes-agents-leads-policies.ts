@@ -573,7 +573,39 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       
       const leadData = insertLeadSchema.parse(cleanedData);
       const newLead = await storage.createLead(leadData);
-      res.status(201).json(newLead);
+      
+      // Also create a client record from the lead data
+      const clientData = {
+        name: `${newLead.firstName} ${newLead.lastName}`,
+        email: newLead.email,
+        phone: newLead.phoneNumber,
+        address: newLead.address,
+        sex: newLead.sex,
+        status: "active",
+        notes: newLead.notes,
+        // Link to the lead and assigned agent
+        assignedAgentId: newLead.assignedAgentId,
+        leadId: newLead.id
+      };
+      
+      // Create the client record
+      try {
+        const newClient = await storage.createClient(clientData);
+        console.log(`Created client #${newClient.id} from lead #${newLead.id}`);
+        
+        // Add the client info to the response
+        res.status(201).json({
+          lead: newLead,
+          client: newClient
+        });
+      } catch (clientError) {
+        // If client creation fails, still return the lead but log the error
+        console.error("Error creating client from lead:", clientError);
+        res.status(201).json({
+          lead: newLead,
+          clientError: "Failed to create client record"
+        });
+      }
     } catch (error) {
       console.error("Error creating lead:", error);
       handleValidationError(error, res);

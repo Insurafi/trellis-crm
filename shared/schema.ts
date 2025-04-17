@@ -52,6 +52,9 @@ export const clients = pgTable("clients", {
   password: text("password"),
   lastLogin: timestamp("last_login"),
   hasPortalAccess: boolean("has_portal_access").default(false),
+  // Link to assigned agent and source lead
+  assignedAgentId: integer("assigned_agent_id").references(() => agents.id),
+  leadId: integer("lead_id"), // Reference to the original lead
 });
 
 export const insertClientSchema = createInsertSchema(clients).pick({
@@ -67,6 +70,8 @@ export const insertClientSchema = createInsertSchema(clients).pick({
   username: true,
   password: true,
   hasPortalAccess: true,
+  assignedAgentId: true, // Added to track the assigned agent
+  leadId: true, // Added to track the source lead
 });
 
 export type InsertClient = z.infer<typeof insertClientSchema>;
@@ -217,11 +222,15 @@ export const usersRelations = relations(users, ({ many }) => ({
   calendarEvents: many(calendarEvents),
 }));
 
-export const clientsRelations = relations(clients, ({ many }) => ({
+export const clientsRelations = relations(clients, ({ many, one }) => ({
   documents: many(documents),
   tasks: many(tasks),
   quotes: many(quotes),
   calendarEvents: many(calendarEvents),
+  assignedAgent: one(agents, {
+    fields: [clients.assignedAgentId],
+    references: [agents.id],
+  }),
 }));
 
 export const documentsRelations = relations(documents, ({ one }) => ({
@@ -331,13 +340,17 @@ export const pipelineOpportunitiesRelations = relations(pipelineOpportunities, (
   }),
 }));
 
-export const clientsRelationsWithPipeline = relations(clients, ({ many }) => ({
+export const clientsRelationsWithPipeline = relations(clients, ({ many, one }) => ({
   documents: many(documents),
   tasks: many(tasks),
   quotes: many(quotes),
   calendarEvents: many(calendarEvents),
   opportunities: many(pipelineOpportunities),
   commissions: many(commissions),
+  assignedAgent: one(agents, {
+    fields: [clients.assignedAgentId],
+    references: [agents.id],
+  }),
 }));
 
 // Commissions
