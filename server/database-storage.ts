@@ -127,8 +127,39 @@ export class DatabaseStorage implements IStorage {
   }
   
   async deleteClient(id: number): Promise<boolean> {
-    const result = await db.delete(clients).where(eq(clients.id, id));
-    return result.count > 0;
+    try {
+      // Begin a transaction to ensure all operations succeed or fail together
+      await db.transaction(async (tx) => {
+        // Delete related documents first
+        await tx.delete(documents).where(eq(documents.clientId, id));
+        
+        // Delete related tasks
+        await tx.delete(tasks).where(eq(tasks.clientId, id));
+        
+        // Delete related quotes
+        await tx.delete(quotes).where(eq(quotes.clientId, id));
+        
+        // Delete related calendar events
+        await tx.delete(calendarEvents).where(eq(calendarEvents.clientId, id));
+        
+        // Delete related commissions
+        await tx.delete(commissions).where(eq(commissions.clientId, id));
+        
+        // Delete related pipeline opportunities
+        await tx.delete(pipelineOpportunities).where(eq(pipelineOpportunities.clientId, id));
+        
+        // Delete related policies
+        await tx.delete(policies).where(eq(policies.clientId, id));
+        
+        // Finally delete the client
+        await tx.delete(clients).where(eq(clients.id, id));
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Error deleting client with cascading deletes:", error);
+      return false;
+    }
   }
 
   async updateClientLastLogin(id: number): Promise<void> {
