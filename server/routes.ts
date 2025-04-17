@@ -313,10 +313,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/tasks", async (req, res) => {
     try {
       const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
+      const assignedTo = req.query.assignedTo ? parseInt(req.query.assignedTo as string) : undefined;
       
       let tasks;
       if (clientId && !isNaN(clientId)) {
         tasks = await storage.getTasksByClient(clientId);
+      } else if (assignedTo && !isNaN(assignedTo)) {
+        tasks = await storage.getTasksByAssignedUser(assignedTo);
       } else {
         tasks = await storage.getTasks();
       }

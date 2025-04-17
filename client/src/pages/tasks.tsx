@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Task, Client, insertTaskSchema } from "@shared/schema";
 import { format, isPast, isToday, addDays, isFuture } from "date-fns";
 import { useForm } from "react-hook-form";
@@ -65,15 +66,37 @@ export default function Tasks() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const { user, isAgent } = useAuth();
+  
+  // Fetch agent data if user is an agent
+  const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
+    queryKey: ["/api/agents/by-user"],
+    enabled: !!user?.id && isAgent,
+  });
+  
+  // Check if agent ID is valid for data fetching
+  const hasValidAgentId = agentData && agentData.id !== undefined && agentData.id !== null && agentData.id > 0;
+  
+  // For agents, only fetch tasks assigned to them
   const { data: tasks, isLoading: isLoadingTasks, error: tasksError } = useQuery<Task[]>({
-    queryKey: ['/api/tasks'],
+    queryKey: ['/api/tasks', isAgent && hasValidAgentId ? `assignedTo=${user?.id}` : null],
+    queryFn: async () => {
+      const url = isAgent && hasValidAgentId && user?.id 
+        ? `/api/tasks?assignedTo=${user.id}` 
+        : '/api/tasks';
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch tasks');
+      }
+      return response.json();
+    },
   });
 
   const { data: clients, isLoading: isLoadingClients, error: clientsError } = useQuery<Client[]>({
     queryKey: ['/api/clients'],
   });
 
-  const isLoading = isLoadingTasks || isLoadingClients;
+  const isLoading = isLoadingTasks || isLoadingClients || isAgentLoading;
   const error = tasksError || clientsError;
 
   // Filter tasks based on search term and current tab
@@ -150,9 +173,10 @@ export default function Tasks() {
         ? new Date(values.dueDate).toISOString() 
         : undefined;
       
+      // When agent creates a task, assign it to themselves
       const taskData = {
         ...values,
-        assignedTo: 1, // Default to current user
+        assignedTo: user?.id || 1, // Use current user's ID if available
         dueDate: dueDateTransformed,
       };
 
