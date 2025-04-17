@@ -194,6 +194,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             email: email,
             firstName: firstName,
             lastName: lastName,
+            fullName: `${firstName} ${lastName}`, // Set full name as well
             role: 'agent',
             active: true
           });
@@ -245,6 +246,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             email: email || '',
             firstName: firstName,
             lastName: lastName,
+            fullName: `${firstName} ${lastName}`, // Set full name as well
             role: 'agent',
             active: true
           });
@@ -274,7 +276,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
           if (userId && !agentData.username) { // If username exists, we created the user above
             await storage.updateUser(userId, {
               firstName: firstName,
-              lastName: lastName
+              lastName: lastName,
+              fullName: `${firstName} ${lastName}`
             });
           }
           
@@ -316,8 +319,25 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
           if (agent && agent.userId) {
             // Update the user's first/last name
             const userUpdateData: any = {};
-            if (updateData.firstName) userUpdateData.firstName = updateData.firstName;
-            if (updateData.lastName) userUpdateData.lastName = updateData.lastName;
+            let firstName = updateData.firstName;
+            let lastName = updateData.lastName;
+            
+            // Get existing user data if we're only updating one of the name parts
+            if ((firstName && !lastName) || (!firstName && lastName)) {
+              const user = await storage.getUser(agent.userId);
+              if (user) {
+                firstName = firstName || user.firstName;
+                lastName = lastName || user.lastName;
+              }
+            }
+            
+            if (firstName) userUpdateData.firstName = firstName;
+            if (lastName) userUpdateData.lastName = lastName;
+            
+            // Only update fullName if we have both first and last name
+            if (firstName && lastName) {
+              userUpdateData.fullName = `${firstName} ${lastName}`;
+            }
             
             await storage.updateUser(agent.userId, userUpdateData);
             
