@@ -230,12 +230,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid client ID" });
       }
-
-      const success = await storage.deleteClient(id);
-      if (!success) {
+      
+      console.log(`Processing deletion request for client ID: ${id} by user: ${req.user?.username}`);
+      
+      // First check if the client exists
+      const clientExists = await storage.getClient(id);
+      if (!clientExists) {
+        console.log(`Client with ID ${id} not found for deletion`);
         return res.status(404).json({ message: "Client not found" });
       }
+      
+      console.log(`Client found, proceeding with deletion: ${clientExists.name} (${id})`);
+      
+      // Proceed with deletion
+      const success = await storage.deleteClient(id);
+      
+      console.log(`Deletion result for client ${id}: ${success ? 'Success' : 'Failed'}`);
+      
+      if (!success) {
+        return res.status(500).json({ message: "Failed to delete client" });
+      }
 
+      console.log(`Successfully deleted client ${id}`);
       res.status(204).end();
     } catch (error) {
       console.error("Error deleting client:", error);

@@ -71,20 +71,27 @@ export default function Clients() {
   // Delete client mutation
   const deleteClientMutation = useMutation({
     mutationFn: async (id: number) => {
+      console.log(`Attempting to delete client with ID: ${id}`);
       try {
-        const response = await apiRequest("DELETE", `/api/clients/${id}`);
-        // For status 204 No Content, there's no json to parse
-        if (response.status === 204) {
+        const response = await fetch(`/api/clients/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        // For status 204 No Content or any successful response, just return the ID
+        if (response.ok) {
+          console.log(`Successfully deleted client ${id}`);
           return id;
         }
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          throw new Error(errorData?.message || "Failed to delete client");
-        }
-        return id;
+
+        // Only try to parse JSON if there's an error response with content
+        const errorData = await response.json().catch(() => ({ message: "Failed to delete client" }));
+        throw new Error(errorData?.message || "Failed to delete client");
       } catch (error) {
         console.error("Error deleting client:", error);
-        throw new Error("Failed to delete client");
+        throw error;
       }
     },
     onSuccess: () => {

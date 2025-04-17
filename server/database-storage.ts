@@ -128,33 +128,44 @@ export class DatabaseStorage implements IStorage {
   
   async deleteClient(id: number): Promise<boolean> {
     try {
+      console.log(`Attempting to delete client with id: ${id}`);
+      
       // Begin a transaction to ensure all operations succeed or fail together
       await db.transaction(async (tx) => {
+        console.log(`Deleting related documents for client: ${id}`);
         // Delete related documents first
         await tx.delete(documents).where(eq(documents.clientId, id));
         
+        console.log(`Deleting related tasks for client: ${id}`);
         // Delete related tasks
         await tx.delete(tasks).where(eq(tasks.clientId, id));
         
+        console.log(`Deleting related quotes for client: ${id}`);
         // Delete related quotes
         await tx.delete(quotes).where(eq(quotes.clientId, id));
         
+        console.log(`Deleting related calendar events for client: ${id}`);
         // Delete related calendar events
         await tx.delete(calendarEvents).where(eq(calendarEvents.clientId, id));
         
+        console.log(`Deleting related commissions for client: ${id}`);
         // Delete related commissions
         await tx.delete(commissions).where(eq(commissions.clientId, id));
         
+        console.log(`Deleting related pipeline opportunities for client: ${id}`);
         // Delete related pipeline opportunities
         await tx.delete(pipelineOpportunities).where(eq(pipelineOpportunities.clientId, id));
         
+        console.log(`Deleting related policies for client: ${id}`);
         // Delete related policies
         await tx.delete(policies).where(eq(policies.clientId, id));
         
+        console.log(`Deleting client with id: ${id}`);
         // Finally delete the client
         await tx.delete(clients).where(eq(clients.id, id));
       });
       
+      console.log(`Successfully deleted client with id: ${id}`);
       return true;
     } catch (error) {
       console.error("Error deleting client with cascading deletes:", error);
