@@ -578,7 +578,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // Also create a client record from the lead data
       const clientData = {
         name: `${newLead.firstName} ${newLead.lastName}`,
-        email: newLead.email,
+        email: newLead.email || `lead${newLead.id}@placeholder.com`, // Ensure email is not null
         phone: newLead.phoneNumber,
         address: newLead.address,
         sex: newLead.sex,
@@ -633,7 +633,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // If user is not admin or team leader, we need to check if they're the assigned agent
       if (userRole !== 'admin' && userRole !== 'team_leader') {
         // Find the agent record for this user
-        const agent = await storage.getAgentByUserId(userId);
+        const agent = userId ? await storage.getAgentByUserId(userId) : null;
         
         // Debugging information
         console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PATCH`);
@@ -657,8 +657,11 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
       const updateData = insertLeadSchema.partial().parse(cleanedData);
       const updatedLead = await storage.updateLead(id, updateData);
+      
       // Synchronize lead changes to client if a client record exists for this lead
-      await syncLeadToClient(id, updatedLead, updateData);
+      if (updatedLead) {
+        await syncLeadToClient(id, updatedLead, updateData);
+      }
       
       res.json(updatedLead);
     } catch (error) {
@@ -687,7 +690,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // If user is not admin or team leader, we need to check if they're the assigned agent
       if (userRole !== 'admin' && userRole !== 'team_leader') {
         // Find the agent record for this user
-        const agent = await storage.getAgentByUserId(userId);
+        const agent = userId ? await storage.getAgentByUserId(userId) : null;
         
         // Debugging information
         console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id}`);
@@ -713,7 +716,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const updatedLead = await storage.updateLead(id, updateData);
       
       // Synchronize lead changes to client if a client record exists for this lead
-      await syncLeadToClient(id, updatedLead, updateData);
+      if (updatedLead) {
+        await syncLeadToClient(id, updatedLead, updateData);
+      }
       
       res.json(updatedLead);
     } catch (error) {

@@ -29,7 +29,10 @@ export async function syncLeadToClient(
       if (updatedLead.firstName || updatedLead.lastName) {
         clientUpdateData.name = `${updatedLead.firstName || ''} ${updatedLead.lastName || ''}`.trim();
       }
-      if (updateData.email !== undefined) clientUpdateData.email = updateData.email;
+      if (updateData.email !== undefined) {
+        // Ensure email is not null (it's required by the schema)
+        clientUpdateData.email = updateData.email || `lead${updatedLead.id}@placeholder.com`;
+      }
       if (updateData.phoneNumber !== undefined) clientUpdateData.phone = updateData.phoneNumber;
       if (updateData.address !== undefined) clientUpdateData.address = updateData.address;
       if (updateData.sex !== undefined) clientUpdateData.sex = updateData.sex;
