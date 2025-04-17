@@ -41,10 +41,10 @@ export default function Dashboard() {
     
     try {
       setIsSending(true);
-      const response = await apiRequest("POST", "/api/test-email", { to: emailTo });
-      const data = await response.json();
+      // apiRequest already handles JSON parsing for us
+      const data = await apiRequest("POST", "/api/test-email", { to: emailTo });
       
-      // Always show success since we're using a placeholder email service
+      // Show success message
       toast({
         title: "Email Placeholder Triggered",
         description: `Email details logged to console. In production, this would send to ${emailTo}.`,
