@@ -456,7 +456,8 @@ export const agents = pgTable("agents", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertAgentSchema = createInsertSchema(agents).pick({
+// Base schema with all fields
+const baseAgentSchema = createInsertSchema(agents).pick({
   userId: true,
   licenseNumber: true,
   licenseExpiration: true,
@@ -473,7 +474,16 @@ export const insertAgentSchema = createInsertSchema(agents).pick({
   specialties: true,
   licensedStates: true,
   notes: true,
-}).extend({
+});
+
+// Export the schema with extended fields and make most fields optional
+export const insertAgentSchema = baseAgentSchema.extend({
+  // Make most fields optional except userId for simple agent creation
+  userId: baseAgentSchema.shape.userId.optional(),
+  licenseNumber: baseAgentSchema.shape.licenseNumber.optional(),
+  licenseExpiration: baseAgentSchema.shape.licenseExpiration.optional(),
+  phoneNumber: baseAgentSchema.shape.phoneNumber.optional(),
+  
   // Add these fields temporarily for form handling, they'll be processed separately
   firstName: z.string().optional(),
   lastName: z.string().optional(),

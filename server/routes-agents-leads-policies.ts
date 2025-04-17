@@ -172,7 +172,65 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const firstName = agentData.firstName || '';
       const lastName = agentData.lastName || '';
       
-      // Create user account if login credentials provided (username and password)
+      // If we're just adding a name (simplified agent creation)
+      if (firstName && lastName && !agentData.licenseNumber) {
+        console.log("Simplified agent creation with just name:", firstName, lastName);
+        
+        try {
+          // Generate a username if not provided
+          const username = agentData.username || 
+            `${firstName.toLowerCase()}${lastName.toLowerCase()}${Math.floor(Math.random() * 1000)}`;
+          
+          // Generate a temporary password if not provided
+          const password = agentData.password || `temp${Math.floor(Math.random() * 10000)}`;
+          
+          // Generate a placeholder email if not provided
+          const email = agentData.email || `${username}@example.com`;
+          
+          // Create a new user with agent role
+          const newUser = await storage.createUser({
+            username,
+            password: await hashPassword(password),
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            role: 'agent',
+            active: true
+          });
+          
+          console.log(`Created new user account for agent: ${newUser.username} (ID: ${newUser.id})`);
+          
+          // Create a minimal agent record with placeholder data
+          const placeholderAgent = {
+            userId: newUser.id,
+            licenseNumber: `TEMP-${newUser.id}`,
+            licenseExpiration: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+            phoneNumber: '000-000-0000', // Placeholder phone
+            notes: 'Created with simplified process. Update with complete details.'
+          };
+          
+          const newAgent = await storage.createAgent(placeholderAgent);
+          
+          // Include user information in the response for reference
+          const responseData = {
+            ...newAgent,
+            firstName,
+            lastName,
+            username,
+            temporaryPassword: password
+          };
+          
+          return res.status(201).json(responseData);
+        } catch (error: any) {
+          console.error("Error in simplified agent creation:", error);
+          return res.status(400).json({
+            message: "Failed to create simplified agent record",
+            details: error.message || 'Unknown error'
+          });
+        }
+      }
+      
+      // Standard flow - Create user account if login credentials provided
       if (agentData.username && agentData.password && firstName && lastName) {
         try {
           const { username, password, email } = agentData;
