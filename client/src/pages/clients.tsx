@@ -67,6 +67,38 @@ export default function Clients() {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Delete client mutation
+  const deleteClientMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/clients/${id}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || "Failed to delete client");
+      }
+      return id;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/clients'] });
+      toast({
+        title: "Client deleted",
+        description: "The client has been successfully deleted",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const handleDeleteClient = (id: number) => {
+    if (confirm("Are you sure you want to delete this client? This action cannot be undone.")) {
+      deleteClientMutation.mutate(id);
+    }
+  };
 
   const { data: clients, isLoading, error } = useQuery<Client[]>({
     queryKey: ['/api/clients'],
@@ -408,6 +440,14 @@ export default function Clients() {
                                 View
                               </Link>
                             </Button>
+                            <Button 
+                              variant="destructive" 
+                              size="sm" 
+                              className="h-8 flex items-center gap-1"
+                              onClick={() => handleDeleteClient(client.id)}
+                            >
+                              <Trash className="h-3.5 w-3.5" />
+                            </Button>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -425,7 +465,7 @@ export default function Clients() {
                                 <DropdownMenuItem>View Documents</DropdownMenuItem>
                                 <DropdownMenuItem>Schedule Meeting</DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-600">
+                                <DropdownMenuItem className="text-red-600" onSelect={() => handleDeleteClient(client.id)}>
                                   <Trash className="mr-2 h-4 w-4" />
                                   Delete
                                 </DropdownMenuItem>
