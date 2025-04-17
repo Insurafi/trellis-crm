@@ -734,6 +734,19 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid lead ID" });
       }
 
+      // First, get related policies
+      const relatedPolicies = await storage.getPoliciesByLead(id);
+      
+      // Delete all related policies first
+      if (relatedPolicies && relatedPolicies.length > 0) {
+        console.log(`Deleting ${relatedPolicies.length} policies related to lead #${id}`);
+        
+        for (const policy of relatedPolicies) {
+          await storage.deletePolicy(policy.id);
+        }
+      }
+      
+      // Now delete the lead
       const success = await storage.deleteLead(id);
       if (!success) {
         return res.status(404).json({ message: "Lead not found" });
