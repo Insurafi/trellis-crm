@@ -25,25 +25,81 @@ export async function syncLeadToClient(
       // Update client data based on lead changes
       const clientUpdateData: any = {};
       
-      // Map lead fields to client fields that should be synchronized
+      // Always sync the full name when any part of the name is updated
       if (updatedLead.firstName || updatedLead.lastName) {
-        clientUpdateData.name = `${updatedLead.firstName || ''} ${updatedLead.lastName || ''}`.trim();
+        clientUpdateData.name = `${updatedLead.firstName || ''} ${updatedLead.lastName || ''}`.trim().toUpperCase();
       }
-      if (updateData.email !== undefined) {
+      
+      // Map all possible lead fields to their client equivalents
+      
+      // Contact information
+      if ('email' in updateData) {
         // Ensure email is not null (it's required by the schema)
         clientUpdateData.email = updateData.email || `lead${updatedLead.id}@placeholder.com`;
       }
-      if (updateData.phoneNumber !== undefined) clientUpdateData.phone = updateData.phoneNumber;
-      if (updateData.address !== undefined) clientUpdateData.address = updateData.address;
-      if (updateData.sex !== undefined) clientUpdateData.sex = updateData.sex;
-      if (updateData.notes !== undefined) clientUpdateData.notes = updateData.notes;
-      if (updateData.assignedAgentId !== undefined) clientUpdateData.assignedAgentId = updateData.assignedAgentId;
+      
+      if ('phoneNumber' in updateData) {
+        clientUpdateData.phone = updateData.phoneNumber;
+      }
+      
+      // Address information
+      if ('address' in updateData) {
+        clientUpdateData.address = updateData.address;
+      }
+      
+      if ('city' in updateData) {
+        clientUpdateData.city = updateData.city;
+      }
+      
+      if ('state' in updateData) {
+        clientUpdateData.state = updateData.state;
+      }
+      
+      if ('zipCode' in updateData) {
+        clientUpdateData.zipCode = updateData.zipCode;
+      }
+      
+      // Personal information
+      if ('sex' in updateData) {
+        clientUpdateData.sex = updateData.sex;
+      }
+      
+      if ('dateOfBirth' in updateData) {
+        clientUpdateData.dateOfBirth = updateData.dateOfBirth;
+      }
+      
+      // Financial/insurance information
+      if ('existingCoverage' in updateData) {
+        clientUpdateData.insuranceInfo = updateData.existingCoverage;
+      }
+      
+      if ('insuranceTypeInterest' in updateData) {
+        clientUpdateData.insuranceType = updateData.insuranceTypeInterest;
+      }
+      
+      // Tracking information
+      if ('notes' in updateData) {
+        clientUpdateData.notes = updateData.notes;
+      }
+      
+      if ('assignedAgentId' in updateData) {
+        clientUpdateData.assignedAgentId = updateData.assignedAgentId;
+      }
+      
+      if ('status' in updateData) {
+        // Map lead status to client status (if client has a status field)
+        clientUpdateData.status = updateData.status;
+      }
       
       // Only update if there are changes to make
       if (Object.keys(clientUpdateData).length > 0) {
         const updatedClient = await storage.updateClient(client.id, clientUpdateData);
-        console.log(`Updated client #${client.id} from lead #${leadId}`);
+        console.log(`Updated client #${client.id} from lead #${leadId} with fields: ${Object.keys(clientUpdateData).join(', ')}`);
       }
+    } else {
+      // No client found for this lead - this should not happen with the current implementation
+      // but we log it for monitoring
+      console.warn(`Lead #${leadId} was updated but no client record was found to sync with.`);
     }
   } catch (error) {
     // Log but don't fail if client update fails
