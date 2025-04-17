@@ -657,6 +657,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
       const updateData = insertLeadSchema.partial().parse(cleanedData);
       const updatedLead = await storage.updateLead(id, updateData);
+      // Synchronize lead changes to client if a client record exists for this lead
+      await syncLeadToClient(id, updatedLead, updateData);
       
       res.json(updatedLead);
     } catch (error) {
@@ -707,6 +709,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         cleanedData.dateOfBirth = null;
       }
 
+      // Synchronize lead changes to client if a client record exists for this lead
+      await syncLeadToClient(id, updatedLead, updateData);
       const updateData = insertLeadSchema.partial().parse(cleanedData);
       const updatedLead = await storage.updateLead(id, updateData);
       
