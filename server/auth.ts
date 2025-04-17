@@ -206,7 +206,7 @@ export function isAuthenticated(req: any, res: any, next: any) {
 
 // Middleware to check if user is an admin
 export function isAdmin(req: any, res: any, next: any) {
-  if (req.isAuthenticated() && req.user && req.user.role === "admin") {
+  if (req.isAuthenticated() && req.user && (req.user.role === "admin" || req.user.role === "Administrator")) {
     return next();
   }
   res.status(403).json({ message: "Access denied" });
@@ -217,7 +217,8 @@ export function isAdminOrTeamLeader(req: any, res: any, next: any) {
   if (
     req.isAuthenticated() && 
     req.user && 
-    (req.user.role === "admin" || req.user.role === "teamLeader")
+    (req.user.role === "admin" || req.user.role === "Administrator" || 
+     req.user.role === "team_leader" || req.user.role === "Team Leader")
   ) {
     return next();
   }
@@ -229,7 +230,7 @@ export function isAdminOrSelf(req: any, res: any, next: any) {
   if (
     req.isAuthenticated() && 
     req.user && 
-    (req.user.role === "admin" || req.user.id === parseInt(req.params.id))
+    (req.user.role === "admin" || req.user.role === "Administrator" || req.user.id === parseInt(req.params.id))
   ) {
     return next();
   }
@@ -239,12 +240,17 @@ export function isAdminOrSelf(req: any, res: any, next: any) {
 // Middleware to check if user has specific role(s)
 export function hasRole(roles: string[]) {
   return (req: any, res: any, next: any) => {
-    if (
-      req.isAuthenticated() && 
-      req.user && 
-      roles.includes(req.user.role)
-    ) {
-      return next();
+    if (req.isAuthenticated() && req.user && req.user.role) {
+      // Map common variations of role names
+      const normalizedRoles = roles.flatMap(role => {
+        if (role === 'admin') return ['admin', 'Administrator'];
+        if (role === 'team_leader') return ['team_leader', 'Team Leader'];
+        return [role];
+      });
+      
+      if (normalizedRoles.includes(req.user.role)) {
+        return next();
+      }
     }
     res.status(403).json({ message: "Access denied" });
   };

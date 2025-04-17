@@ -638,12 +638,12 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // Debugging information
       console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PATCH`);
       
-      // Admin can update any lead
-      if (userRole === 'admin') {
+      // Admin can update any lead - check for both 'admin' and 'Administrator'
+      if (userRole === 'admin' || userRole === 'Administrator') {
         console.log(`Access granted: User ${userId} has admin privileges to update lead ${id} via PATCH`);
       } 
-      // Team leader can update any lead
-      else if (userRole === 'team_leader') {
+      // Team leader can update any lead - check for both 'team_leader' and 'Team Leader'
+      else if (userRole === 'team_leader' || userRole === 'Team Leader') {
         console.log(`Access granted: User ${userId} has team leader privileges to update lead ${id} via PATCH`);
       } 
       // Regular agent can only update leads assigned to them
@@ -709,12 +709,12 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // Debugging information
       console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PUT`);
       
-      // Admin can update any lead
-      if (userRole === 'admin') {
+      // Admin can update any lead - check for both 'admin' and 'Administrator'
+      if (userRole === 'admin' || userRole === 'Administrator') {
         console.log(`Access granted: User ${userId} has admin privileges to update lead ${id} via PUT`);
       } 
-      // Team leader can update any lead
-      else if (userRole === 'team_leader') {
+      // Team leader can update any lead - check for both 'team_leader' and 'Team Leader'
+      else if (userRole === 'team_leader' || userRole === 'Team Leader') {
         console.log(`Access granted: User ${userId} has team leader privileges to update lead ${id} via PUT`);
       } 
       // Regular agent can only update leads assigned to them
