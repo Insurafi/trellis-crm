@@ -784,6 +784,36 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(404).json({ message: "Agent profile not found" });
       }
       
+      // Handle username update if present
+      if (req.body.username) {
+        const newUsername = req.body.username;
+        
+        // Validate username format
+        if (!/^[a-zA-Z0-9_.]+$/.test(newUsername)) {
+          return res.status(400).json({ 
+            message: "Username can only contain letters, numbers, underscores and periods" 
+          });
+        }
+        
+        // Check if username is already taken
+        const existingUser = await storage.getUserByUsername(newUsername);
+        if (existingUser && existingUser.id !== req.user.id) {
+          return res.status(400).json({ message: "Username already taken" });
+        }
+        
+        // Update the username
+        try {
+          await storage.updateUser(req.user.id, { username: newUsername });
+          console.log(`Username changed for user ${req.user.id} to ${newUsername}`);
+          
+          // Logout the user so they need to re-login with the new username
+          // This is handled on the client side to allow the response to be sent
+        } catch (usernameError) {
+          console.error("Error updating username:", usernameError);
+          return res.status(500).json({ message: "Failed to update username" });
+        }
+      }
+      
       // Only allow updating specific fields that agents should be able to manage themselves
       const allowedFields = [
         "phoneNumber", 
@@ -804,17 +834,30 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         }
       }
       
-      if (Object.keys(updatedData).length === 0) {
-        return res.status(400).json({ message: "No valid fields to update" });
+      // Update agent details if there are any agent-specific fields to update
+      let updatedAgent = {...agent};
+      if (Object.keys(updatedData).length > 0) {
+        try {
+          const result = await storage.updateAgent(agent.id, updatedData);
+          
+          if (result) {
+            updatedAgent = result;
+          } else {
+            return res.status(500).json({ message: "Failed to update agent profile" });
+          }
+        } catch (error) {
+          console.error("Error updating agent profile fields:", error);
+          return res.status(500).json({ message: "Failed to update agent profile fields" });
+        }
       }
       
-      const updatedAgent = await storage.updateAgent(agent.id, updatedData);
+      // Add the updated username to the response
+      const responseData = {
+        ...updatedAgent,
+        username: req.body.username || req.user.username,
+      };
       
-      if (!updatedAgent) {
-        return res.status(500).json({ message: "Failed to update agent profile" });
-      }
-      
-      return res.json(updatedAgent);
+      return res.json(responseData);
     } catch (error) {
       console.error("Error updating agent profile:", error);
       return res.status(500).json({ message: "Error updating agent profile" });

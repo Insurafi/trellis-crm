@@ -47,6 +47,9 @@ const US_STATES = [
 
 // Form validation schema
 const agentProfileSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters")
+    .max(50, "Username cannot exceed 50 characters")
+    .regex(/^[a-zA-Z0-9_.]+$/, "Username can only contain letters, numbers, underscores and periods"),
   phoneNumber: z.string().min(10, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
@@ -75,6 +78,7 @@ export default function AgentProfile() {
   const form = useForm<AgentProfileFormValues>({
     resolver: zodResolver(agentProfileSchema),
     defaultValues: {
+      username: "",
       phoneNumber: "",
       address: "",
       city: "",
@@ -89,8 +93,9 @@ export default function AgentProfile() {
   
   // Populate form when agent data loads
   useEffect(() => {
-    if (agentData) {
+    if (agentData && user) {
       form.reset({
+        username: user.username || "",
         phoneNumber: agentData.phoneNumber || "",
         address: agentData.address || "",
         city: agentData.city || "",
@@ -103,7 +108,7 @@ export default function AgentProfile() {
       });
       setIsLoading(false);
     }
-  }, [agentData, form]);
+  }, [agentData, user, form]);
   
   // Update profile mutation
   const updateProfileMutation = useMutation({
@@ -154,6 +159,39 @@ export default function AgentProfile() {
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <User className="mr-2 h-5 w-5 text-primary" />
+                Account Information
+              </CardTitle>
+              <CardDescription>
+                Update your username and login details
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center">
+                      <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                      Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="your_username" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your login username. Changing it will require you to use the new username on your next login.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
           
           <Card>
             <CardHeader>
