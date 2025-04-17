@@ -529,7 +529,8 @@ export const leads = pgTable("leads", {
   lastContactedAt: timestamp("last_contacted_at"),
 });
 
-export const insertLeadSchema = createInsertSchema(leads).pick({
+// Create a base schema for leads
+const baseLeadSchema = createInsertSchema(leads).pick({
   firstName: true,
   lastName: true,
   dateOfBirth: true,
@@ -553,6 +554,36 @@ export const insertLeadSchema = createInsertSchema(leads).pick({
   status: true,
   notes: true,
   lastContactedAt: true,
+});
+
+// Export a modified schema that only requires essential fields
+export const insertLeadSchema = baseLeadSchema.extend({
+  // Only keep these fields as required
+  firstName: baseLeadSchema.shape.firstName,
+  lastName: baseLeadSchema.shape.lastName,
+  email: baseLeadSchema.shape.email,
+  phoneNumber: baseLeadSchema.shape.phoneNumber,
+  state: baseLeadSchema.shape.state,
+  
+  // Make all other fields optional
+  dateOfBirth: baseLeadSchema.shape.dateOfBirth.optional(),
+  address: baseLeadSchema.shape.address.optional(),
+  city: baseLeadSchema.shape.city.optional(),
+  zipCode: baseLeadSchema.shape.zipCode.optional(),
+  height: baseLeadSchema.shape.height.optional(),
+  weight: baseLeadSchema.shape.weight.optional(),
+  smokerStatus: baseLeadSchema.shape.smokerStatus.optional().default("No"),
+  medicalConditions: baseLeadSchema.shape.medicalConditions.optional(),
+  familyHistory: baseLeadSchema.shape.familyHistory.optional(),
+  incomeRange: baseLeadSchema.shape.incomeRange.optional(),
+  existingCoverage: baseLeadSchema.shape.existingCoverage.optional(),
+  coverageNeeds: baseLeadSchema.shape.coverageNeeds.optional(),
+  insuranceTypeInterest: baseLeadSchema.shape.insuranceTypeInterest.optional(),
+  leadSource: baseLeadSchema.shape.leadSource.optional().default("Website"),
+  assignedAgentId: baseLeadSchema.shape.assignedAgentId.optional(),
+  status: baseLeadSchema.shape.status.optional().default("new"),
+  notes: baseLeadSchema.shape.notes.optional(),
+  lastContactedAt: baseLeadSchema.shape.lastContactedAt.optional(),
 });
 
 export type InsertLead = z.infer<typeof insertLeadSchema>;

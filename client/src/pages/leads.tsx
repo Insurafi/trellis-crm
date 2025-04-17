@@ -55,27 +55,30 @@ import { Pencil, Trash2, UserPlus, Check, X, Clock, Eye, MapPin, FileText } from
 
 // Form schema
 const leadFormSchema = z.object({
+  // Only require essential fields (first name, last name, email, phone number, and state)
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().min(1, "Phone number is required"),
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "ZIP code is required"),
+  
+  // Make all other fields optional
+  dateOfBirth: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  zipCode: z.string().optional(),
   height: z.string().optional(),
   weight: z.string().optional(),
-  smokerStatus: z.string(),
+  smokerStatus: z.string().default("No"),
   medicalConditions: z.string().optional(),
   familyHistory: z.string().optional(),
   incomeRange: z.string().optional(),
   existingCoverage: z.string().optional(),
   coverageNeeds: z.string().optional(),
-  insuranceTypeInterest: z.string().min(1, "Insurance type interest is required"),
-  leadSource: z.string(),
+  insuranceTypeInterest: z.string().optional(),
+  leadSource: z.string().default("Website"),
   assignedAgentId: z.number().nullable().optional(),
-  status: z.string(),
+  status: z.string().default("new"),
   notes: z.string().optional(),
 });
 
