@@ -630,14 +630,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const userId = req.user?.id;
       const userRole = req.user?.role;
       
-      // Check if the request is only updating the notes field
+      // Log the request details but maintain strict permission model
       const isOnlyUpdatingNotes = Object.keys(req.body).length === 1 && 'notes' in req.body;
-      
       console.log(`Update request for lead ${id}: ${isOnlyUpdatingNotes ? 'Only updating notes' : 'Updating multiple fields'}`);
       console.log(`Request body:`, req.body);
 
-      // Bypass permission checking only when updating notes field exclusively
-      if (!isOnlyUpdatingNotes && userRole !== 'admin' && userRole !== 'team_leader') {
+      // No exception for notes - only assigned agent and admin/team leader can update any field
+      if (userRole !== 'admin' && userRole !== 'team_leader') {
         // Find the agent record for this user
         const agent = userId ? await storage.getAgentByUserId(userId) : null;
         
@@ -653,8 +652,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         } else {
           console.log(`Access granted: User ${userId} is authorized to update lead ${id}`);
         }
-      } else if (isOnlyUpdatingNotes) {
-        console.log(`Allowing user ${userId} (role: ${userRole}) to update notes for lead ${id} regardless of assignment`);
+      } else {
+        console.log(`Access granted: User ${userId} (role: ${userRole}) has admin/team leader privileges to update lead ${id}`);
       }
 
       // Clean input data - convert empty date strings to null
@@ -695,14 +694,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const userId = req.user?.id;
       const userRole = req.user?.role;
       
-      // Check if the request is only updating the notes field
+      // Log the request details but maintain strict permission model
       const isOnlyUpdatingNotes = Object.keys(req.body).length === 1 && 'notes' in req.body;
-      
       console.log(`Update request for lead ${id} (PUT): ${isOnlyUpdatingNotes ? 'Only updating notes' : 'Updating multiple fields'}`);
       console.log(`Request body (PUT):`, req.body);
 
-      // Bypass permission checking only when updating notes field exclusively
-      if (!isOnlyUpdatingNotes && userRole !== 'admin' && userRole !== 'team_leader') {
+      // No exception for notes - only assigned agent and admin/team leader can update any field
+      if (userRole !== 'admin' && userRole !== 'team_leader') {
         // Find the agent record for this user
         const agent = userId ? await storage.getAgentByUserId(userId) : null;
         
@@ -718,8 +716,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         } else {
           console.log(`Access granted: User ${userId} is authorized to update lead ${id}`);
         }
-      } else if (isOnlyUpdatingNotes) {
-        console.log(`Allowing user ${userId} (role: ${userRole}) to update notes for lead ${id} via PUT regardless of assignment`);
+      } else {
+        console.log(`Access granted: User ${userId} (role: ${userRole}) has admin/team leader privileges to update lead ${id} via PUT`);
       }
 
       // Clean input data - convert empty date strings to null
