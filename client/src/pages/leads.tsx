@@ -104,8 +104,19 @@ const LeadsPage: React.FC = () => {
 
   // Add lead mutation
   const addLeadMutation = useMutation({
-    mutationFn: (newLead: LeadFormValues) =>
-      apiRequest("POST", "/api/leads", newLead),
+    mutationFn: async (newLead: LeadFormValues) => {
+      const response = await apiRequest("POST", "/api/leads", newLead);
+      if (!response.ok) {
+        // Try to extract the error message from the response
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to add lead');
+        } catch (parseError) {
+          throw new Error(`Failed to add lead: ${response.statusText}`);
+        }
+      }
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
       toast({
@@ -114,10 +125,11 @@ const LeadsPage: React.FC = () => {
       });
       setIsAddDialogOpen(false);
     },
-    onError: (error) => {
+    onError: (error: Error) => {
+      console.error("Lead add error:", error);
       toast({
         title: "Error",
-        description: "Failed to add lead",
+        description: error.message || "Failed to add lead",
         variant: "destructive",
       });
     },
@@ -125,8 +137,19 @@ const LeadsPage: React.FC = () => {
 
   // Update lead mutation
   const updateLeadMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: LeadFormValues }) =>
-      apiRequest("PUT", `/api/leads/${id}`, data),
+    mutationFn: async ({ id, data }: { id: number; data: LeadFormValues }) => {
+      const response = await apiRequest("PUT", `/api/leads/${id}`, data);
+      if (!response.ok) {
+        // Try to extract the error message from the response
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to update lead');
+        } catch (parseError) {
+          throw new Error(`Failed to update lead: ${response.statusText}`);
+        }
+      }
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
       toast({
@@ -136,10 +159,11 @@ const LeadsPage: React.FC = () => {
       setIsEditDialogOpen(false);
       setSelectedLead(null);
     },
-    onError: (error) => {
+    onError: (error: Error) => {
+      console.error("Lead update error:", error);
       toast({
         title: "Error",
-        description: "Failed to update lead",
+        description: error.message || "Failed to update lead",
         variant: "destructive",
       });
     },
@@ -147,8 +171,19 @@ const LeadsPage: React.FC = () => {
 
   // Delete lead mutation
   const deleteLeadMutation = useMutation({
-    mutationFn: (id: number) =>
-      apiRequest("DELETE", `/api/leads/${id}`),
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/leads/${id}`);
+      if (!response.ok) {
+        // Try to extract the error message from the response
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to delete lead');
+        } catch (parseError) {
+          throw new Error(`Failed to delete lead: ${response.statusText}`);
+        }
+      }
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
       toast({
@@ -156,10 +191,11 @@ const LeadsPage: React.FC = () => {
         description: "Lead has been successfully deleted",
       });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
+      console.error("Lead delete error:", error);
       toast({
         title: "Error",
-        description: "Failed to delete lead",
+        description: error.message || "Failed to delete lead",
         variant: "destructive",
       });
     },
