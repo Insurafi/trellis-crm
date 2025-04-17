@@ -68,6 +68,7 @@ export interface IStorage {
   // Clients
   getClients(): Promise<Client[]>;
   getClientsByAgent(agentId: number): Promise<Client[]>;
+  getClientsByLeadId(leadId: number): Promise<Client[]>;
   getClient(id: number): Promise<Client | undefined>;
   getClientByUsername(username: string): Promise<Client | undefined>;
   createClient(client: InsertClient): Promise<Client>;
@@ -507,6 +508,10 @@ export class MemStorage implements IStorage {
   // Client methods
   async getClients(): Promise<Client[]> {
     return Array.from(this.clients.values());
+  }
+  
+  async getClientsByLeadId(leadId: number): Promise<Client[]> {
+    return Array.from(this.clients.values()).filter(client => client.leadId === leadId);
   }
 
   async getClient(id: number): Promise<Client | undefined> {
