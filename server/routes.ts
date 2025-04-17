@@ -1468,7 +1468,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test email endpoint
   app.post("/api/test-email", isAuthenticated, async (req, res) => {
     try {
-      const { to, from = "admin@trellis-crm.com", subject = "Test Email from Trellis CRM" } = req.body;
+      // For SendGrid, the 'from' email must be a verified sender
+      // Using a properly formatted from field with name and email
+      const senderName = "Trellis CRM";
+      const senderEmail = "admin@trellis-crm.com";
+      const fromField = {
+        name: senderName,
+        email: senderEmail
+      };
+      
+      const { to, subject = "Test Email from Trellis CRM" } = req.body;
       
       if (!to) {
         return res.status(400).json({ message: "Recipient email address (to) is required" });
@@ -1478,7 +1487,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const success = await sendEmail({
         to,
-        from,
+        from: fromField as any, // Using 'as any' to bypass type checking for complex from field
         subject,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
@@ -1504,11 +1513,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ success: true, message: `Email sent successfully to ${to}` });
       } else {
         console.error(`❌ Failed to send test email to ${to}`);
-        return res.status(500).json({ success: false, message: "Failed to send email" });
+        return res.status(500).json({ 
+          success: false, 
+          message: "Failed to send email. Please make sure the SendGrid API key is valid and the sender email is verified in your SendGrid account." 
+        });
       }
     } catch (error) {
       console.error("Error sending test email:", error);
-      res.status(500).json({ success: false, message: "Internal server error" });
+      res.status(500).json({ 
+        success: false, 
+        message: "Internal server error. Please check server logs for details." 
+      });
     }
   });
 

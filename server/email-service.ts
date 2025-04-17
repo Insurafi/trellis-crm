@@ -29,6 +29,11 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
       return false;
     }
 
+    console.log('Attempting to send email with the following params:');
+    console.log('To:', params.to);
+    console.log('From:', params.from);
+    console.log('Subject:', params.subject);
+    
     // Send the email
     await mailService.send({
       to: params.to,
@@ -38,9 +43,30 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
       html: params.html || '',
     });
     
+    console.log('✅ Email sent successfully to', params.to);
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error('SendGrid email error:', error);
+    
+    // Log more detailed error information
+    if (error?.response) {
+      console.error('SendGrid error response code:', error.code);
+      
+      if (error.response.body) {
+        console.error('SendGrid error body:', JSON.stringify(error.response.body, null, 2));
+        
+        // Check for specific SendGrid errors and provide guidance
+        const errors = error.response.body.errors || [];
+        for (const err of errors) {
+          if (err.field === 'from' && err.message && err.message.includes('verified Sender Identity')) {
+            console.error('ERROR: The sender email address must be verified in your SendGrid account.');
+            console.error('Please visit https://sendgrid.com/docs/for-developers/sending-email/sender-identity/');
+            console.error('to learn how to verify your sender identity.');
+          }
+        }
+      }
+    }
+    
     return false;
   }
 }
