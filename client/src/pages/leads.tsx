@@ -318,7 +318,40 @@ const LeadsPage: React.FC = () => {
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Insurance Leads</h1>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <Dialog 
+          open={isAddDialogOpen} 
+          onOpenChange={(open) => {
+            // Reset form to default blank values when opening the dialog
+            if (open) {
+              addForm.reset({
+                firstName: "",
+                lastName: "",
+                sex: "",
+                dateOfBirth: "",
+                email: "",
+                phoneNumber: "",
+                address: "",
+                city: "",
+                state: "",
+                zipCode: "",
+                height: "",
+                weight: "",
+                smokerStatus: "No",
+                medicalConditions: "",
+                familyHistory: "",
+                incomeRange: "",
+                existingCoverage: "",
+                coverageNeeds: "",
+                insuranceTypeInterest: "",
+                leadSource: "Website",
+                assignedAgentId: null,
+                status: "new",
+                notes: "",
+              });
+            }
+            setIsAddDialogOpen(open);
+          }}
+        >
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <UserPlus size={16} />
