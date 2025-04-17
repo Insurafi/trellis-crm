@@ -93,11 +93,21 @@ const AgentProfilePage = () => {
   );
 };
 
+// Create a ClientDetailPage component to handle lazy loading
+const ClientDetailPage = () => {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <ClientDetail />
+    </Suspense>
+  );
+};
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={HomeRedirect} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
+      <ProtectedRoute path="/clients/:id" component={ClientDetailPage} />
       <ProtectedRoute path="/clients" component={Clients} />
       <ProtectedRoute path="/documents" component={Documents} />
       <ProtectedRoute path="/quotes" component={Quotes} />
@@ -139,6 +149,7 @@ import SimpleRegister from "@/pages/simple-register";
 // Import our new client pages
 import ClientLoginNew from "@/pages/client-login-new";
 const ClientDashboardNew = lazy(() => import("@/pages/client-dashboard-new"));
+const ClientDetail = lazy(() => import("@/pages/client-detail"));
 
 function ClientRouter() {
   return (
