@@ -52,11 +52,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Agent } from "@shared/schema";
+import { Badge } from "@/components/ui/badge";
+import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Extend Agent type to include the name property from the user
 type AgentWithName = Agent & { name?: string };
-import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Form schema - Supporting both full and simplified agent creation
 const agentFormSchema = z.object({
@@ -818,7 +818,7 @@ const AgentsPage: React.FC = () => {
             <div className="py-8 flex justify-center">
               <p>Loading commission data...</p>
             </div>
-          ) : weeklyCommissionData && weeklyCommissionData.length > 0 ? (
+          ) : weeklyCommissionData && Array.isArray(weeklyCommissionData) && weeklyCommissionData.length > 0 ? (
             <div className="space-y-4">
               <div className="border rounded-md">
                 <Table>
@@ -837,7 +837,7 @@ const AgentsPage: React.FC = () => {
                         <TableCell>${parseFloat(commission.amount).toFixed(2)}</TableCell>
                         <TableCell>{commission.policyType}</TableCell>
                         <TableCell>
-                          <Badge variant={commission.status === 'Paid' ? 'success' : 'outline'}>
+                          <Badge variant="outline">
                             {commission.status}
                           </Badge>
                         </TableCell>
@@ -855,8 +855,9 @@ const AgentsPage: React.FC = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">
-                        ${weeklyCommissionData.reduce((total: number, commission: any) => 
-                          total + (parseFloat(commission.amount) * 0.6), 0).toFixed(2)}
+                        ${Array.isArray(weeklyCommissionData) ? 
+                          weeklyCommissionData.reduce((total: number, commission: any) => 
+                            total + (parseFloat(commission.amount) * 0.6), 0).toFixed(2) : "0.00"}
                       </div>
                     </CardContent>
                   </Card>
@@ -866,8 +867,9 @@ const AgentsPage: React.FC = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">
-                        ${weeklyCommissionData.reduce((total: number, commission: any) => 
-                          total + (parseFloat(commission.amount) * 0.4), 0).toFixed(2)}
+                        ${Array.isArray(weeklyCommissionData) ? 
+                          weeklyCommissionData.reduce((total: number, commission: any) => 
+                            total + (parseFloat(commission.amount) * 0.4), 0).toFixed(2) : "0.00"}
                       </div>
                     </CardContent>
                   </Card>
