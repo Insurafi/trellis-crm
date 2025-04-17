@@ -93,10 +93,13 @@ export default function Calendar() {
   const error = eventsError || clientsError;
 
   // Extended schema for validation
-  const formSchema = insertCalendarEventSchema.extend({
-    startTime: z.string(),
-    endTime: z.string(),
-  });
+  // Frontend schema that accepts string dates from the datetime-local inputs
+  const formSchema = insertCalendarEventSchema
+    .omit({ startTime: true, endTime: true })
+    .extend({
+      startTime: z.string(),
+      endTime: z.string(),
+    });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

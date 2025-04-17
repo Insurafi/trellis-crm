@@ -602,10 +602,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/calendar/events", async (req, res) => {
     try {
-      const eventData = insertCalendarEventSchema.parse(req.body);
-      const newEvent = await storage.createCalendarEvent(eventData);
+      console.log("Calendar event request body:", req.body);
+      
+      // Create a modified schema for API validation that accepts strings for dates
+      const apiCalendarEventSchema = insertCalendarEventSchema
+        .omit({ startTime: true, endTime: true })
+        .extend({
+          startTime: z.string().transform(val => new Date(val)),
+          endTime: z.string().transform(val => new Date(val)),
+        });
+
+      const parsedData = apiCalendarEventSchema.parse(req.body);
+      console.log("Parsed calendar event data:", parsedData);
+      
+      const newEvent = await storage.createCalendarEvent(parsedData);
       res.status(201).json(newEvent);
     } catch (error) {
+      console.error("Calendar event creation error:", error);
       handleValidationError(error, res);
     }
   });
@@ -617,8 +630,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid event ID" });
       }
 
-      const updateData = insertCalendarEventSchema.partial().parse(req.body);
-      const updatedEvent = await storage.updateCalendarEvent(id, updateData);
+      // Create a modified schema for API validation that accepts strings for dates
+      const apiCalendarEventSchema = insertCalendarEventSchema
+        .omit({ startTime: true, endTime: true })
+        .extend({
+          startTime: z.string().transform(val => new Date(val)).optional(),
+          endTime: z.string().transform(val => new Date(val)).optional(),
+        })
+        .partial();
+
+      const parsedData = apiCalendarEventSchema.parse(req.body);
+      console.log("Parsed calendar event update data:", parsedData);
+      
+      const updatedEvent = await storage.updateCalendarEvent(id, parsedData);
       
       if (!updatedEvent) {
         return res.status(404).json({ message: "Calendar event not found" });
@@ -626,6 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(updatedEvent);
     } catch (error) {
+      console.error("Calendar event update error:", error);
       handleValidationError(error, res);
     }
   });
