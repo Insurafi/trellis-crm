@@ -4,6 +4,7 @@ import { insertAgentSchema, insertLeadSchema, insertPolicySchema } from "@shared
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
+import { sendAgentWelcomeEmail } from "./agent-welcome-email";
 
 export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Error handling middleware for validation errors
@@ -221,6 +222,32 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             temporaryPassword: password
           };
           
+          // Send welcome email with credentials if email is provided
+          if (email) {
+            try {
+              // Send email in background to not block the response
+              sendAgentWelcomeEmail({
+                firstName,
+                lastName,
+                fullName: `${firstName} ${lastName}`,
+                username,
+                temporaryPassword: password,
+                email
+              }).then(success => {
+                if (success) {
+                  console.log(`Welcome email sent to ${firstName} ${lastName} (${email})`);
+                } else {
+                  console.error(`Failed to send welcome email to ${email}`);
+                }
+              }).catch(err => {
+                console.error('Error sending welcome email:', err);
+              });
+            } catch (emailError) {
+              console.error('Error initiating welcome email:', emailError);
+              // Continue even if email sending fails
+            }
+          }
+          
           return res.status(201).json(responseData);
         } catch (error: any) {
           console.error("Error in simplified agent creation:", error);
@@ -296,6 +323,36 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
       
       const newAgent = await storage.createAgent(agentData);
+      
+      // For standard flow, also send a welcome email if email was provided
+      if (agentData.email) {
+        try {
+          // Get the username and password from earlier in the function
+          const { username, password, email } = agentData;
+          
+          // Send email in background to not block the response
+          sendAgentWelcomeEmail({
+            firstName,
+            lastName,
+            fullName: `${firstName} ${lastName}`,
+            username,
+            temporaryPassword: password,
+            email
+          }).then(success => {
+            if (success) {
+              console.log(`Welcome email sent to ${firstName} ${lastName} (${email})`);
+            } else {
+              console.error(`Failed to send welcome email to ${email}`);
+            }
+          }).catch(err => {
+            console.error('Error sending welcome email:', err);
+          });
+        } catch (emailError) {
+          console.error('Error initiating welcome email for standard flow:', emailError);
+          // Continue even if email sending fails
+        }
+      }
+      
       res.status(201).json(newAgent);
     } catch (error) {
       handleValidationError(error, res);
