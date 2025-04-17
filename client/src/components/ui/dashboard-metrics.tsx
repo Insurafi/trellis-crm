@@ -97,8 +97,8 @@ const DashboardMetrics = () => {
         icon={<User className="h-5 w-5" />}
         iconBgColor="bg-blue-100"
         iconTextColor="text-primary"
-        changePercentage={12}
-        changeText="from last month"
+        changePercentage={9}
+        changeText="new today (April 17)"
       />
       
       <MetricCard
