@@ -4,13 +4,69 @@ import CalendarCard from "@/components/ui/calendar-card";
 import AgentStatusList from "@/components/dashboard/agent-status-list";
 import ClientList from "@/components/ui/client-list";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter, ExternalLink, UserPlus } from "lucide-react";
+import { Plus, Filter, ExternalLink, UserPlus, Mail } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [emailTo, setEmailTo] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const { toast } = useToast();
+  
+  const sendTestEmail = async () => {
+    if (!emailTo) {
+      toast({
+        title: "Email Required",
+        description: "Please enter a recipient email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      setIsSending(true);
+      const response = await apiRequest("POST", "/api/test-email", { to: emailTo });
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Email Sent",
+          description: `Test email sent successfully to ${emailTo}.`,
+        });
+      } else {
+        toast({
+          title: "Email Failed",
+          description: data.message || "Failed to send test email. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error("Error sending test email:", error);
+      toast({
+        title: "Email Failed",
+        description: "An error occurred while sending the test email.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
     <div className="pt-0 md:pt-6 pb-6 px-4 md:px-8 md:mt-0 mt-16">
@@ -27,6 +83,39 @@ export default function Dashboard() {
               Add Team Member
             </Link>
           </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="inline-flex items-center">
+                <Mail className="mr-2 h-4 w-4" />
+                Test Email
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Send Test Email</DialogTitle>
+                <DialogDescription>
+                  Send a test email to verify the email system is working correctly.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <Label htmlFor="email-to" className="text-right">
+                  Recipient Email
+                </Label>
+                <Input
+                  id="email-to"
+                  value={emailTo}
+                  onChange={(e) => setEmailTo(e.target.value)}
+                  placeholder="Enter recipient email address"
+                  className="mt-1"
+                />
+              </div>
+              <DialogFooter>
+                <Button onClick={sendTestEmail} disabled={isSending}>
+                  {isSending ? "Sending..." : "Send Test Email"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button variant="outline" className="inline-flex items-center">
             <Filter className="mr-2 h-4 w-4" />
             Filters
