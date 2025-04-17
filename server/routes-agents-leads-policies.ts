@@ -635,13 +635,22 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       console.log(`Update request for lead ${id}: ${isOnlyUpdatingNotes ? 'Only updating notes' : 'Updating multiple fields'}`);
       console.log(`Request body:`, req.body);
 
-      // No exception for notes - only assigned agent and admin/team leader can update any field
-      if (userRole !== 'admin' && userRole !== 'team_leader') {
+      // Debugging information
+      console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PATCH`);
+      
+      // Admin can update any lead
+      if (userRole === 'admin') {
+        console.log(`Access granted: User ${userId} has admin privileges to update lead ${id} via PATCH`);
+      } 
+      // Team leader can update any lead
+      else if (userRole === 'team_leader') {
+        console.log(`Access granted: User ${userId} has team leader privileges to update lead ${id} via PATCH`);
+      } 
+      // Regular agent can only update leads assigned to them
+      else {
         // Find the agent record for this user
         const agent = userId ? await storage.getAgentByUserId(userId) : null;
         
-        // Debugging information
-        console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PATCH`);
         console.log(`Agent record:`, agent);
         console.log(`Lead assigned agent ID:`, existingLead.assignedAgentId);
         
@@ -652,8 +661,6 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         } else {
           console.log(`Access granted: User ${userId} is authorized to update lead ${id}`);
         }
-      } else {
-        console.log(`Access granted: User ${userId} (role: ${userRole}) has admin/team leader privileges to update lead ${id}`);
       }
 
       // Clean input data - convert empty date strings to null
@@ -699,13 +706,22 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       console.log(`Update request for lead ${id} (PUT): ${isOnlyUpdatingNotes ? 'Only updating notes' : 'Updating multiple fields'}`);
       console.log(`Request body (PUT):`, req.body);
 
-      // No exception for notes - only assigned agent and admin/team leader can update any field
-      if (userRole !== 'admin' && userRole !== 'team_leader') {
+      // Debugging information
+      console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PUT`);
+      
+      // Admin can update any lead
+      if (userRole === 'admin') {
+        console.log(`Access granted: User ${userId} has admin privileges to update lead ${id} via PUT`);
+      } 
+      // Team leader can update any lead
+      else if (userRole === 'team_leader') {
+        console.log(`Access granted: User ${userId} has team leader privileges to update lead ${id} via PUT`);
+      } 
+      // Regular agent can only update leads assigned to them
+      else {
         // Find the agent record for this user
         const agent = userId ? await storage.getAgentByUserId(userId) : null;
         
-        // Debugging information
-        console.log(`User ${userId} (role: ${userRole}) attempting to update lead ${id} via PUT`);
         console.log(`Agent record:`, agent);
         console.log(`Lead assigned agent ID:`, existingLead.assignedAgentId);
         
@@ -716,8 +732,6 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         } else {
           console.log(`Access granted: User ${userId} is authorized to update lead ${id}`);
         }
-      } else {
-        console.log(`Access granted: User ${userId} (role: ${userRole}) has admin/team leader privileges to update lead ${id} via PUT`);
       }
 
       // Clean input data - convert empty date strings to null
