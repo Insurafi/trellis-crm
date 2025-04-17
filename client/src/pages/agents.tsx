@@ -57,9 +57,9 @@ type AgentWithName = Agent & { name?: string };
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
-// Form schema
+// Form schema - Supporting both full and simplified agent creation
 const agentFormSchema = z.object({
-  // Personal information
+  // Personal information - Only these are required
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   
@@ -68,24 +68,24 @@ const agentFormSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters").optional(),
   email: z.string().email("Invalid email address").optional(),
   
-  // Agent professional details
-  licenseNumber: z.string().min(1, "License number is required"),
-  licenseExpiration: z.string().min(1, "License expiration date is required"),
-  npn: z.string().min(1, "NPN is required"),
-  phoneNumber: z.string().min(1, "Phone number is required"),
+  // Agent professional details - Now optional for simplified creation
+  licenseNumber: z.string().optional(),
+  licenseExpiration: z.string().optional(),
+  npn: z.string().optional(),
+  phoneNumber: z.string().optional(),
   
-  // Address information
-  address: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "ZIP code is required"),
+  // Address information - Now optional for simplified creation
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zipCode: z.string().optional(),
   
-  // Agency details
-  carrierAppointments: z.string(),
+  // Agency details - Now optional for simplified creation
+  carrierAppointments: z.string().optional(),
   uplineAgentId: z.number().nullable().optional(),
-  commissionPercentage: z.string(),
-  overridePercentage: z.string(),
-  specialties: z.string(),
+  commissionPercentage: z.string().optional(),
+  overridePercentage: z.string().optional(),
+  specialties: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -317,7 +317,27 @@ const AgentsPage: React.FC = () => {
 
   // Handle add form submission
   const onAddSubmit = (data: AgentFormValues) => {
-    addAgentMutation.mutate(data);
+    // Check if this is simplified agent creation (just name fields) or full agent creation
+    const isSimplifiedCreation = data.firstName && data.lastName && 
+      !data.licenseNumber && !data.phoneNumber && !data.licenseExpiration;
+    
+    if (isSimplifiedCreation) {
+      // For simplified creation, just send the minimum required fields
+      const simplifiedData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        // Include optional credentials if provided
+        ...(data.username && { username: data.username }),
+        ...(data.password && { password: data.password }),
+        ...(data.email && { email: data.email })
+      };
+      
+      console.log("Submitting simplified agent creation:", simplifiedData);
+      addAgentMutation.mutate(simplifiedData as AgentFormValues);
+    } else {
+      // Full agent creation with all fields
+      addAgentMutation.mutate(data);
+    }
   };
 
   // Handle edit form submission
