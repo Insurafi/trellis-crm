@@ -604,15 +604,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Calendar event request body:", req.body);
       
-      // Create a modified schema for API validation that accepts strings for dates
-      const apiCalendarEventSchema = insertCalendarEventSchema
-        .omit({ startTime: true, endTime: true })
-        .extend({
-          startTime: z.string().transform(val => new Date(val)),
-          endTime: z.string().transform(val => new Date(val)),
-        });
-
-      const parsedData = apiCalendarEventSchema.parse(req.body);
+      // Use the schema defined in shared/schema.ts which now handles both date and string types
+      const parsedData = insertCalendarEventSchema.parse(req.body);
       console.log("Parsed calendar event data:", parsedData);
       
       const newEvent = await storage.createCalendarEvent(parsedData);
@@ -630,16 +623,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid event ID" });
       }
 
-      // Create a modified schema for API validation that accepts strings for dates
-      const apiCalendarEventSchema = insertCalendarEventSchema
-        .omit({ startTime: true, endTime: true })
-        .extend({
-          startTime: z.string().transform(val => new Date(val)).optional(),
-          endTime: z.string().transform(val => new Date(val)).optional(),
-        })
-        .partial();
-
-      const parsedData = apiCalendarEventSchema.parse(req.body);
+      // Now the schema defined in shared/schema.ts handles string dates
+      const parsedData = insertCalendarEventSchema.partial().parse(req.body);
       console.log("Parsed calendar event update data:", parsedData);
       
       const updatedEvent = await storage.updateCalendarEvent(id, parsedData);

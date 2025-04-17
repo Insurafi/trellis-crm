@@ -175,7 +175,8 @@ export const calendarEvents = pgTable("calendar_events", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertCalendarEventSchema = createInsertSchema(calendarEvents).pick({
+// Create a base schema for the database
+const baseCalendarEventSchema = createInsertSchema(calendarEvents).pick({
   title: true,
   description: true,
   startTime: true,
@@ -184,6 +185,20 @@ export const insertCalendarEventSchema = createInsertSchema(calendarEvents).pick
   createdBy: true,
   type: true,
 });
+
+// Create an API-friendly schema that handles string dates
+export const insertCalendarEventSchema = baseCalendarEventSchema
+  .omit({ startTime: true, endTime: true })
+  .extend({
+    startTime: z.union([
+      z.string().transform(val => new Date(val)),
+      z.date()
+    ]),
+    endTime: z.union([
+      z.string().transform(val => new Date(val)),
+      z.date()
+    ]),
+  });
 
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;
 export type CalendarEvent = typeof calendarEvents.$inferSelect;
