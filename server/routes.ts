@@ -1468,7 +1468,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test email endpoint
   app.post("/api/test-email", isAuthenticated, async (req, res) => {
     try {
-      // For SendGrid, the 'from' email must be a verified sender
       // Using a properly formatted from field with name and email
       const senderName = "Trellis CRM";
       const senderEmail = "admin@trellis-crm.com";
@@ -1483,11 +1482,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Recipient email address (to) is required" });
       }
       
-      console.log(`Attempting to send test email to ${to}...`);
-      
+      // This will log the email details to the console using our placeholder system
       const success = await sendEmail({
         to,
-        from: fromField as any, // Using 'as any' to bypass type checking for complex from field
+        from: fromField as any,
         subject,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
@@ -1499,7 +1497,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             <p>This is a test email from the Trellis CRM system to verify that our email service is working correctly.</p>
             
-            <p>If you received this email, it means the SendGrid integration is working properly.</p>
+            <p>If you received this email, it means the email service is working properly.</p>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #777; font-size: 12px;">
               <p>This is an automated message from Trellis CRM. Please do not reply to this email.</p>
@@ -1508,21 +1506,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `
       });
       
-      if (success) {
-        console.log(`✅ Test email sent successfully to ${to}`);
-        return res.json({ success: true, message: `Email sent successfully to ${to}` });
-      } else {
-        console.error(`❌ Failed to send test email to ${to}`);
-        return res.status(500).json({ 
-          success: false, 
-          message: "Failed to send email. Please make sure the SendGrid API key is valid and the sender email is verified in your SendGrid account." 
-        });
-      }
+      // With our placeholder system, this should always succeed
+      return res.json({ 
+        success: true, 
+        message: `Email placeholder processed successfully for ${to}. Check server logs for details.`,
+        note: "This is a placeholder email service. In a production environment, you would need to configure a real email service provider."
+      });
     } catch (error) {
-      console.error("Error sending test email:", error);
+      console.error("Error in email placeholder service:", error);
       res.status(500).json({ 
         success: false, 
-        message: "Internal server error. Please check server logs for details." 
+        message: "Internal server error in email placeholder service." 
       });
     }
   });
