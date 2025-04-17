@@ -822,8 +822,51 @@ export class DatabaseStorage implements IStorage {
       // Get the userId from the agent record
       const userId = agent.userId;
 
-      // Since this is a mock agent cleanup, we'll not worry too much about cascading deletes
-      // Simply delete the agent record
+      // First, find any agents that reference this agent as their upline
+      const downlineAgents = await db.select().from(agents).where(eq(agents.uplineAgentId, id));
+      
+      // Update those agents to have null as their upline
+      if (downlineAgents.length > 0) {
+        console.log(`Updating ${downlineAgents.length} downline agents to remove reference to agent ${id}`);
+        await db.update(agents)
+          .set({ uplineAgentId: null })
+          .where(eq(agents.uplineAgentId, id));
+      }
+
+      // Find any policies assigned to this agent
+      const agentPolicies = await db.select().from(policies).where(eq(policies.agentId, id));
+      
+      // Update those policies to have null as their agent
+      if (agentPolicies.length > 0) {
+        console.log(`Updating ${agentPolicies.length} policies to remove reference to agent ${id}`);
+        await db.update(policies)
+          .set({ agentId: null })
+          .where(eq(policies.agentId, id));
+      }
+
+      // Find any leads assigned to this agent
+      const agentLeads = await db.select().from(leads).where(eq(leads.assignedAgentId, id));
+      
+      // Update those leads to have null as their agent
+      if (agentLeads.length > 0) {
+        console.log(`Updating ${agentLeads.length} leads to remove reference to agent ${id}`);
+        await db.update(leads)
+          .set({ assignedAgentId: null })
+          .where(eq(leads.assignedAgentId, id));
+      }
+
+      // Find any clients assigned to this agent
+      const agentClients = await db.select().from(clients).where(eq(clients.assignedAgentId, id));
+      
+      // Update those clients to have null as their agent
+      if (agentClients.length > 0) {
+        console.log(`Updating ${agentClients.length} clients to remove reference to agent ${id}`);
+        await db.update(clients)
+          .set({ assignedAgentId: null })
+          .where(eq(clients.assignedAgentId, id));
+      }
+
+      // Now we can delete the agent record
       const result = await db.delete(agents).where(eq(agents.id, id));
       
       console.log(`Deleted agent with ID ${id}`);

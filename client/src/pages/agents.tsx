@@ -194,8 +194,12 @@ const AgentsPage: React.FC = () => {
 
   // Delete agent mutation
   const deleteAgentMutation = useMutation({
-    mutationFn: (id: number) =>
-      apiRequest("DELETE", `/api/agents/${id}`),
+    mutationFn: async (id: number) => {
+      console.log(`Attempting to delete agent with ID: ${id}`);
+      const response = await apiRequest("DELETE", `/api/agents/${id}`);
+      console.log(`Delete response status: ${response.status}`);
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
@@ -204,9 +208,10 @@ const AgentsPage: React.FC = () => {
       });
     },
     onError: (error) => {
+      console.error("Error deleting agent:", error);
       toast({
         title: "Error",
-        description: "Failed to delete agent",
+        description: `Failed to delete agent: ${error instanceof Error ? error.message : "Unknown error"}`,
         variant: "destructive",
       });
     },
@@ -350,7 +355,9 @@ const AgentsPage: React.FC = () => {
 
   // Handle delete agent
   const handleDelete = (agent: Agent) => {
-    if (window.confirm(`Are you sure you want to delete ${agent.licenseNumber}?`)) {
+    const agentName = agent.userId ? `agent with license ${agent.licenseNumber}` : agent.licenseNumber;
+    if (window.confirm(`Are you sure you want to delete ${agentName}? This will also remove this agent from any leads, clients, and other relationships.`)) {
+      console.log(`User confirmed deletion of agent ID: ${agent.id}`);
       deleteAgentMutation.mutate(agent.id);
     }
   };
