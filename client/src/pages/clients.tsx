@@ -71,12 +71,21 @@ export default function Clients() {
   // Delete client mutation
   const deleteClientMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await apiRequest("DELETE", `/api/clients/${id}`);
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || "Failed to delete client");
+      try {
+        const response = await apiRequest("DELETE", `/api/clients/${id}`);
+        // For status 204 No Content, there's no json to parse
+        if (response.status === 204) {
+          return id;
+        }
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || "Failed to delete client");
+        }
+        return id;
+      } catch (error) {
+        console.error("Error deleting client:", error);
+        throw new Error("Failed to delete client");
       }
-      return id;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/clients'] });
