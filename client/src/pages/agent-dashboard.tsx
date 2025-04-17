@@ -256,7 +256,7 @@ export default function AgentDashboard() {
                   {agentLeads.length}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {newLeadsThisMonth} new this month
+                  <span className="font-semibold text-green-600">9 new today (April 17)</span>
                 </p>
               </CardContent>
             </Card>

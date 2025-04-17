@@ -69,8 +69,15 @@ const MetricCardSkeleton = () => (
   </Card>
 );
 
+interface DashboardStats {
+  totalClients: number;
+  pendingQuotes: number;
+  activeTasks: number;
+  upcomingMeetings: number;
+}
+
 const DashboardMetrics = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<DashboardStats>({
     queryKey: ['/api/dashboard/stats'],
   });
 
@@ -89,11 +96,19 @@ const DashboardMetrics = () => {
     return <div>Error loading dashboard metrics</div>;
   }
 
+  // Ensure data is not undefined
+  const stats = data || {
+    totalClients: 0,
+    pendingQuotes: 0,
+    activeTasks: 0,
+    upcomingMeetings: 0
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <MetricCard
         title="Total Clients"
-        value={data.totalClients}
+        value={stats.totalClients}
         icon={<User className="h-5 w-5" />}
         iconBgColor="bg-blue-100"
         iconTextColor="text-primary"
@@ -103,7 +118,7 @@ const DashboardMetrics = () => {
       
       <MetricCard
         title="Pending Quotes"
-        value={data.pendingQuotes}
+        value={stats.pendingQuotes}
         icon={<DollarSign className="h-5 w-5" />}
         iconBgColor="bg-green-100"
         iconTextColor="text-green-600"
@@ -113,7 +128,7 @@ const DashboardMetrics = () => {
       
       <MetricCard
         title="Active Tasks"
-        value={data.activeTasks}
+        value={stats.activeTasks}
         icon={<CheckSquare className="h-5 w-5" />}
         iconBgColor="bg-indigo-100"
         iconTextColor="text-indigo-600"
@@ -123,7 +138,7 @@ const DashboardMetrics = () => {
       
       <MetricCard
         title="Upcoming Meetings"
-        value={data.upcomingMeetings}
+        value={stats.upcomingMeetings}
         icon={<CalendarCheck className="h-5 w-5" />}
         iconBgColor="bg-yellow-100"
         iconTextColor="text-amber-500"
