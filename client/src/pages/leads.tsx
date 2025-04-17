@@ -138,19 +138,46 @@ const LeadsPage: React.FC = () => {
   // Update lead mutation
   const updateLeadMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: LeadFormValues }) => {
-      const response = await apiRequest("PUT", `/api/leads/${id}`, data);
-      if (!response.ok) {
-        // Try to extract the error message from the response
-        try {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to update lead');
-        } catch (parseError) {
-          throw new Error(`Failed to update lead: ${response.statusText}`);
-        }
+      try {
+        // Use the proper apiRequest function that handles the response correctly
+        return await fetch(`/api/leads/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+          credentials: "include",
+        });
+      } catch (error) {
+        console.error("Network error during lead update:", error);
+        throw new Error("Network error occurred. Please try again.");
       }
-      return response;
     },
-    onSuccess: () => {
+    onSuccess: async (response) => {
+      if (!response.ok) {
+        // Handle HTTP error responses (like 400, 401, 403, 500, etc.)
+        const errorText = await response.text();
+        let errorMessage = "Failed to update lead";
+        
+        try {
+          // Try to parse the error message from the response
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If the error response is not valid JSON, use the status text
+          errorMessage = `${errorMessage}: ${response.statusText || "Unknown error"}`;
+        }
+        
+        console.error("Lead update HTTP error:", response.status, errorMessage);
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Success case
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
       toast({
         title: "Lead updated",
