@@ -59,7 +59,6 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     // Admin/TeamLeader/Support navigation
     navItems = [
       { path: "/dashboard", icon: <LayoutDashboard className="mr-3 h-5 w-5" />, label: "Admin Dashboard" },
-      { path: "/agents", icon: <UserCheck className="mr-3 h-5 w-5" />, label: "Agents" },
       ...baseNavItems,
       { path: "/marketing", icon: <Mail className="mr-3 h-5 w-5" />, label: "Marketing" },
       { path: "/analytics", icon: <LineChart className="mr-3 h-5 w-5" />, label: "Analytics" },
@@ -68,15 +67,12 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     // Add Team Management for admin users (it's already in the navItems array)
     // Make it more visible by placing it near the top for admin users
     if (isAdmin) {
-      // Insert Team Management right after Agents
-      navItems.splice(2, 0, { 
+      // Insert Team Management right after Dashboard
+      navItems.splice(1, 0, { 
         path: "/users", 
         icon: <Users className="mr-3 h-5 w-5" />, 
         label: "Team Management" 
       });
-      
-      // Add a console log to verify this is being executed
-      console.log("Added Team Management to navigation for admin user");
     }
   }
 

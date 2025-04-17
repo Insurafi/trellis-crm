@@ -29,15 +29,15 @@ import DirectClientLogin from "@/pages/direct-client-login";
 import FinalClientTest from "@/pages/final-client-test";
 import ClientDashboard from "@/pages/client-dashboard";
 
-// Use wrapper components to handle lazy loading
-const AgentsPage = () => {
-  const Agents = lazy(() => import("@/pages/agents"));
-  return (
-    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
-      <Agents />
-    </Suspense>
-  );
-};
+// Insurance Agents page removed per request
+// const AgentsPage = () => {
+//   const Agents = lazy(() => import("@/pages/agents"));
+//   return (
+//     <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+//       <Agents />
+//     </Suspense>
+//   );
+// };
 
 const LeadsPage = () => {
   const Leads = lazy(() => import("@/pages/leads"));
@@ -117,7 +117,6 @@ function Router() {
       <ProtectedRoute path="/pipeline" component={Pipeline} />
       <ProtectedRoute path="/commissions" component={Commissions} />
       <ProtectedRoute path="/communications" component={Communications} />
-      <ProtectedRoute path="/agents" component={AgentsPage} />
       <ProtectedRoute path="/leads" component={LeadsPage} />
       <ProtectedRoute path="/policies" component={PoliciesPage} />
       <ProtectedRoute path="/users" component={UsersPage} />
