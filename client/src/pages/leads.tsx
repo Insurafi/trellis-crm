@@ -139,9 +139,9 @@ const LeadsPage: React.FC = () => {
   const updateLeadMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: LeadFormValues }) => {
       try {
-        // Use the proper apiRequest function that handles the response correctly
+        // Use PATCH instead of PUT for better compatibility
         return await fetch(`/api/leads/${id}`, {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
