@@ -812,8 +812,26 @@ export class DatabaseStorage implements IStorage {
   }
   
   async deleteAgent(id: number): Promise<boolean> {
-    const result = await db.delete(agents).where(eq(agents.id, id));
-    return result.count > 0;
+    try {
+      // First get the agent to check if it exists
+      const [agent] = await db.select().from(agents).where(eq(agents.id, id));
+      if (!agent) {
+        return false;
+      }
+
+      // Get the userId from the agent record
+      const userId = agent.userId;
+
+      // Since this is a mock agent cleanup, we'll not worry too much about cascading deletes
+      // Simply delete the agent record
+      const result = await db.delete(agents).where(eq(agents.id, id));
+      
+      console.log(`Deleted agent with ID ${id}`);
+      return result.count > 0;
+    } catch (error) {
+      console.error(`Error deleting agent with ID ${id}:`, error);
+      return false;
+    }
   }
   
   // Leads

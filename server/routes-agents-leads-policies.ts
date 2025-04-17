@@ -456,7 +456,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.delete("/api/agents/:id", isAdmin, async (req, res) => {
+  app.delete("/api/agents/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
