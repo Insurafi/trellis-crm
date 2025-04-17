@@ -565,10 +565,17 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
   app.post("/api/leads", isAuthenticated, async (req, res) => {
     try {
-      const leadData = insertLeadSchema.parse(req.body);
+      // Clean input data - convert empty date strings to null
+      const cleanedData = { ...req.body };
+      if (cleanedData.dateOfBirth === "") {
+        cleanedData.dateOfBirth = null;
+      }
+      
+      const leadData = insertLeadSchema.parse(cleanedData);
       const newLead = await storage.createLead(leadData);
       res.status(201).json(newLead);
     } catch (error) {
+      console.error("Error creating lead:", error);
       handleValidationError(error, res);
     }
   });
@@ -581,7 +588,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid lead ID" });
       }
 
-      const updateData = insertLeadSchema.partial().parse(req.body);
+      // Clean input data - convert empty date strings to null
+      const cleanedData = { ...req.body };
+      if (cleanedData.dateOfBirth === "") {
+        cleanedData.dateOfBirth = null;
+      }
+
+      const updateData = insertLeadSchema.partial().parse(cleanedData);
       const updatedLead = await storage.updateLead(id, updateData);
       
       if (!updatedLead) {
@@ -590,6 +603,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
       res.json(updatedLead);
     } catch (error) {
+      console.error("Error updating lead:", error);
       handleValidationError(error, res);
     }
   });
@@ -602,7 +616,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid lead ID" });
       }
 
-      const updateData = insertLeadSchema.partial().parse(req.body);
+      // Clean input data - convert empty date strings to null
+      const cleanedData = { ...req.body };
+      if (cleanedData.dateOfBirth === "") {
+        cleanedData.dateOfBirth = null;
+      }
+
+      const updateData = insertLeadSchema.partial().parse(cleanedData);
       const updatedLead = await storage.updateLead(id, updateData);
       
       if (!updatedLead) {
@@ -611,6 +631,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
       res.json(updatedLead);
     } catch (error) {
+      console.error("Error updating lead (PUT):", error);
       handleValidationError(error, res);
     }
   });
