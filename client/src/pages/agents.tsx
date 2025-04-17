@@ -196,11 +196,26 @@ const AgentsPage: React.FC = () => {
   const deleteAgentMutation = useMutation({
     mutationFn: async (id: number) => {
       console.log(`Attempting to delete agent with ID: ${id}`);
-      const response = await apiRequest("DELETE", `/api/agents/${id}`);
-      console.log(`Delete response status: ${response.status}`);
-      return response;
+      try {
+        const response = await apiRequest("DELETE", `/api/agents/${id}`);
+        console.log(`Delete response status: ${response.status}`);
+        
+        // For 204 No Content responses, apiRequest might return empty object
+        if (response.status === 204) {
+          return { success: true, status: 204 };
+        }
+        
+        return response;
+      } catch (error) {
+        // If the agent was already deleted (404), consider it a success
+        if (error instanceof Error && error.message.includes('404')) {
+          console.log("Agent was already deleted (404), treating as success");
+          return { success: true, status: 404, message: "Agent already deleted" };
+        }
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       toast({
         title: "Agent deleted",

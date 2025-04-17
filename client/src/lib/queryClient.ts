@@ -13,26 +13,50 @@ export async function apiRequest(
   data?: unknown,
   options?: {
     headers?: Record<string, string>;
+    skipErrorCheck?: boolean;
   }
 ): Promise<any> {
-  const res = await fetch(url, {
-    method,
-    headers: {
-      ...(data ? { "Content-Type": "application/json" } : {}),
-      ...(options?.headers || {})
-    },
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
-
-  await throwIfResNotOk(res);
-  
-  // For DELETE requests that return 204 No Content
-  if (res.status === 204) {
-    return null;
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        ...(data ? { "Content-Type": "application/json" } : {}),
+        ...(options?.headers || {})
+      },
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
+    
+    // For DELETE requests that return 204 No Content
+    if (res.status === 204) {
+      return { status: 204, message: "No Content", success: true };
+    }
+    
+    // Only throw error if not explicitly skipped
+    if (!options?.skipErrorCheck) {
+      await throwIfResNotOk(res);
+    } else if (!res.ok) {
+      // Return the error information but don't throw
+      return { 
+        status: res.status, 
+        statusText: res.statusText,
+        error: true,
+        message: await res.text().catch(() => res.statusText) 
+      };
+    }
+    
+    // Try to parse as JSON, but handle text responses too
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await res.json();
+    } else {
+      const text = await res.text();
+      return { status: res.status, text, success: true };
+    }
+  } catch (error) {
+    console.error(`API request error (${method} ${url}):`, error);
+    throw error;
   }
-  
-  return res.json();
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
