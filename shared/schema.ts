@@ -41,6 +41,7 @@ export const clients = pgTable("clients", {
   company: text("company"),
   email: text("email").notNull(),
   phone: text("phone"),
+  sex: text("sex"), // 'M' or 'F'
   address: text("address"),
   status: text("status").default("active"),
   avatarUrl: text("avatar_url"),
@@ -58,6 +59,7 @@ export const insertClientSchema = createInsertSchema(clients).pick({
   company: true,
   email: true,
   phone: true,
+  sex: true, // Added sex field
   address: true,
   status: true,
   avatarUrl: true,
@@ -501,6 +503,7 @@ export const leads = pgTable("leads", {
   id: serial("id").primaryKey(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
+  sex: text("sex"), // 'M' or 'F'
   dateOfBirth: date("date_of_birth"),
   email: text("email"),
   phoneNumber: text("phone_number"),
@@ -533,6 +536,7 @@ export const leads = pgTable("leads", {
 const baseLeadSchema = createInsertSchema(leads).pick({
   firstName: true,
   lastName: true,
+  sex: true, // Added sex field
   dateOfBirth: true,
   email: true,
   phoneNumber: true,
@@ -566,6 +570,7 @@ export const insertLeadSchema = baseLeadSchema.extend({
   state: baseLeadSchema.shape.state,
   
   // Make all other fields optional
+  sex: baseLeadSchema.shape.sex.optional(), // Make the new sex field optional
   dateOfBirth: baseLeadSchema.shape.dateOfBirth.optional(),
   address: baseLeadSchema.shape.address.optional(),
   city: baseLeadSchema.shape.city.optional(),

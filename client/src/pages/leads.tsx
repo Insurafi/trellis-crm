@@ -63,6 +63,7 @@ const leadFormSchema = z.object({
   state: z.string().min(1, "State is required"),
   
   // Make all other fields optional
+  sex: z.string().optional(), // Added sex field (M/F)
   dateOfBirth: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
@@ -170,6 +171,7 @@ const LeadsPage: React.FC = () => {
     defaultValues: {
       firstName: "",
       lastName: "",
+      sex: "", // Added sex field with empty default
       dateOfBirth: "",
       email: "",
       phoneNumber: "",
@@ -242,6 +244,7 @@ const LeadsPage: React.FC = () => {
       editForm.reset({
         firstName: selectedLead.firstName,
         lastName: selectedLead.lastName,
+        sex: selectedLead.sex || "", // Added sex field
         dateOfBirth: formatDate(selectedLead.dateOfBirth),
         email: selectedLead.email,
         phoneNumber: selectedLead.phoneNumber,
@@ -360,7 +363,7 @@ const LeadsPage: React.FC = () => {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <FormField
                     control={addForm.control}
                     name="dateOfBirth"
@@ -383,6 +386,30 @@ const LeadsPage: React.FC = () => {
                         <FormControl>
                           <Input placeholder="555-123-4567" {...field} />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addForm.control}
+                    name="sex"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sex</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select sex" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="M">Male</SelectItem>
+                            <SelectItem value="F">Female</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
