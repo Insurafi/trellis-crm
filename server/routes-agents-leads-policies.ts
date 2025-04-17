@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
 import { sendAgentWelcomeEmail } from "./agent-welcome-email";
+import { syncLeadToClient } from "./lead-client-sync";
 
 export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Error handling middleware for validation errors
@@ -613,7 +614,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   });
 
   app.patch("/api/leads/:id", isAuthenticated, async (req, res) => {
-    // Handle lead update logic
+    // Handle lead update logic with client synchronization
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
