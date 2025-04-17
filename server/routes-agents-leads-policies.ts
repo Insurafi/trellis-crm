@@ -204,7 +204,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
           const placeholderAgent = {
             userId: newUser.id,
             licenseNumber: `TEMP-${newUser.id}`,
-            licenseExpiration: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+            licenseExpiration: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0], // Convert to string format
             phoneNumber: '000-000-0000', // Placeholder phone
             notes: 'Created with simplified process. Update with complete details.'
           };
