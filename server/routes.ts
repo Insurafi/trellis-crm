@@ -602,14 +602,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/calendar/events", async (req, res) => {
     try {
-      console.log("Calendar event request body:", req.body);
+      console.log("Calendar event request body:", JSON.stringify(req.body, null, 2));
       
-      // Use the schema defined in shared/schema.ts which now handles both date and string types
-      const parsedData = insertCalendarEventSchema.parse(req.body);
-      console.log("Parsed calendar event data:", parsedData);
-      
-      const newEvent = await storage.createCalendarEvent(parsedData);
-      res.status(201).json(newEvent);
+      // Try parsing the data and provide detailed error information
+      try {
+        const parsedData = insertCalendarEventSchema.parse(req.body);
+        console.log("Parsed calendar event data:", JSON.stringify(parsedData, null, 2));
+        
+        const newEvent = await storage.createCalendarEvent(parsedData);
+        res.status(201).json(newEvent);
+      } catch (parseError) {
+        // Log detailed validation errors
+        if (parseError instanceof z.ZodError) {
+          console.error("Zod validation error details:", JSON.stringify(parseError.format(), null, 2));
+        }
+        throw parseError;
+      }
     } catch (error) {
       console.error("Calendar event creation error:", error);
       handleValidationError(error, res);

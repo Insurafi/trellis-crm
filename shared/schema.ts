@@ -186,18 +186,24 @@ const baseCalendarEventSchema = createInsertSchema(calendarEvents).pick({
   type: true,
 });
 
-// Create an API-friendly schema that handles string dates
+// Create an API-friendly schema that handles string dates properly
 export const insertCalendarEventSchema = baseCalendarEventSchema
   .omit({ startTime: true, endTime: true })
   .extend({
-    startTime: z.union([
-      z.string().transform(val => new Date(val)),
+    startTime: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
+        return arg;
+      },
       z.date()
-    ]),
-    endTime: z.union([
-      z.string().transform(val => new Date(val)),
+    ),
+    endTime: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
+        return arg;
+      },
       z.date()
-    ]),
+    ),
   });
 
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;

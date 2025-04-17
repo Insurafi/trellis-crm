@@ -134,6 +134,9 @@ export default function Calendar() {
   const createEventMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       try {
+        // Log original form values
+        console.log("Original form values:", JSON.stringify(values, null, 2));
+        
         // Ensure valid dates before conversion
         if (!values.startTime || !values.endTime) {
           throw new Error("Start time and end time are required");
@@ -148,11 +151,20 @@ export default function Calendar() {
           throw new Error("Invalid date format");
         }
         
+        // Log the dates for debugging
+        console.log("Start Date:", startDate);
+        console.log("End Date:", endDate);
+        console.log("ISO Start Date:", startDate.toISOString());
+        console.log("ISO End Date:", endDate.toISOString());
+        
         const transformedValues = {
           ...values,
           startTime: startDate.toISOString(),
           endTime: endDate.toISOString(),
         };
+
+        // Log transformed values
+        console.log("Transformed values being sent to server:", JSON.stringify(transformedValues, null, 2));
 
         return await apiRequest("POST", "/api/calendar/events", transformedValues);
       } catch (error) {
