@@ -230,8 +230,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
                 firstName,
                 lastName,
                 fullName: `${firstName} ${lastName}`,
-                username,
-                temporaryPassword: password,
+                username: username || '',
+                temporaryPassword: password || '',
                 email
               }).then(success => {
                 if (success) {
@@ -335,8 +335,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             firstName,
             lastName,
             fullName: `${firstName} ${lastName}`,
-            username,
-            temporaryPassword: password,
+            username: username || '',
+            temporaryPassword: password || '',
             email
           }).then(success => {
             if (success) {
@@ -574,6 +574,28 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   });
 
   app.patch("/api/leads/:id", isAuthenticated, async (req, res) => {
+    // Handle lead update logic
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid lead ID" });
+      }
+
+      const updateData = insertLeadSchema.partial().parse(req.body);
+      const updatedLead = await storage.updateLead(id, updateData);
+      
+      if (!updatedLead) {
+        return res.status(404).json({ message: "Lead not found" });
+      }
+
+      res.json(updatedLead);
+    } catch (error) {
+      handleValidationError(error, res);
+    }
+  });
+  
+  // Support PUT method as well (clients are making PUT requests)
+  app.put("/api/leads/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
