@@ -111,19 +111,51 @@ export default function AgentProfile() {
   }, [agentData, user, form]);
   
   // Update profile mutation
+  const { logoutMutation } = useAuth();
+  const [usernameChanged, setUsernameChanged] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  
   const updateProfileMutation = useMutation({
     mutationFn: async (data: AgentProfileFormValues) => {
+      // Store whether the username is being changed
+      const isChangingUsername = data.username !== user?.username;
+      
+      // Remember if we're changing username for the onSuccess handler
+      if (isChangingUsername) {
+        setNewUsername(data.username);
+        setUsernameChanged(true);
+      } else {
+        setUsernameChanged(false);
+      }
+      
       const res = await apiRequest("PATCH", "/api/agents/profile", data);
-      return await res.json();
+      return { 
+        response: await res.json(), 
+        isUsernameChanged: isChangingUsername 
+      };
     },
-    onSuccess: () => {
-      toast({
-        title: "Profile Updated",
-        description: "Your profile information has been updated successfully.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/agents/by-user"] });
+    onSuccess: (data) => {
+      // Check if username was changed
+      if (data.isUsernameChanged) {
+        toast({
+          title: "Profile Updated",
+          description: "Your username has been changed. You will need to login again with your new username.",
+        });
+        
+        // Give the user time to read the message before logging out
+        setTimeout(() => {
+          logoutMutation.mutate();
+        }, 3000);
+      } else {
+        toast({
+          title: "Profile Updated",
+          description: "Your profile information has been updated successfully.",
+        });
+        queryClient.invalidateQueries({ queryKey: ["/api/agents/by-user"] });
+      }
     },
     onError: (error: any) => {
+      setUsernameChanged(false);
       toast({
         title: "Update Failed",
         description: error.message || "There was an error updating your profile.",
