@@ -1,12 +1,5 @@
-import { MailService } from '@sendgrid/mail';
-
-// Create a mail service instance
-const mailService = new MailService();
-
-// If the SendGrid API key is provided, set it
-if (process.env.SENDGRID_API_KEY) {
-  mailService.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// This is a placeholder email service
+// In a production environment, this would be connected to a real email provider like SendGrid, Mailgun, etc.
 
 interface EmailParams {
   to: string;
@@ -17,56 +10,31 @@ interface EmailParams {
 }
 
 /**
- * Send an email using SendGrid
+ * Send an email (placeholder implementation)
  * @param params Email parameters including to, from, subject, text and html content
  * @returns Promise<boolean> indicating success or failure
  */
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
-    // Check if we have a SendGrid API key
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('SendGrid API key is not set. Email not sent.');
-      return false;
-    }
-
-    console.log('Attempting to send email with the following params:');
+    // Log that we would send an email in a production environment
+    console.log('📧 EMAIL NOTIFICATION (PLACEHOLDER)');
+    console.log('================================');
     console.log('To:', params.to);
     console.log('From:', params.from);
     console.log('Subject:', params.subject);
+    console.log('Content:', params.text || params.html || '(No content)');
+    console.log('================================');
+    console.log('NOTE: This is a placeholder. No email was actually sent.');
+    console.log('To enable real email sending, you would need to:');
+    console.log('1. Set up an account with an email service provider (SendGrid, Mailgun, etc.)');
+    console.log('2. Obtain an API key and configure it in your environment');
+    console.log('3. Update the email-service.ts file to use the provider\'s SDK');
+    console.log('================================');
     
-    // Send the email
-    await mailService.send({
-      to: params.to,
-      from: params.from,
-      subject: params.subject,
-      text: params.text || '',
-      html: params.html || '',
-    });
-    
-    console.log('✅ Email sent successfully to', params.to);
+    // For demonstration purposes, we'll simulate success
     return true;
-  } catch (error: any) {
-    console.error('SendGrid email error:', error);
-    
-    // Log more detailed error information
-    if (error?.response) {
-      console.error('SendGrid error response code:', error.code);
-      
-      if (error.response.body) {
-        console.error('SendGrid error body:', JSON.stringify(error.response.body, null, 2));
-        
-        // Check for specific SendGrid errors and provide guidance
-        const errors = error.response.body.errors || [];
-        for (const err of errors) {
-          if (err.field === 'from' && err.message && err.message.includes('verified Sender Identity')) {
-            console.error('ERROR: The sender email address must be verified in your SendGrid account.');
-            console.error('Please visit https://sendgrid.com/docs/for-developers/sending-email/sender-identity/');
-            console.error('to learn how to verify your sender identity.');
-          }
-        }
-      }
-    }
-    
+  } catch (error) {
+    console.error('Error in email placeholder service:', error);
     return false;
   }
 }
