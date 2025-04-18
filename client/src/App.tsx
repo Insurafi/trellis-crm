@@ -112,6 +112,16 @@ const EmergencyAgentEditPage = () => {
   );
 };
 
+// Agent Performance Page component
+const AgentPerformancePage = () => {
+  const AgentPerformance = lazy(() => import("@/pages/agent-performance"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <AgentPerformance />
+    </Suspense>
+  );
+};
+
 // Create a ClientDetailPage component to handle lazy loading
 const ClientDetailPage = () => {
   return (
@@ -144,6 +154,7 @@ function Router() {
       <ProtectedRoute path="/agent-detail/:id" component={AgentDetailPage} />
       <ProtectedRoute path="/agent-edit/:id" component={AgentEditPage} />
       <ProtectedRoute path="/emergency-agent-edit/:id" component={EmergencyAgentEditPage} />
+      <ProtectedRoute path="/agents/:id/performance" component={AgentPerformancePage} />
       <ProtectedRoute path="/agent-profile" component={AgentProfilePage} />
       <ProtectedRoute path="/training" component={Training} />
       <ProtectedRoute path="/analytics" component={Analytics} />
