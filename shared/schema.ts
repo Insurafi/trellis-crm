@@ -467,6 +467,12 @@ export const agents = pgTable("agents", {
   specialties: text("specialties"), // Comma-separated list of specialties
   licensedStates: text("licensed_states"), // Comma-separated list of states where agent is licensed to sell
   notes: text("notes"),
+  // Banking information
+  bankName: text("bank_name"),
+  bankAccountType: text("bank_account_type"), // "checking" or "savings"
+  bankAccountNumber: text("bank_account_number"),
+  bankRoutingNumber: text("bank_routing_number"),
+  bankPaymentMethod: text("bank_payment_method"), // "direct_deposit", "check", etc.
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -489,6 +495,12 @@ const baseAgentSchema = createInsertSchema(agents).pick({
   specialties: true,
   licensedStates: true,
   notes: true,
+  // Banking information
+  bankName: true,
+  bankAccountType: true,
+  bankAccountNumber: true,
+  bankRoutingNumber: true,
+  bankPaymentMethod: true,
 });
 
 // Export the schema with extended fields and make most fields optional

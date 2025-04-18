@@ -39,6 +39,30 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 
+// Helper functions for formatting bank info
+function formatBankAccountType(type: string | null | undefined): string {
+  if (!type) return "";
+  
+  const typeMap: Record<string, string> = {
+    'checking': 'Checking',
+    'savings': 'Savings'
+  };
+  
+  return typeMap[type] || type;
+}
+
+function formatPaymentMethod(method: string | null | undefined): string {
+  if (!method) return "";
+  
+  const methodMap: Record<string, string> = {
+    'direct_deposit': 'Direct Deposit',
+    'check': 'Check',
+    'wire_transfer': 'Wire Transfer'
+  };
+  
+  return methodMap[method] || method;
+}
+
 export default function AgentDetail() {
   const [_, params] = useRoute("/agent-detail/:id");
   const agentId = params?.id;
@@ -49,6 +73,16 @@ export default function AgentDetail() {
   const [isEditingCommission, setIsEditingCommission] = useState(false);
   const [commissionValue, setCommissionValue] = useState("60.00");
   const commissionInputRef = useRef<HTMLInputElement>(null);
+  
+  // Bank info editing
+  const [isEditingBankInfo, setIsEditingBankInfo] = useState(false);
+  const [bankInfo, setBankInfo] = useState({
+    bankName: "",
+    bankAccountType: "",
+    bankAccountNumber: "",
+    bankRoutingNumber: "",
+    bankPaymentMethod: ""
+  });
 
   // Fetch agent data using the new API endpoint to avoid routing conflicts
   const { data: agent, isLoading: isAgentLoading } = useQuery<any>({
@@ -60,6 +94,17 @@ export default function AgentDetail() {
   useEffect(() => {
     if (agent?.commissionPercentage) {
       setCommissionValue(agent.commissionPercentage);
+    }
+    
+    // Initialize bank info from agent data when loaded
+    if (agent) {
+      setBankInfo({
+        bankName: agent.bankName || "",
+        bankAccountType: agent.bankAccountType || "",
+        bankAccountNumber: agent.bankAccountNumber || "",
+        bankRoutingNumber: agent.bankRoutingNumber || "",
+        bankPaymentMethod: agent.bankPaymentMethod || ""
+      });
     }
   }, [agent]);
   
@@ -88,6 +133,42 @@ export default function AgentDetail() {
       toast({
         title: "Update failed",
         description: "Unable to update agent commission. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Update bank information
+  const updateBankInfoMutation = useMutation({
+    mutationFn: async (bankData: {
+      bankName?: string;
+      bankAccountType?: string;
+      bankAccountNumber?: string;
+      bankRoutingNumber?: string;
+      bankPaymentMethod?: string;
+    }) => {
+      const res = await apiRequest(
+        "PATCH", 
+        `/api/agents/${agentId}/banking-info`, 
+        bankData
+      );
+      return await res.json();
+    },
+    onSuccess: () => {
+      // Invalidate both endpoints to ensure data consistency
+      queryClient.invalidateQueries({ queryKey: [`/api/agent-data/${agentId}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
+      toast({
+        title: "Banking details updated",
+        description: "Your banking information has been saved successfully.",
+        variant: "default",
+      });
+      setIsEditingBankInfo(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Update failed",
+        description: "Unable to update banking information. Please try again.",
         variant: "destructive",
       });
     }
@@ -353,39 +434,148 @@ export default function AgentDetail() {
                     <Landmark className="h-4 w-4 mr-2" />
                     Banking Details
                   </p>
-                  {user?.role === 'admin' && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-6 px-2 text-emerald-700"
-                    >
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 px-2 text-emerald-700"
+                    onClick={() => setIsEditingBankInfo(!isEditingBankInfo)}
+                  >
+                    {isEditingBankInfo ? (
+                      <X className="h-3.5 w-3.5" />
+                    ) : (
                       <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                  )}
+                    )}
+                  </Button>
                 </div>
                 
-                <div className="mt-2 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-emerald-800">Account Type:</span>
-                    <span className="text-sm font-medium text-emerald-800">Checking</span>
+                {isEditingBankInfo ? (
+                  <div className="mt-3 space-y-3">
+                    <div className="space-y-1">
+                      <label htmlFor="bankName" className="text-sm font-medium text-emerald-800">Bank Name</label>
+                      <input 
+                        id="bankName" 
+                        type="text" 
+                        value={bankInfo.bankName || ''} 
+                        onChange={(e) => setBankInfo({...bankInfo, bankName: e.target.value})}
+                        className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        placeholder="Enter bank name"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <label htmlFor="accountType" className="text-sm font-medium text-emerald-800">Account Type</label>
+                      <select 
+                        id="accountType" 
+                        value={bankInfo.bankAccountType || ''} 
+                        onChange={(e) => setBankInfo({...bankInfo, bankAccountType: e.target.value})}
+                        className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                      >
+                        <option value="">Select account type</option>
+                        <option value="checking">Checking</option>
+                        <option value="savings">Savings</option>
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <label htmlFor="accountNumber" className="text-sm font-medium text-emerald-800">Account Number</label>
+                      <input 
+                        id="accountNumber" 
+                        type="text" 
+                        value={bankInfo.bankAccountNumber || ''} 
+                        onChange={(e) => setBankInfo({...bankInfo, bankAccountNumber: e.target.value})}
+                        className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        placeholder="Enter account number"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <label htmlFor="routingNumber" className="text-sm font-medium text-emerald-800">Routing Number</label>
+                      <input 
+                        id="routingNumber" 
+                        type="text" 
+                        value={bankInfo.bankRoutingNumber || ''} 
+                        onChange={(e) => setBankInfo({...bankInfo, bankRoutingNumber: e.target.value})}
+                        className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        placeholder="Enter routing number"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <label htmlFor="paymentMethod" className="text-sm font-medium text-emerald-800">Payment Method</label>
+                      <select 
+                        id="paymentMethod" 
+                        value={bankInfo.bankPaymentMethod || ''} 
+                        onChange={(e) => setBankInfo({...bankInfo, bankPaymentMethod: e.target.value})}
+                        className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                      >
+                        <option value="">Select payment method</option>
+                        <option value="direct_deposit">Direct Deposit</option>
+                        <option value="check">Check</option>
+                        <option value="wire_transfer">Wire Transfer</option>
+                      </select>
+                    </div>
+                    
+                    <div className="flex justify-end pt-2">
+                      <Button 
+                        size="sm" 
+                        className="bg-emerald-600 hover:bg-emerald-700"
+                        disabled={updateBankInfoMutation.isPending}
+                        onClick={() => updateBankInfoMutation.mutate(bankInfo)}
+                      >
+                        {updateBankInfoMutation.isPending ? (
+                          <div className="h-4 w-4 border-t-2 border-white rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="h-3.5 w-3.5 mr-1.5" />
+                            Save Banking Details
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-emerald-800">Bank Name:</span>
-                    <span className="text-sm font-medium text-emerald-800">Chase Bank</span>
+                ) : (
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-emerald-800">Account Type:</span>
+                      <span className="text-sm font-medium text-emerald-800">
+                        {formatBankAccountType(agent.bankAccountType) || "Not provided"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-emerald-800">Bank Name:</span>
+                      <span className="text-sm font-medium text-emerald-800">
+                        {agent.bankName || "Not provided"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-emerald-800">Account Number:</span>
+                      <span className="text-sm font-medium text-emerald-800">
+                        {agent.bankAccountNumber ? "****" + agent.bankAccountNumber.slice(-4) : "Not provided"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-emerald-800">Routing Number:</span>
+                      <span className="text-sm font-medium text-emerald-800">
+                        {agent.bankRoutingNumber ? "****" + agent.bankRoutingNumber.slice(-4) : "Not provided"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-emerald-800">Payment Method:</span>
+                      <span className="text-sm font-medium text-emerald-800">
+                        {formatPaymentMethod(agent.bankPaymentMethod) || "Not provided"}
+                      </span>
+                    </div>
+                    
+                    {!agent.bankName && !agent.bankAccountNumber && (
+                      <div className="mt-3 text-center py-2 bg-amber-50 border border-amber-200 rounded-md">
+                        <p className="text-sm text-amber-700">No banking information has been added yet.</p>
+                        <p className="text-xs text-amber-600 mt-1">
+                          Add your banking details to receive commission payments.
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-emerald-800">Account Number:</span>
-                    <span className="text-sm font-medium text-emerald-800">****6789</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-emerald-800">Routing Number:</span>
-                    <span className="text-sm font-medium text-emerald-800">****1234</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-emerald-800">Payment Method:</span>
-                    <span className="text-sm font-medium text-emerald-800">Direct Deposit</span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 
