@@ -179,6 +179,40 @@ export default function AgentEdit() {
     }
   }, [agent, form]);
 
+  // Bank information update mutation
+  const updateBankInfoMutation = useMutation({
+    mutationFn: async (bankData: {
+      bankName: string | null;
+      bankAccountType: string | null;
+      bankAccountNumber: string | null;
+      bankRoutingNumber: string | null;
+    }) => {
+      console.log("Updating bank information:", JSON.stringify(bankData, null, 2));
+      const res = await apiRequest(
+        "POST", 
+        `/api/agents/${id}/save-banking`, 
+        bankData
+      );
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      console.log("Bank info update success:", data);
+      toast({
+        title: "Banking information updated",
+        description: "Your banking details have been saved successfully.",
+        variant: "default",
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error updating banking info:", error);
+      toast({
+        title: "Banking update failed",
+        description: error.message || "Unable to update banking information. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   // Update agent mutation
   const updateAgentMutation = useMutation({
     mutationFn: async (data: AgentFormValues) => {
@@ -187,13 +221,24 @@ export default function AgentEdit() {
         // Debug the submission data
         console.log("Submitting agent data:", JSON.stringify(data, null, 2));
         
-        // Ensure payment method is set correctly
-        if (!data.bankPaymentMethod) {
-          data.bankPaymentMethod = "Direct Deposit";
-        }
+        // Extract banking information to be sent separately
+        const bankingData = {
+          bankName: data.bankName,
+          bankAccountType: data.bankAccountType,
+          bankAccountNumber: data.bankAccountNumber,
+          bankRoutingNumber: data.bankRoutingNumber
+        };
         
-        // Pre-process data to handle special fields
-        const processedData = { ...data };
+        // Remove banking fields from agent data to prevent duplication
+        const agentData = { ...data };
+        delete agentData.bankName;
+        delete agentData.bankAccountType;
+        delete agentData.bankAccountNumber;
+        delete agentData.bankRoutingNumber;
+        delete agentData.bankPaymentMethod;
+        
+        // Pre-process agent data to handle special fields
+        const processedData = { ...agentData };
         
         // Make sure uplineAgentId is sent as a number if present
         if (typeof processedData.uplineAgentId === 'string' && processedData.uplineAgentId.trim() !== '') {
@@ -215,11 +260,30 @@ export default function AgentEdit() {
           }
         });
         
-        console.log("Processed data:", JSON.stringify(processedData, null, 2));
+        console.log("Processed agent data:", JSON.stringify(processedData, null, 2));
         
-        // The apiRequest function already returns the parsed JSON data
+        // First update banking information with dedicated endpoint
+        try {
+          // Convert empty strings in banking data to null
+          Object.keys(bankingData).forEach(key => {
+            const k = key as keyof typeof bankingData;
+            if (bankingData[k] === '') {
+              bankingData[k] = null;
+            }
+          });
+          
+          console.log("Updating banking information first:", JSON.stringify(bankingData, null, 2));
+          await updateBankInfoMutation.mutateAsync(bankingData);
+          console.log("Banking information update completed");
+        } catch (bankError) {
+          console.error("Error updating banking information:", bankError);
+          // Continue with agent update even if banking update fails
+        }
+        
+        // Then update the rest of the agent information
+        console.log("Now updating agent general information");
         const response = await apiRequest("PATCH", `/api/agents/${id}`, processedData);
-        console.log("Server response:", response);
+        console.log("Server response for agent update:", response);
         return response;
       } catch (error: any) {
         console.error("Error updating agent:", error);
