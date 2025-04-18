@@ -366,6 +366,61 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     fullName: z.string().optional(),
   });
 
+  // Special endpoint just for updating agent names
+  app.post("/api/agents/:id/update-name", isAdminOrTeamLeader, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      const { firstName, lastName } = req.body;
+      
+      if (!firstName || !lastName) {
+        return res.status(400).json({ message: "First name and last name are required" });
+      }
+      
+      console.log(`Update name request for agent ${id}: ${firstName} ${lastName}`);
+      
+      // Get the agent to find the associated user
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      if (!agent.userId) {
+        return res.status(400).json({ message: "Agent has no associated user record" });
+      }
+      
+      // Update the user's name information
+      const userUpdateData = {
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`
+      };
+      
+      console.log("Updating user record with:", JSON.stringify(userUpdateData, null, 2));
+      const updatedUser = await storage.updateUser(agent.userId, userUpdateData);
+      console.log("User record updated:", updatedUser);
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "Agent name updated successfully",
+        agent: {
+          id,
+          userId: agent.userId,
+          name: `${firstName} ${lastName}`
+        }
+      });
+    } catch (error: any) {
+      console.error("Error in agent name update:", error);
+      return res.status(500).json({ 
+        message: "Failed to update agent name", 
+        error: error.message 
+      });
+    }
+  });
+
   app.patch("/api/agents/:id", isAdminOrTeamLeader, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -430,12 +485,40 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         }
       }
 
+      // Log what's being saved including notes value
+      console.log("PATCH agent: Saving agent data to database with fields:", Object.keys(updateData));
+      console.log("PATCH agent: Notes value being saved:", updateData.notes);
+      
+      // Special handling for empty strings vs null values
+      Object.keys(updateData).forEach(key => {
+        if (updateData[key] === "") {
+          // Convert empty strings to null for consistency with database
+          updateData[key] = null;
+        }
+      });
+      
+      // Get current agent data to ensure we don't lose any existing values
+      const currentAgent = await storage.getAgent(id);
+      if (!currentAgent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      // If notes is not in the update data but exists on the current agent, preserve it
+      if (updateData.notes === undefined && currentAgent.notes) {
+        console.log("PATCH agent: Preserving existing notes:", currentAgent.notes);
+        updateData.notes = currentAgent.notes;
+      }
+      
+      // Update the agent record
       const updatedAgent = await storage.updateAgent(id, updateData);
       
       if (!updatedAgent) {
-        return res.status(404).json({ message: "Agent not found" });
+        return res.status(404).json({ message: "Agent not found after update" });
       }
 
+      console.log("PATCH agent: Successfully updated agent:", updatedAgent.id);
+      console.log("PATCH agent: Notes in updated record:", updatedAgent.notes);
+      
       res.json(updatedAgent);
     } catch (error) {
       handleValidationError(error, res);
