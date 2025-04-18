@@ -138,19 +138,19 @@ export default function AgentDetail() {
       },
       recentActivity: [
         { 
-          action: "Called 3 clients", 
+          action: "Called 9 clients", 
           client: "Client Outreach", 
           time: "Yesterday",
           type: "call"
         },
         { 
-          action: "Texted 3 clients", 
+          action: "Texted 9 clients", 
           client: "Client Follow-up", 
           time: "Yesterday",
           type: "message"
         },
         { 
-          action: "Emailed 3 clients", 
+          action: "Emailed 9 clients", 
           client: "Policy Information", 
           time: "Yesterday",
           type: "email"
@@ -409,7 +409,7 @@ export default function AgentDetail() {
           <Card>
             <CardHeader>
               <CardTitle>Agent Summary</CardTitle>
-              <CardDescription>Key performance indicators and recent activity</CardDescription>
+              <CardDescription>Aaron reached out to 9 clients yesterday via calls, texts, and emails</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
