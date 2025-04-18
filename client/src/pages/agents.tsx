@@ -375,6 +375,27 @@ const AgentsPage: React.FC = () => {
   // Edit agent form
   const editForm = useForm<AgentFormValues>({
     resolver: zodResolver(agentFormSchema),
+    defaultValues: {
+      // Personal information
+      firstName: "",
+      lastName: "",
+      
+      // Agent details
+      licenseNumber: "",
+      licenseExpiration: "",
+      npn: "",
+      phoneNumber: "",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      carrierAppointments: "",
+      uplineAgentId: null,
+      commissionPercentage: "0.00",
+      overridePercentage: "0.00",
+      specialties: "",
+      notes: "",
+    },
   });
 
   // Format date from ISO string to YYYY-MM-DD
@@ -1062,15 +1083,14 @@ const AgentsPage: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Edit Agent Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Agent</DialogTitle>
-            <DialogDescription>
-              Update agent information.
-            </DialogDescription>
-          </DialogHeader>
+      {/* Edit Agent Dialog - Using alternative modal implementation */}
+      {isEditDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-lg shadow-lg sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-6 w-full mx-4">
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold">Edit Agent</h2>
+              <p className="text-sm text-gray-500">Update agent information.</p>
+            </div>
           <Form {...editForm}>
             <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -1306,11 +1326,30 @@ const AgentsPage: React.FC = () => {
                 >
                   {updateAgentMutation.isPending ? "Saving..." : "Update Agent"}
                 </Button>
-              </DialogFooter>
+              <div className="flex justify-end space-x-4 mt-6">
+                <button
+                  type="button"
+                  className="px-4 py-2 border rounded-md hover:bg-gray-100"
+                  onClick={() => {
+                    setIsEditDialogOpen(false);
+                    setSelectedAgent(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+                  disabled={updateAgentMutation.isPending}
+                >
+                  {updateAgentMutation.isPending ? "Saving..." : "Update Agent"}
+                </button>
+              </div>
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
