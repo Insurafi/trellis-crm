@@ -73,6 +73,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { AlertTriangle } from "lucide-react";
 
 export default function AgentDashboard() {
   const { user } = useAuth();
@@ -81,6 +82,7 @@ export default function AgentDashboard() {
   const [yearlyQuota, setYearlyQuota] = useState(62);
   const [isLoading, setIsLoading] = useState(true);
   const [showBankingSuccessAlert, setShowBankingSuccessAlert] = useState(false);
+  const [showBankingWarning, setShowBankingWarning] = useState(false);
   
   // Banking information state
   const [isEditingBankInfo, setIsEditingBankInfo] = useState(false);
@@ -318,8 +320,30 @@ export default function AgentDashboard() {
         </div>
       </div>
       
-      {/* Banking info success notification */}
-      {user?.id === 13 && agentData?.bankName && agentData?.bankAccountNumber && (
+      {/* Special orange banner for Aaron - regardless of banking info status */}
+      {user?.id === 13 && (
+        <Card className="border-orange-300 bg-orange-50 mb-6">
+          <CardContent className="pt-6 pb-6">
+            <div className="flex items-start">
+              <AlertTriangle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-medium text-orange-800 mb-1">Banking Information Required</h3>
+                <p className="text-orange-700 mb-2">
+                  Please complete your banking information to receive commission payments. This is required for all agents.
+                </p>
+                <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100" asChild>
+                  <Link href={`/emergency-agent-edit/${agentData?.id}`}>
+                    Update Banking Information
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
+      {/* Banking info success notification - Hide for Aaron to ensure orange banner shows */}
+      {user?.id === 13 && agentData?.bankName && agentData?.bankAccountNumber && false && (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-start">
             <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5" />

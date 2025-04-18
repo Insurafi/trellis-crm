@@ -277,6 +277,28 @@ export default function AgentDetail() {
 
   return (
     <div className="p-4 md:p-8 pt-6 space-y-6">
+      {/* Special notification banner for Aaron (ID 4) */}
+      {agent.id === 4 && (
+        <Card className="border-orange-300 bg-orange-50 mb-6">
+          <CardContent className="pt-6 pb-6">
+            <div className="flex items-start">
+              <AlertTriangle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-medium text-orange-800 mb-1">Banking Information Required</h3>
+                <p className="text-orange-700 mb-2">
+                  Please complete your banking information to receive commission payments. This is required for all agents.
+                </p>
+                <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100" asChild>
+                  <Link href={`/emergency-agent-edit/${agent.id}`}>
+                    Update Banking Information
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
       {/* Back button and page title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center">
