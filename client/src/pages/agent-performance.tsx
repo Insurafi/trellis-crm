@@ -340,26 +340,36 @@ export default function AgentPerformancePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-96">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPieChart>
-                  <Pie
-                    data={conversionData || mockConversionData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={true}
-                    label={({ name, percent }: { name: string, percent: number }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={120}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {(conversionData || mockConversionData).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value: any) => [`${value} leads`, ""]} />
-                  <Legend />
-                </RechartsPieChart>
-              </ResponsiveContainer>
+              {!conversionData || conversionData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <PieChart className="h-24 w-24 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No conversion data available</h3>
+                  <p className="text-center text-muted-foreground">
+                    There is no lead conversion data available for this time period.
+                  </p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPieChart>
+                    <Pie
+                      data={conversionData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={true}
+                      label={({ name, percent }: { name: string, percent: number }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={120}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {conversionData.map((entry, index: number) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: any) => [`${value} leads`, ""]} />
+                    <Legend />
+                  </RechartsPieChart>
+                </ResponsiveContainer>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -373,24 +383,34 @@ export default function AgentPerformancePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-96">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={policyTypeData || mockPolicyTypeData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  layout="vertical"
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip formatter={(value: any) => [`${value} policies`, ""]} />
-                  <Legend />
-                  <Bar dataKey="value" name="Policies Sold" fill="#8884d8">
-                    {(policyTypeData || mockPolicyTypeData).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              {!policyTypeData || policyTypeData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <BarChart4 className="h-24 w-24 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No policy type data available</h3>
+                  <p className="text-center text-muted-foreground">
+                    There is no policy distribution data available for this time period.
+                  </p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={policyTypeData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    layout="vertical"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" width={100} />
+                    <Tooltip formatter={(value: any) => [`${value} policies`, ""]} />
+                    <Legend />
+                    <Bar dataKey="value" name="Policies Sold" fill="#8884d8">
+                      {policyTypeData.map((entry, index: number) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
