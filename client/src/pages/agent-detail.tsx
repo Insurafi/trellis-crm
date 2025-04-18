@@ -20,6 +20,7 @@ import {
   Pencil,
   X,
   Star,
+  MessageSquare,
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -137,29 +138,23 @@ export default function AgentDetail() {
       },
       recentActivity: [
         { 
-          action: "Created new policy", 
-          client: "James Wilson", 
-          time: "2 hours ago",
-          type: "policy"
-        },
-        { 
-          action: "Added new lead", 
-          client: "Sarah Parker", 
+          action: "Called 3 clients", 
+          client: "Client Outreach", 
           time: "Yesterday",
-          type: "lead"
+          type: "call"
         },
         { 
-          action: "Completed training", 
-          client: "Sales Techniques 101", 
-          time: "2 days ago",
-          type: "training"
+          action: "Texted 3 clients", 
+          client: "Client Follow-up", 
+          time: "Yesterday",
+          type: "message"
         },
         { 
-          action: "Updated client info", 
-          client: "Michael Thompson", 
-          time: "3 days ago",
-          type: "client"
-        },
+          action: "Emailed 3 clients", 
+          client: "Policy Information", 
+          time: "Yesterday",
+          type: "email"
+        }
       ],
       // Top products data removed
       weeklyActivityBreakdown: [
@@ -462,6 +457,9 @@ export default function AgentDetail() {
                       {activity.type === 'lead' && <User className="h-4 w-4" />}
                       {activity.type === 'training' && <BookOpen className="h-4 w-4" />}
                       {activity.type === 'client' && <Briefcase className="h-4 w-4" />}
+                      {activity.type === 'call' && <Phone className="h-4 w-4" />}
+                      {activity.type === 'message' && <MessageSquare className="h-4 w-4" />}
+                      {activity.type === 'email' && <Mail className="h-4 w-4" />}
                     </div>
                     <div>
                       <p className="text-sm font-medium">{activity.action}</p>
