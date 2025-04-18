@@ -194,60 +194,32 @@ export default function AgentDetail() {
 
   const isLoading = isAgentLoading || isClientsLoading || isPoliciesLoading || isLeadsLoading || isCommissionsLoading;
 
-  // Generate some random performance data for UI display
-  const [performanceData] = useState(() => {
-    // Random data generator for demonstration
-    return {
-      monthlyTargets: {
-        policies: {
-          target: Math.floor(Math.random() * 15) + 5,
-          achieved: Math.floor(Math.random() * 15) + 1,
-        },
-        premium: {
-          target: 50000,
-          achieved: Math.floor(Math.random() * 50000),
-        },
-        commissions: {
-          target: 10000,
-          achieved: Math.floor(Math.random() * 10000),
-        },
-      },
-      recentActivity: [
-        { 
-          action: "Called 9 clients", 
-          client: "Client Outreach", 
-          time: "Yesterday",
-          type: "call"
-        },
-        { 
-          action: "Texted 9 clients", 
-          client: "Client Follow-up", 
-          time: "Yesterday",
-          type: "message"
-        },
-        { 
-          action: "Emailed 9 clients", 
-          client: "Policy Information", 
-          time: "Yesterday",
-          type: "email"
-        }
-      ],
-      // Top products data and weekly activity breakdown removed
-    };
-  });
+  // Real performance data based on actual agent activity
+  // No mock or random data is used - all data comes from the agent's actual sales and activities
 
-  // Calculate progress percentages
-  const policyProgress = agent?.targets?.policyCount
-    ? Math.min(100, Math.round((agentPolicies.length / agent.targets.policyCount) * 100))
-    : Math.min(100, Math.round((performanceData.monthlyTargets.policies.achieved / performanceData.monthlyTargets.policies.target) * 100));
+  // Calculate actual metrics based on real agent data (no mock data)
+  // Get total premium from actual policies
+  const totalPremium = agentPolicies.reduce((sum: number, policy: any) => {
+    // Extract numeric value from premium string (e.g., "$1,200" -> 1200)
+    const premiumValue = policy.premium ? parseFloat(policy.premium.replace(/[^0-9.-]+/g, "")) : 0;
+    return sum + premiumValue;
+  }, 0);
   
-  const premiumProgress = agent?.targets?.premiumAmount
-    ? Math.min(100, Math.round((agentPolicies.reduce((sum: number, policy: any) => sum + parseFloat(policy.premium.replace(/[^0-9.-]+/g, "")), 0) / agent.targets.premiumAmount) * 100))
-    : Math.min(100, Math.round((performanceData.monthlyTargets.premium.achieved / performanceData.monthlyTargets.premium.target) * 100));
+  // Get total commissions from actual policies
+  const totalCommission = agentPolicies.reduce((sum: number, policy: any) => {
+    const commissionValue = policy.commission ? parseFloat(policy.commission) : 0;
+    return sum + commissionValue;
+  }, 0);
   
-  const commissionProgress = agent?.targets?.commissionAmount
-    ? Math.min(100, Math.round((agentPolicies.reduce((sum: number, policy: any) => sum + parseFloat(policy.commission || "0"), 0) / agent.targets.commissionAmount) * 100))
-    : Math.min(100, Math.round((performanceData.monthlyTargets.commissions.achieved / performanceData.monthlyTargets.commissions.target) * 100));
+  // Use default targets if not set by the agent or admin
+  const policyTarget = agent?.targets?.policyCount || 10;
+  const premiumTarget = agent?.targets?.premiumAmount || 10000;
+  const commissionTarget = agent?.targets?.commissionAmount || 2000;
+  
+  // Calculate progress percentages based on actual data
+  const policyProgress = Math.min(100, Math.round((agentPolicies.length / policyTarget) * 100));
+  const premiumProgress = Math.min(100, Math.round((totalPremium / premiumTarget) * 100));
+  const commissionProgress = Math.min(100, Math.round((totalCommission / commissionTarget) * 100));
 
   if (isLoading) {
     return (
@@ -631,21 +603,21 @@ export default function AgentDetail() {
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>Policies</span>
-                    <span>{agentPolicies.length} / {performanceData.monthlyTargets.policies.target}</span>
+                    <span>{agentPolicies.length} / {policyTarget}</span>
                   </div>
                   <Progress value={policyProgress} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>Premium</span>
-                    <span>${performanceData.monthlyTargets.premium.achieved.toLocaleString()} / ${performanceData.monthlyTargets.premium.target.toLocaleString()}</span>
+                    <span>${totalPremium.toLocaleString()} / ${premiumTarget.toLocaleString()}</span>
                   </div>
                   <Progress value={premiumProgress} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>Commissions</span>
-                    <span>${performanceData.monthlyTargets.commissions.achieved.toLocaleString()} / ${performanceData.monthlyTargets.commissions.target.toLocaleString()}</span>
+                    <span>${totalCommission.toLocaleString()} / ${commissionTarget.toLocaleString()}</span>
                   </div>
                   <Progress value={commissionProgress} className="h-2" />
                 </div>
@@ -667,7 +639,11 @@ export default function AgentDetail() {
           <Card>
             <CardHeader>
               <CardTitle>Agent Summary</CardTitle>
-              <CardDescription>Aaron reached out to 9 clients yesterday via calls, texts, and emails</CardDescription>
+              <CardDescription>
+                {agentPolicies.length > 0 
+                  ? `${agent.fullName || agent.name || "Agent"} has ${agentPolicies.length} active policies`
+                  : `${agent.fullName || agent.name || "Agent"}'s activity summary`}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -701,23 +677,27 @@ export default function AgentDetail() {
 
               <h3 className="font-medium text-sm mb-3">Recent Activity</h3>
               <div className="space-y-3">
-                {performanceData.recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-start p-2 hover:bg-gray-50 rounded-md">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
-                      {activity.type === 'policy' && <FileText className="h-4 w-4" />}
-                      {activity.type === 'lead' && <User className="h-4 w-4" />}
-                      {activity.type === 'training' && <BookOpen className="h-4 w-4" />}
-                      {activity.type === 'client' && <Briefcase className="h-4 w-4" />}
-                      {activity.type === 'call' && <Phone className="h-4 w-4" />}
-                      {activity.type === 'message' && <MessageSquare className="h-4 w-4" />}
-                      {activity.type === 'email' && <Mail className="h-4 w-4" />}
+                {agentPolicies.length > 0 ? (
+                  // Show the most recent policies as activity
+                  agentPolicies.slice(0, 3).map((policy: any, index: number) => (
+                    <div key={index} className="flex items-start p-2 hover:bg-gray-50 rounded-md">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Sold {policy.type || "Insurance"} Policy</p>
+                        <p className="text-xs text-muted-foreground">
+                          Client: {policy.clientName || "Client"} • Premium: ${policy.premium?.replace(/[^0-9.-]+/g, "") || "0"}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium">{activity.action}</p>
-                      <p className="text-xs text-muted-foreground">{activity.client} • {activity.time}</p>
-                    </div>
+                  ))
+                ) : (
+                  // Show "No recent activity" message if there are no policies
+                  <div className="text-center py-4">
+                    <p className="text-sm text-muted-foreground">No recent activity recorded</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
