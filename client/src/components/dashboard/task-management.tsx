@@ -84,7 +84,7 @@ const TaskManagement = () => {
       <Card>
         <CardHeader className="border-b border-neutral-200">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-semibold">Current Tasks</CardTitle>
+            <CardTitle className="text-lg font-semibold">Tasks</CardTitle>
             <Skeleton className="h-4 w-16" />
           </div>
         </CardHeader>
@@ -137,7 +137,7 @@ const TaskManagement = () => {
     <Card>
       <CardHeader className="px-6 py-4 border-b border-neutral-200">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-neutral-900">Current Tasks</CardTitle>
+          <CardTitle className="text-lg font-semibold text-neutral-900">Tasks</CardTitle>
           <Button variant="link" className="text-primary p-0">View All</Button>
         </div>
       </CardHeader>
