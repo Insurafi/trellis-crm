@@ -604,7 +604,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       if (bankAccountType !== undefined) updateData.bankAccountType = bankAccountType;
       if (bankAccountNumber !== undefined) updateData.bankAccountNumber = bankAccountNumber;
       if (bankRoutingNumber !== undefined) updateData.bankRoutingNumber = bankRoutingNumber;
-      if (bankPaymentMethod !== undefined) updateData.bankPaymentMethod = bankPaymentMethod;
+      
+      // Always use direct_deposit for payment method regardless of what was sent
+      updateData.bankPaymentMethod = "direct_deposit";
       
       if (Object.keys(updateData).length === 0) {
         return res.status(400).json({ message: "No banking information fields provided" });

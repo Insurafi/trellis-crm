@@ -52,15 +52,8 @@ function formatBankAccountType(type: string | null | undefined): string {
 }
 
 function formatPaymentMethod(method: string | null | undefined): string {
-  if (!method) return "";
-  
-  const methodMap: Record<string, string> = {
-    'direct_deposit': 'Direct Deposit',
-    'check': 'Check',
-    'wire_transfer': 'Wire Transfer'
-  };
-  
-  return methodMap[method] || method;
+  // Always return Direct Deposit regardless of the input since it's the only allowed option
+  return "Direct Deposit";
 }
 
 export default function AgentDetail() {
@@ -504,13 +497,12 @@ export default function AgentDetail() {
                       <label htmlFor="paymentMethod" className="text-sm font-medium text-emerald-800">Payment Method</label>
                       <select 
                         id="paymentMethod" 
-                        value={bankInfo.bankPaymentMethod || 'direct_deposit'} 
+                        value="direct_deposit" 
                         onChange={(e) => setBankInfo({...bankInfo, bankPaymentMethod: e.target.value})}
                         className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        disabled
                       >
                         <option value="direct_deposit">Direct Deposit</option>
-                        <option value="check">Check</option>
-                        <option value="wire_transfer">Wire Transfer</option>
                       </select>
                     </div>
                     
@@ -519,7 +511,10 @@ export default function AgentDetail() {
                         size="sm" 
                         className="bg-emerald-600 hover:bg-emerald-700"
                         disabled={updateBankInfoMutation.isPending}
-                        onClick={() => updateBankInfoMutation.mutate(bankInfo)}
+                        onClick={() => updateBankInfoMutation.mutate({
+                          ...bankInfo,
+                          bankPaymentMethod: "direct_deposit" // Always use direct deposit
+                        })}
                       >
                         {updateBankInfoMutation.isPending ? (
                           <div className="h-4 w-4 border-t-2 border-white rounded-full animate-spin" />
