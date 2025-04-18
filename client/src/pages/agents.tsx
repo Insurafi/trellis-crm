@@ -209,12 +209,15 @@ const AgentsPage: React.FC = () => {
   });
 
   // Update agent mutation for full updates
+  // New implementation with direct agent update
   const updateAgentMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: AgentFormValues }) => {
-      // Log the data being sent to ensure first/last name are included
-      console.log("Updating agent data:", JSON.stringify(data, null, 2));
+      console.log("⚠️ AGENT UPDATE STARTED ⚠️");
+      console.log("Updating agent ID:", id);
+      console.log("Full form data:", JSON.stringify(data, null, 2));
+      console.log("Notes value:", data.notes);
       
-      // Make sure firstName and lastName are not empty
+      // Validation for name fields
       if (!data.firstName || !data.lastName) {
         console.error("Missing firstName or lastName in agent update data");
         toast({
@@ -225,25 +228,50 @@ const AgentsPage: React.FC = () => {
         throw new Error("First name and last name are required");
       }
       
-      // Extract the name fields and separate the other data
-      const { firstName, lastName, ...agentData } = data;
-      
-      console.log("Separated name fields from agent data - updating name separately");
-      
       try {
-        // First update the name using our specialized endpoint
-        await updateAgentNameMutation.mutateAsync({ id, firstName, lastName });
+        console.log("Step 1: Updating agent record with all fields including notes");
         
-        // If name update succeeded and we have other fields to update, continue with them
-        if (Object.keys(agentData).length > 0) {
-          // Send the non-name fields to the regular update endpoint
-          return apiRequest("PATCH", `/api/agents/${id}`, agentData);
-        }
+        // Create a complete agent data object with all fields
+        const completeAgentData = {
+          // Include all fields explicitly to ensure nothing is lost
+          licenseNumber: data.licenseNumber || "",
+          licenseExpiration: data.licenseExpiration || "",
+          npn: data.npn || null,
+          phoneNumber: data.phoneNumber || "",
+          address: data.address || null,
+          city: data.city || null,
+          state: data.state || null,
+          zipCode: data.zipCode || null,
+          carrierAppointments: data.carrierAppointments || null,
+          uplineAgentId: data.uplineAgentId || null,
+          commissionPercentage: data.commissionPercentage || null,
+          overridePercentage: data.overridePercentage || null,
+          specialties: data.specialties || null,
+          notes: data.notes || null, // Preserve notes explicitly
+        };
         
-        // If we only had name fields, we're already done
-        return { success: true, message: "Agent name updated successfully" };
+        console.log("Agent data being sent:", JSON.stringify(completeAgentData, null, 2));
+        
+        // Update agent record with all fields
+        const agentResponse = await apiRequest("PATCH", `/api/agents/${id}`, completeAgentData);
+        console.log("Agent record updated successfully:", agentResponse);
+        
+        console.log("Step 2: Updating agent name separately");
+        // Then update the name separately
+        const nameResponse = await apiRequest("POST", `/api/agents/${id}/update-name`, {
+          firstName: data.firstName,
+          lastName: data.lastName,
+        });
+        
+        console.log("Agent name updated successfully:", nameResponse);
+        console.log("⚠️ AGENT UPDATE COMPLETED ⚠️");
+        
+        return {
+          success: true,
+          message: "Agent updated successfully",
+        };
       } catch (error) {
-        console.error("Error updating agent name:", error);
+        console.error("⚠️ ERROR UPDATING AGENT:", error);
         throw error;
       }
     },
@@ -880,10 +908,18 @@ const AgentsPage: React.FC = () => {
                             <div
                               className="p-2 cursor-pointer bg-blue-100 rounded-md hover:bg-blue-200"
                               onClick={() => {
-                                // Simple approach with minimal code
-                                setSelectedAgent(agent);
-                                setIsEditDialogOpen(true);
-                                console.log("Edit clicked for agent:", agent.id);
+                                // Log for debugging
+                                console.log("Edit button clicked for agent:", JSON.stringify(agent, null, 2));
+                                
+                                // Force a delay before opening the dialog to ensure data is ready
+                                setTimeout(() => {
+                                  setSelectedAgent(agent);
+                                  setIsEditDialogOpen(true);
+                                  console.log("Edit dialog opened for agent:", agent.id);
+                                  
+                                  // Extra debugging to make sure values are populated
+                                  console.log("Notes value:", agent.notes);
+                                }, 100);
                               }}
                             >
                               <span className="text-blue-600 font-medium">Edit Agent</span>
