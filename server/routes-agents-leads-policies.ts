@@ -503,10 +503,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // Special handling for empty strings vs null values
       // Create a new object instead of modifying the constant
       const sanitizedData = { ...updateData };
-      Object.entries(updateData).forEach(([key, value]) => {
-        if (value === "") {
+      
+      // Type-safe approach for converting empty strings to null
+      Object.keys(sanitizedData).forEach((key) => {
+        const typedKey = key as keyof typeof sanitizedData;
+        if (sanitizedData[typedKey] === "") {
           // Convert empty strings to null for consistency with database
-          sanitizedData[key] = null;
+          sanitizedData[typedKey] = null;
         }
       });
       

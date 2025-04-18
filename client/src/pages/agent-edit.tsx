@@ -192,8 +192,33 @@ export default function AgentEdit() {
           data.bankPaymentMethod = "Direct Deposit";
         }
         
+        // Pre-process data to handle special fields
+        const processedData = { ...data };
+        
+        // Make sure uplineAgentId is sent as a number if present
+        if (typeof processedData.uplineAgentId === 'string' && processedData.uplineAgentId.trim() !== '') {
+          const parsedId = parseInt(processedData.uplineAgentId);
+          if (!isNaN(parsedId)) {
+            processedData.uplineAgentId = parsedId;
+          } else {
+            processedData.uplineAgentId = null;
+          }
+        }
+        
+        // Convert any empty strings to null
+        Object.keys(processedData).forEach(key => {
+          const k = key as keyof typeof processedData;
+          // Only convert string fields (skip other types) that are empty
+          if (typeof processedData[k] === 'string' && processedData[k] === '') {
+            // Use type assertion to safely assign null
+            (processedData as any)[k] = null;
+          }
+        });
+        
+        console.log("Processed data:", JSON.stringify(processedData, null, 2));
+        
         // The apiRequest function already returns the parsed JSON data
-        const response = await apiRequest("PATCH", `/api/agents/${id}`, data);
+        const response = await apiRequest("PATCH", `/api/agents/${id}`, processedData);
         console.log("Server response:", response);
         return response;
       } catch (error: any) {
@@ -667,8 +692,8 @@ export default function AgentEdit() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Checking">Checking</SelectItem>
-                          <SelectItem value="Savings">Savings</SelectItem>
+                          <SelectItem value="checking">Checking</SelectItem>
+                          <SelectItem value="savings">Savings</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
