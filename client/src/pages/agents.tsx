@@ -931,13 +931,11 @@ const AgentsPage: React.FC = () => {
                               variant="default"
                               size="sm"
                               className="bg-blue-500 hover:bg-blue-600"
-                              onClick={() => {
-                                console.log("New Edit Button clicked for agent ID:", agent.id);
-                                setSelectedAgent(agent);
-                                setIsEditDialogOpen(true);
-                              }}
+                              asChild
                             >
-                              Edit
+                              <Link href={`/agent-edit/${agent.id}`}>
+                                Edit
+                              </Link>
                             </Button>
                             
                             <Button
@@ -950,11 +948,16 @@ const AgentsPage: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
-                          <a href={`/agent-edit/${agent.id}`} 
-                             className="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-center"
+                          <Button
+                            type="button"
+                            variant="default"
+                            className="w-full bg-green-600 hover:bg-green-700"
+                            asChild
                           >
-                            EDIT NOW
-                          </a>
+                            <Link href={`/agent-edit/${agent.id}`}>
+                              EDIT NOW
+                            </Link>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))
