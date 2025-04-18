@@ -164,21 +164,37 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
-      // Get the agent record to find the associated userId
+      // All admins and team leaders can view any agent's data
+      if (req.user?.role === "admin" || req.user?.role === "team_leader") {
+        const salesData = await storage.getSalesAnalyticsByAgent(agentId, from, to);
+        return res.json(salesData);
+      }
+      
+      // For regular agents, check if this is their own data
+      // First, get the agent record to find the userId associated with the agentId
       const agentRecord = await storage.getAgent(agentId);
       
-      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentRecord?.userId;
+      // If no agent record exists, return an error
+      if (!agentRecord) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
       
-      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+      // Get the agent record for the requesting user (based on user ID)
+      const userAgentRecord = await storage.getAgentByUserId(req.user?.id || 0);
+      
+      // Check if the requested agent's ID matches the user's associated agent ID
+      const isOwnData = userAgentRecord && userAgentRecord.id === agentId;
+      
+      if (isOwnData) {
         const salesData = await storage.getSalesAnalyticsByAgent(agentId, from, to);
-        res.json(salesData);
+        return res.json(salesData);
       } else {
-        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+        // Not an admin and not their own data, so deny access
+        return res.status(403).json({ message: "You don't have permission to view this agent's data" });
       }
     } catch (error) {
       console.error("Error fetching agent sales analytics:", error);
-      res.status(500).json({ message: "Error fetching agent sales analytics" });
+      return res.status(500).json({ message: "Error fetching agent sales analytics" });
     }
   });
   
@@ -188,21 +204,29 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
-      // Get the agent record to find the associated userId
-      const agentRecord = await storage.getAgent(agentId);
-      
-      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentRecord?.userId;
-      
-      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+      // All admins and team leaders can view any agent's data
+      if (req.user?.role === "admin" || req.user?.role === "team_leader") {
         const conversionData = await storage.getConversionAnalyticsByAgent(agentId, from, to);
-        res.json(conversionData);
+        return res.json(conversionData);
+      }
+      
+      // For regular agents, check if this is their own data
+      // Get the agent record for the requesting user (based on user ID)
+      const userAgentRecord = await storage.getAgentByUserId(req.user?.id || 0);
+      
+      // Check if the requested agent's ID matches the user's associated agent ID
+      const isOwnData = userAgentRecord && userAgentRecord.id === agentId;
+      
+      if (isOwnData) {
+        const conversionData = await storage.getConversionAnalyticsByAgent(agentId, from, to);
+        return res.json(conversionData);
       } else {
-        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+        // Not an admin and not their own data, so deny access
+        return res.status(403).json({ message: "You don't have permission to view this agent's data" });
       }
     } catch (error) {
       console.error("Error fetching agent conversion analytics:", error);
-      res.status(500).json({ message: "Error fetching agent conversion analytics" });
+      return res.status(500).json({ message: "Error fetching agent conversion analytics" });
     }
   });
   
@@ -212,21 +236,29 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
-      // Get the agent record to find the associated userId
-      const agentRecord = await storage.getAgent(agentId);
-      
-      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentRecord?.userId;
-      
-      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+      // All admins and team leaders can view any agent's data
+      if (req.user?.role === "admin" || req.user?.role === "team_leader") {
         const policyTypeData = await storage.getPolicyTypeAnalyticsByAgent(agentId, from, to);
-        res.json(policyTypeData);
+        return res.json(policyTypeData);
+      }
+      
+      // For regular agents, check if this is their own data
+      // Get the agent record for the requesting user (based on user ID)
+      const userAgentRecord = await storage.getAgentByUserId(req.user?.id || 0);
+      
+      // Check if the requested agent's ID matches the user's associated agent ID
+      const isOwnData = userAgentRecord && userAgentRecord.id === agentId;
+      
+      if (isOwnData) {
+        const policyTypeData = await storage.getPolicyTypeAnalyticsByAgent(agentId, from, to);
+        return res.json(policyTypeData);
       } else {
-        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+        // Not an admin and not their own data, so deny access
+        return res.status(403).json({ message: "You don't have permission to view this agent's data" });
       }
     } catch (error) {
       console.error("Error fetching agent policy type analytics:", error);
-      res.status(500).json({ message: "Error fetching agent policy type analytics" });
+      return res.status(500).json({ message: "Error fetching agent policy type analytics" });
     }
   });
   
@@ -236,21 +268,29 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
-      // Get the agent record to find the associated userId
-      const agentRecord = await storage.getAgent(agentId);
-      
-      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentRecord?.userId;
-      
-      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+      // All admins and team leaders can view any agent's data
+      if (req.user?.role === "admin" || req.user?.role === "team_leader") {
         const summaryData = await storage.getDashboardSummaryStatsByAgent(agentId, from, to);
-        res.json(summaryData);
+        return res.json(summaryData);
+      }
+      
+      // For regular agents, check if this is their own data
+      // Get the agent record for the requesting user (based on user ID)
+      const userAgentRecord = await storage.getAgentByUserId(req.user?.id || 0);
+      
+      // Check if the requested agent's ID matches the user's associated agent ID
+      const isOwnData = userAgentRecord && userAgentRecord.id === agentId;
+      
+      if (isOwnData) {
+        const summaryData = await storage.getDashboardSummaryStatsByAgent(agentId, from, to);
+        return res.json(summaryData);
       } else {
-        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+        // Not an admin and not their own data, so deny access
+        return res.status(403).json({ message: "You don't have permission to view this agent's data" });
       }
     } catch (error) {
       console.error("Error fetching agent summary stats:", error);
-      res.status(500).json({ message: "Error fetching agent summary stats" });
+      return res.status(500).json({ message: "Error fetching agent summary stats" });
     }
   });
 }
