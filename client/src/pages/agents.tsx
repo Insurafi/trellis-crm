@@ -856,14 +856,22 @@ const AgentsPage: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {weeklyCommissionData.map((commission: any) => (
-                      <TableRow key={commission.id}>
-                        <TableCell>{new Date(commission.date).toLocaleDateString()}</TableCell>
-                        <TableCell>${parseFloat(commission.amount).toFixed(2)}</TableCell>
-                        <TableCell>{commission.policyType}</TableCell>
+                    {weeklyCommissionData.map((commission: any, index: number) => (
+                      <TableRow key={commission.id || `commission-${index}`}>
+                        <TableCell>
+                          {commission.date ? 
+                            new Date(commission.date).toLocaleDateString() : 
+                            'Pending'}
+                        </TableCell>
+                        <TableCell>
+                          ${typeof commission.amount === 'string' && !isNaN(parseFloat(commission.amount)) ? 
+                            parseFloat(commission.amount).toFixed(2) : 
+                            '0.00'}
+                        </TableCell>
+                        <TableCell>{commission.policyType || 'Standard'}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {commission.status}
+                            {commission.status || 'Pending'}
                           </Badge>
                         </TableCell>
                       </TableRow>
@@ -882,7 +890,9 @@ const AgentsPage: React.FC = () => {
                       <div className="text-2xl font-bold">
                         ${Array.isArray(weeklyCommissionData) ? 
                           weeklyCommissionData.reduce((total: number, commission: any) => 
-                            total + (parseFloat(commission.amount) * 0.6), 0).toFixed(2) : "0.00"}
+                            total + (typeof commission.amount === 'string' && !isNaN(parseFloat(commission.amount)) ? 
+                              parseFloat(commission.amount) * 0.6 : 0), 0).toFixed(2) : 
+                            "0.00"}
                       </div>
                     </CardContent>
                   </Card>
@@ -894,7 +904,9 @@ const AgentsPage: React.FC = () => {
                       <div className="text-2xl font-bold">
                         ${Array.isArray(weeklyCommissionData) ? 
                           weeklyCommissionData.reduce((total: number, commission: any) => 
-                            total + (parseFloat(commission.amount) * 0.4), 0).toFixed(2) : "0.00"}
+                            total + (typeof commission.amount === 'string' && !isNaN(parseFloat(commission.amount)) ? 
+                              parseFloat(commission.amount) * 0.4 : 0), 0).toFixed(2) : 
+                            "0.00"}
                       </div>
                     </CardContent>
                   </Card>
