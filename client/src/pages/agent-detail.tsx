@@ -261,7 +261,7 @@ export default function AgentDetail() {
               </div>
               <div>
                 <p className="text-muted-foreground">Phone</p>
-                <p className="font-medium">{agent.phone || "Not provided"}</p>
+                <p className="font-medium">{agent.phoneNumber || "Not provided"}</p>
               </div>
               <div>
                 <p className="text-muted-foreground">Email</p>
