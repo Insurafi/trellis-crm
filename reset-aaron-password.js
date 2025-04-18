@@ -17,7 +17,7 @@ async function resetAaronPassword() {
     
     if (updatedUser) {
       console.log("✅ Password reset successful for Aaron (User ID: 13)");
-      console.log("Username: aaron");
+      console.log("Username: aaronbarnes743");
       console.log("New Password: agent123");
     } else {
       console.log("❌ Failed to reset password. User not found.");
