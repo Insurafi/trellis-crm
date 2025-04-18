@@ -34,23 +34,24 @@ export default function AgentStatusList() {
     queryKey: ["/api/agents"],
   });
 
-  // Generate enhanced agent data with random stats for demo
+  // Generate enhanced agent data with real data where possible, defaults otherwise
   const agentsWithStatus = agents.map(agent => {
-    const isOnline = Math.random() > 0.5;
-    const lastActiveHours = Math.floor(Math.random() * 12);
-    const productivity = Math.floor(Math.random() * 100);
-    const leads = Math.floor(Math.random() * 30);
-    const policies = Math.floor(Math.random() * 10);
-    const commissions = `$${(Math.random() * 10000).toFixed(2)}`;
+    // Set all agents to be online for demo purposes
+    const isOnline = true;
+    // No random stats - use zeros instead for data integrity
+    const productivity = 0;
+    const leads = 0;
+    const policies = 0;
+    const commissions = "$0.00";
     
-    const statuses = ["Working", "In a meeting", "On a call", "On a break", ""];
-    const statusIndex = Math.floor(Math.random() * statuses.length);
+    // No random statuses
+    const currentStatus = "Available";
     
     return {
       ...agent,
       isOnline,
-      lastActive: isOnline ? 'Now' : `${lastActiveHours}h ago`,
-      currentStatus: statuses[statusIndex],
+      lastActive: 'Now',
+      currentStatus,
       productivity,
       leads,
       policies,

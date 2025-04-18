@@ -112,8 +112,8 @@ const DashboardMetrics = () => {
         icon={<User className="h-5 w-5" />}
         iconBgColor="bg-blue-100"
         iconTextColor="text-primary"
-        changePercentage={9}
-        changeText="new today (April 17)"
+        changePercentage={0}
+        changeText="new today (April 18)"
       />
       
       <MetricCard
@@ -122,7 +122,7 @@ const DashboardMetrics = () => {
         icon={<DollarSign className="h-5 w-5" />}
         iconBgColor="bg-green-100"
         iconTextColor="text-green-600"
-        changePercentage={-3}
+        changePercentage={0}
         changeText="from last month"
       />
       
@@ -132,7 +132,7 @@ const DashboardMetrics = () => {
         icon={<CheckSquare className="h-5 w-5" />}
         iconBgColor="bg-indigo-100"
         iconTextColor="text-indigo-600"
-        changePercentage={8}
+        changePercentage={0}
         changeText="from last week"
       />
       
@@ -142,7 +142,7 @@ const DashboardMetrics = () => {
         icon={<CalendarCheck className="h-5 w-5" />}
         iconBgColor="bg-yellow-100"
         iconTextColor="text-amber-500"
-        changePercentage={2}
+        changePercentage={0}
         changeText="from yesterday"
       />
     </div>
