@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "./storage";
 import { insertAgentSchema, insertLeadSchema, insertPolicySchema } from "@shared/schema";
+import { z } from "zod";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
@@ -360,6 +361,11 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
+  // Extended agent schema that includes UI fields
+  const extendedAgentSchema = insertAgentSchema.extend({
+    fullName: z.string().optional(),
+  });
+
   app.patch("/api/agents/:id", isAdminOrTeamLeader, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -367,10 +373,12 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
 
-      const updateData = insertAgentSchema.partial().parse(req.body);
+      const updateData = extendedAgentSchema.partial().parse(req.body);
       
-      // First, handle firstName/lastName updates if provided
-      if (updateData.firstName || updateData.lastName) {
+      console.log("PATCH /api/agents/:id - Received data:", JSON.stringify(updateData, null, 2));
+      
+      // First, handle firstName/lastName/fullName updates if provided
+      if (updateData.firstName || updateData.lastName || updateData.fullName) {
         try {
           // Get the agent to find the associated user
           const agent = await storage.getAgent(id);
@@ -379,6 +387,14 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             const userUpdateData: any = {};
             let firstName = updateData.firstName;
             let lastName = updateData.lastName;
+            
+            // If a fullName is provided directly, use it to derive firstName/lastName
+            if (updateData.fullName) {
+              const nameParts = updateData.fullName.split(" ");
+              firstName = nameParts[0] || firstName;
+              lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : lastName;
+              console.log(`Derived names from fullName: firstName=${firstName}, lastName=${lastName}`);
+            }
             
             // Get existing user data if we're only updating one of the name parts
             if ((firstName && !lastName) || (!firstName && lastName)) {
@@ -392,16 +408,21 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
             if (firstName) userUpdateData.firstName = firstName;
             if (lastName) userUpdateData.lastName = lastName;
             
-            // Only update fullName if we have both first and last name
+            // Always update fullName if we have both first and last name
             if (firstName && lastName) {
               userUpdateData.fullName = `${firstName} ${lastName}`;
             }
             
-            await storage.updateUser(agent.userId, userUpdateData);
+            console.log("Updating user record with:", JSON.stringify(userUpdateData, null, 2));
+            const updatedUser = await storage.updateUser(agent.userId, userUpdateData);
+            console.log("User record updated:", updatedUser);
             
-            // Remove first/last name from agentData to avoid duplication
+            // Remove name fields from agentData to avoid duplication
             delete updateData.firstName;
             delete updateData.lastName;
+            delete updateData.fullName;
+          } else {
+            console.log("Could not find agent or userId is missing:", agent);
           }
         } catch (userError: any) {
           console.error("Error updating user data for agent:", userError);

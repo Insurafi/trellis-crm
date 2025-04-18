@@ -165,7 +165,7 @@ const AgentsPage: React.FC = () => {
 
   // Update agent mutation
   const updateAgentMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: AgentFormValues }) => {
+    mutationFn: async ({ id, data }: { id: number; data: AgentFormValues }) => {
       // Log the data being sent to ensure first/last name are included
       console.log("Updating agent data:", JSON.stringify(data, null, 2));
       
@@ -180,10 +180,29 @@ const AgentsPage: React.FC = () => {
         throw new Error("First name and last name are required");
       }
       
-      return apiRequest("PUT", `/api/agents/${id}`, data);
+      // Create the full name from first and last name
+      const fullName = `${data.firstName} ${data.lastName}`;
+      
+      // We need to include the fullName in the update data
+      const updateData = {
+        ...data,
+        fullName // Add the fullName field
+      };
+      
+      console.log("Sending update with fullName:", fullName);
+      
+      // Send the update request
+      return apiRequest("PATCH", `/api/agents/${id}`, updateData);
     },
     onSuccess: () => {
+      // Invalidate multiple related queries to ensure UI is updated
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
+      
+      // If we were editing a specific agent, invalidate its data too
+      if (selectedAgent) {
+        queryClient.invalidateQueries({ queryKey: [`/api/agent-data/${selectedAgent.id}`] });
+      }
+      
       toast({
         title: "Agent updated",
         description: "Agent has been successfully updated",
@@ -192,6 +211,7 @@ const AgentsPage: React.FC = () => {
       setSelectedAgent(null);
     },
     onError: (error) => {
+      console.error("Error updating agent:", error);
       toast({
         title: "Error",
         description: "Failed to update agent: " + (error instanceof Error ? error.message : "Unknown error"),
