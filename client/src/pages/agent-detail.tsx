@@ -363,7 +363,7 @@ export default function AgentDetail() {
                         {specialty.trim()}
                       </span>
                     )) : 
-                    <div className="text-sm text-blue-700">Term Life, Whole Life, Universal Life</div>
+                    <div className="text-sm text-blue-700">No specialties listed</div>
                   }
                 </div>
               </div>
@@ -591,7 +591,7 @@ export default function AgentDetail() {
                   )) : 
                   <div className="flex items-center text-sm text-muted-foreground bg-gray-100 px-3 py-2 rounded-md w-full">
                     <PlusCircle className="h-4 w-4 mr-2 text-muted-foreground" />
-                    No states listed - Add licensed states
+                    No licensed states recorded
                   </div>
                 }
               </div>
@@ -733,8 +733,11 @@ export default function AgentDetail() {
                           const endDate = new Date(commission.weekEndDate);
                           dateRange = `${startDate.getMonth() + 1}/${startDate.getDate()} - ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
                         } else {
-                          // Fallback to a fixed date format
-                          dateRange = "4/21 - 4/26/2025";
+                          // Fallback to current date range
+                          const now = new Date();
+                          const lastWeek = new Date(now);
+                          lastWeek.setDate(now.getDate() - 7);
+                          dateRange = `${lastWeek.getMonth() + 1}/${lastWeek.getDate()} - ${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
                         }
                         
                         return (
