@@ -112,26 +112,7 @@ export default function AgentPerformancePage() {
     enabled: !!id
   });
 
-  // Default mock data for when real data is not available
-  const mockSalesData: SalesData[] = [
-    { date: 'Week 1', policies: 3, premium: 4500, commissions: 1800 },
-    { date: 'Week 2', policies: 2, premium: 3000, commissions: 1200 },
-    { date: 'Week 3', policies: 4, premium: 6000, commissions: 2400 },
-    { date: 'Week 4', policies: 3, premium: 4500, commissions: 1800 },
-  ];
-
-  const mockConversionData: ConversionData[] = [
-    { name: 'Converted', value: 25 },
-    { name: 'Pending', value: 30 },
-    { name: 'Lost', value: 45 },
-  ];
-
-  const mockPolicyTypeData: PolicyTypeData[] = [
-    { name: 'Term Life', value: 40 },
-    { name: 'Whole Life', value: 30 },
-    { name: 'Universal Life', value: 20 },
-    { name: 'Final Expense', value: 10 },
-  ];
+  // We don't use any mock data - we'll handle empty states appropriately
 
   // Default stats if no data available
   const defaultStats: SummaryStats = {
@@ -296,46 +277,56 @@ export default function AgentPerformancePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-96">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={salesData || mockSalesData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                  <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                  <Tooltip 
-                    formatter={(value: any, name: any) => {
-                      if (name === 'policies') return [value, 'Policies'];
-                      if (typeof name === 'string') {
-                        return [formatCurrency(value), name.charAt(0).toUpperCase() + name.slice(1)];
-                      }
-                      return [formatCurrency(value), String(name)];
-                    }}
-                  />
-                  <Legend />
-                  <Line 
-                    yAxisId="left"
-                    type="monotone" 
-                    dataKey="policies" 
-                    stroke="#8884d8" 
-                    activeDot={{ r: 8 }} 
-                  />
-                  <Line 
-                    yAxisId="right"
-                    type="monotone" 
-                    dataKey="premium" 
-                    stroke="#82ca9d" 
-                  />
-                  <Line 
-                    yAxisId="right"
-                    type="monotone" 
-                    dataKey="commissions" 
-                    stroke="#ffc658" 
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {!salesData || salesData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <BarChart4 className="h-24 w-24 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No sales data available</h3>
+                  <p className="text-center text-muted-foreground">
+                    There is no sales data available for this time period.
+                  </p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={salesData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                    <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                    <Tooltip 
+                      formatter={(value: any, name: any) => {
+                        if (name === 'policies') return [value, 'Policies'];
+                        if (typeof name === 'string') {
+                          return [formatCurrency(value), name.charAt(0).toUpperCase() + name.slice(1)];
+                        }
+                        return [formatCurrency(value), String(name)];
+                      }}
+                    />
+                    <Legend />
+                    <Line 
+                      yAxisId="left"
+                      type="monotone" 
+                      dataKey="policies" 
+                      stroke="#8884d8" 
+                      activeDot={{ r: 8 }} 
+                    />
+                    <Line 
+                      yAxisId="right"
+                      type="monotone" 
+                      dataKey="premium" 
+                      stroke="#82ca9d" 
+                    />
+                    <Line 
+                      yAxisId="right"
+                      type="monotone" 
+                      dataKey="commissions" 
+                      stroke="#ffc658" 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
