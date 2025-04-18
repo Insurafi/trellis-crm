@@ -164,8 +164,11 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
+      // Get the agent record to find the associated userId
+      const agentRecord = await storage.getAgent(agentId);
+      
       // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentId;
+      const isOwnData = req.user?.id === agentRecord?.userId;
       
       if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
         const salesData = await storage.getSalesAnalyticsByAgent(agentId, from, to);
@@ -185,8 +188,11 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
+      // Get the agent record to find the associated userId
+      const agentRecord = await storage.getAgent(agentId);
+      
       // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentId;
+      const isOwnData = req.user?.id === agentRecord?.userId;
       
       if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
         const conversionData = await storage.getConversionAnalyticsByAgent(agentId, from, to);
@@ -206,8 +212,11 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
+      // Get the agent record to find the associated userId
+      const agentRecord = await storage.getAgent(agentId);
+      
       // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentId;
+      const isOwnData = req.user?.id === agentRecord?.userId;
       
       if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
         const policyTypeData = await storage.getPolicyTypeAnalyticsByAgent(agentId, from, to);
@@ -227,8 +236,11 @@ export function registerAnalyticsRoutes(app: Express) {
       const agentId = parseInt(req.params.agentId);
       const { from, to } = getDateRange(req.query.dateRange as string || "30d");
       
+      // Get the agent record to find the associated userId
+      const agentRecord = await storage.getAgent(agentId);
+      
       // Check permissions: admins and team leaders can view any agent, agents can only view themselves
-      const isOwnData = req.user?.id === agentId;
+      const isOwnData = req.user?.id === agentRecord?.userId;
       
       if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
         const summaryData = await storage.getDashboardSummaryStatsByAgent(agentId, from, to);
