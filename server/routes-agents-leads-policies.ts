@@ -564,6 +564,64 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       res.status(500).json({ message: "Failed to update agent commission" });
     }
   });
+  
+  // Banking information update endpoint - allows both the agent themselves or an admin to update
+  app.patch("/api/agents/:id/banking-info", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // Get the agent first to check permissions
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      // Check if the user is either an admin or the agent themselves
+      const userId = req.user?.id;
+      const userRole = req.user?.role;
+      const isAdmin = userRole === 'admin';
+      const isOwnAccount = agent.userId === userId;
+      
+      if (!isAdmin && !isOwnAccount) {
+        return res.status(403).json({ message: "Not authorized to update this agent's banking information" });
+      }
+      
+      // Extract banking info fields
+      const { 
+        bankName, 
+        bankAccountType, 
+        bankAccountNumber, 
+        bankRoutingNumber, 
+        bankPaymentMethod 
+      } = req.body;
+      
+      // Prepare update data with only the fields that were provided
+      const updateData: Record<string, any> = {};
+      if (bankName !== undefined) updateData.bankName = bankName;
+      if (bankAccountType !== undefined) updateData.bankAccountType = bankAccountType;
+      if (bankAccountNumber !== undefined) updateData.bankAccountNumber = bankAccountNumber;
+      if (bankRoutingNumber !== undefined) updateData.bankRoutingNumber = bankRoutingNumber;
+      if (bankPaymentMethod !== undefined) updateData.bankPaymentMethod = bankPaymentMethod;
+      
+      if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ message: "No banking information fields provided" });
+      }
+      
+      // Update the agent with banking information
+      const updatedAgent = await storage.updateAgent(id, updateData);
+      if (!updatedAgent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent banking information:", error);
+      res.status(500).json({ message: "Failed to update banking information" });
+    }
+  });
 
   app.delete("/api/agents/:id", isAuthenticated, async (req, res) => {
     try {
