@@ -1,172 +1,190 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useParams, useLocation } from "wouter";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Button } from "@/components/ui/button";
-import { useLocation, useRoute } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
-// Define the form schema for editing agents
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { 
+  ArrowLeft, 
+  Loader2, 
+  Save,
+  AlertCircle
+} from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+// Agent form schema
 const agentFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  licenseNumber: z.string().optional(),
-  licenseExpiration: z.string().optional(),
-  npn: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zipCode: z.string().optional(),
-  carrierAppointments: z.string().optional(),
-  uplineAgentId: z.number().nullable().optional(),
-  commissionPercentage: z.string().optional(),
-  overridePercentage: z.string().optional(),
-  specialties: z.string().optional(),
-  notes: z.string().optional(),
+  licenseNumber: z.string().min(1, "License number is required"),
+  licenseExpiration: z.string().min(1, "License expiration is required"),
+  npn: z.string().nullable(),
+  phoneNumber: z.string().min(1, "Phone number is required"),
+  address: z.string().nullable(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  zipCode: z.string().nullable(),
+  carrierAppointments: z.string().nullable(),
+  uplineAgentId: z.number().nullable(),
+  commissionPercentage: z.string().nullable(),
+  overridePercentage: z.string().nullable(),
+  specialties: z.string().nullable(),
+  notes: z.string().nullable(),
+  licensedStates: z.string().nullable(),
 });
 
 type AgentFormValues = z.infer<typeof agentFormSchema>;
 
-const AgentEditPage = () => {
+export default function AgentEdit() {
+  const { id } = useParams();
+  const [_, navigate] = useLocation();
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
-  const [matched, params] = useRoute<{ id: string }>("/agent-edit/:id");
-  
-  // Initialize form with validation
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<AgentFormValues>({
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch agent data
+  const { data: agent, isLoading } = useQuery({
+    queryKey: [`/api/agents/${id}`],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/agents/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch agent data");
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Error fetching agent:", error);
+        setError("Could not load agent data. Please try again later.");
+        throw error;
+      }
+    }
+  });
+
+  // Initialize form
+  const form = useForm<AgentFormValues>({
     resolver: zodResolver(agentFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       licenseNumber: "",
       licenseExpiration: "",
-      npn: "",
+      npn: null,
       phoneNumber: "",
-      address: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      carrierAppointments: "",
+      address: null,
+      city: null,
+      state: null,
+      zipCode: null,
+      carrierAppointments: null,
       uplineAgentId: null,
-      commissionPercentage: "0.00",
-      overridePercentage: "0.00",
-      specialties: "",
-      notes: "",
-    }
+      commissionPercentage: null,
+      overridePercentage: null,
+      specialties: null,
+      notes: null,
+      licensedStates: null,
+    },
   });
 
-  // Fetch agent data if ID is provided
-  const agentId = matched ? parseInt(params.id) : null;
-  
-  const { data: agent, isLoading } = useQuery({
-    queryKey: [`/api/agent-data/${agentId}`],
-    enabled: !!agentId,
-  });
-  
-  // Format date from ISO string to YYYY-MM-DD
-  const formatDate = (isoDate: string | null | undefined) => {
-    if (!isoDate) return ""; 
-    
-    try {
-      const date = new Date(isoDate);
-      if (isNaN(date.getTime())) {
-        return "";
-      }
-      return date.toISOString().split("T")[0];
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "";
-    }
-  };
-
-  // Update form when agent data is loaded
+  // Update form values when agent data is loaded
   useEffect(() => {
     if (agent) {
-      console.log("Setting form values with agent data:", agent);
-      
-      // Try to get the name from fullName or name field
-      let firstName = "";
-      let lastName = "";
-      
-      // Check for name in various properties
+      // Pre-populate form with agent data
       if (agent.fullName) {
-        const nameParts = agent.fullName.split(" ");
-        firstName = nameParts[0] || "";
-        lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+        const nameParts = agent.fullName.split(' ');
+        if (nameParts.length >= 2) {
+          form.setValue("firstName", nameParts[0]);
+          form.setValue("lastName", nameParts.slice(1).join(' '));
+        } else if (nameParts.length === 1) {
+          form.setValue("firstName", nameParts[0]);
+          form.setValue("lastName", "");
+        }
       } else if (agent.name) {
-        const nameParts = agent.name.split(" ");
-        firstName = nameParts[0] || "";
-        lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+        const nameParts = agent.name.split(' ');
+        if (nameParts.length >= 2) {
+          form.setValue("firstName", nameParts[0]);
+          form.setValue("lastName", nameParts.slice(1).join(' '));
+        } else if (nameParts.length === 1) {
+          form.setValue("firstName", nameParts[0]);
+          form.setValue("lastName", "");
+        }
       }
       
-      // Reset form with agent data
-      reset({
-        firstName,
-        lastName,
-        licenseNumber: agent.licenseNumber || "",
-        licenseExpiration: formatDate(agent.licenseExpiration),
-        npn: agent.npn || "",
-        phoneNumber: agent.phoneNumber || "",
-        address: agent.address || "",
-        city: agent.city || "",
-        state: agent.state || "",
-        zipCode: agent.zipCode || "",
-        carrierAppointments: agent.carrierAppointments || "",
-        uplineAgentId: agent.uplineAgentId || null,
-        commissionPercentage: agent.commissionPercentage || "0.00",
-        overridePercentage: agent.overridePercentage || "0.00",
-        specialties: agent.specialties || "",
-        notes: agent.notes || "",
-      });
-      
-      console.log("Form reset completed with values from agent");
+      // Set other form values from agent data
+      form.setValue("licenseNumber", agent.licenseNumber || "");
+      form.setValue("licenseExpiration", agent.licenseExpiration || "");
+      form.setValue("npn", agent.npn || null);
+      form.setValue("phoneNumber", agent.phoneNumber || "");
+      form.setValue("address", agent.address || null);
+      form.setValue("city", agent.city || null);
+      form.setValue("state", agent.state || null);
+      form.setValue("zipCode", agent.zipCode || null);
+      form.setValue("carrierAppointments", agent.carrierAppointments || null);
+      form.setValue("uplineAgentId", agent.uplineAgentId || null);
+      form.setValue("commissionPercentage", agent.commissionPercentage || null);
+      form.setValue("overridePercentage", agent.overridePercentage || null);
+      form.setValue("specialties", agent.specialties || null);
+      form.setValue("notes", agent.notes || null);
+      form.setValue("licensedStates", agent.licensedStates || null);
     }
-  }, [agent, reset]);
+  }, [agent, form]);
 
   // Update agent mutation
   const updateAgentMutation = useMutation({
     mutationFn: async (data: AgentFormValues) => {
-      console.log("⚠️ AGENT UPDATE STARTED ⚠️");
-      console.log("Updating agent ID:", agentId);
-      console.log("Full form data:", JSON.stringify(data, null, 2));
-      
-      // Validation for name fields
-      if (!data.firstName || !data.lastName) {
-        console.error("Missing firstName or lastName in agent update data");
-        throw new Error("First name and last name are required");
+      setIsSubmitting(true);
+      try {
+        const response = await apiRequest("PATCH", `/api/agents/${id}`, data);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to update agent");
+        }
+        return await response.json();
+      } catch (error: any) {
+        console.error("Error updating agent:", error);
+        throw new Error(error.message || "Failed to update agent");
+      } finally {
+        setIsSubmitting(false);
       }
-      
-      return apiRequest("PATCH", `/api/agents/${agentId}`, data);
     },
     onSuccess: () => {
-      console.log("Successfully updated agent!");
-      
-      // Invalidate related queries to refresh data
-      queryClient.invalidateQueries({
-        queryKey: ["/api/agents"],
-        type: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['/api/agent-data'],
-        type: 'all',
-      });
-      
       toast({
-        title: "Success",
-        description: "Agent has been updated successfully.",
+        title: "Agent updated",
+        description: "Agent information has been successfully updated.",
+        variant: "default",
       });
-      
-      // Navigate back to agents page
-      setLocation("/agents");
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: [`/api/agents/${id}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
+      // Navigate back to agent detail page
+      navigate(`/agent-detail/${id}`);
     },
-    onError: (error) => {
-      console.error("Error updating agent:", error);
+    onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: "Failed to update agent: " + (error instanceof Error ? error.message : "Unknown error"),
+        title: "Update failed",
+        description: error.message || "Failed to update agent information. Please try again.",
         variant: "destructive",
       });
     },
@@ -177,275 +195,424 @@ const AgentEditPage = () => {
     updateAgentMutation.mutate(data);
   };
 
-  // If loading, show a loading indicator
   if (isLoading) {
     return (
-      <div className="container mx-auto p-6 flex justify-center items-center h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-xl font-medium">Loading agent data...</p>
+      <div className="flex items-center justify-center min-h-[calc(100vh-120px)]">
+        <div className="flex flex-col items-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+          <p className="text-lg text-muted-foreground">Loading agent information...</p>
         </div>
       </div>
     );
   }
 
-  // If no agent found with the ID
-  if (!isLoading && !agent && agentId) {
+  if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-6">
-          <h2 className="text-xl font-bold">Error</h2>
-          <p>No agent found with ID: {agentId}</p>
-        </div>
-        <Button onClick={() => setLocation("/agents")}>
-          Return to Agents
+      <div className="container py-8 max-w-5xl">
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        
+        <Button onClick={() => navigate(`/agents`)} variant="outline">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Agents
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Edit Agent</h1>
-        <Button variant="outline" onClick={() => setLocation("/agents")}>
-          Cancel
+    <div className="container py-8 max-w-5xl">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-3xl font-bold">Edit Agent</h2>
+          <p className="text-muted-foreground">Update agent information and details</p>
+        </div>
+        <Button onClick={() => navigate(`/agent-detail/${id}`)} variant="outline">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Agent
         </Button>
       </div>
-      
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Personal Information */}
-            <div className="space-y-4 md:col-span-2">
-              <h2 className="text-xl font-semibold text-gray-800">Personal Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                    First Name
-                  </label>
-                  <input
-                    id="firstName"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="John"
-                    {...register("firstName")}
-                  />
-                  {errors.firstName && (
-                    <p className="text-red-500 text-sm">{errors.firstName.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                    Last Name
-                  </label>
-                  <input
-                    id="lastName"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Smith"
-                    {...register("lastName")}
-                  />
-                  {errors.lastName && (
-                    <p className="text-red-500 text-sm">{errors.lastName.message}</p>
-                  )}
-                </div>
-              </div>
-            </div>
 
-            {/* License Information */}
-            <div className="space-y-4 md:col-span-2">
-              <h2 className="text-xl font-semibold text-gray-800">License Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="licenseNumber" className="block text-sm font-medium text-gray-700">
-                    License Number
-                  </label>
-                  <input
-                    id="licenseNumber"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("licenseNumber")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="licenseExpiration" className="block text-sm font-medium text-gray-700">
-                    License Expiration
-                  </label>
-                  <input
-                    id="licenseExpiration"
-                    type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("licenseExpiration")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="npn" className="block text-sm font-medium text-gray-700">
-                    NPN
-                  </label>
-                  <input
-                    id="npn"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("npn")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                    Phone Number
-                  </label>
-                  <input
-                    id="phoneNumber"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("phoneNumber")}
-                  />
-                </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>
+                Basic information about the agent
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </div>
-            
-            {/* Address Information */}
-            <div className="space-y-4 md:col-span-2">
-              <h2 className="text-xl font-semibold text-gray-800">Address Information</h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                    Street Address
-                  </label>
-                  <input
-                    id="address"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("address")}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                      City
-                    </label>
-                    <input
-                      id="city"
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      {...register("city")}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                      State
-                    </label>
-                    <input
-                      id="state"
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      {...register("state")}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-                      ZIP Code
-                    </label>
-                    <input
-                      id="zipCode"
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      {...register("zipCode")}
-                    />
-                  </div>
-                </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="(555) 123-4567" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="specialties"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Specialties</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Term Life, Whole Life, etc." 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Separate with commas
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </div>
-            
-            {/* Business Information */}
-            <div className="space-y-4 md:col-span-2">
-              <h2 className="text-xl font-semibold text-gray-800">Business Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="carrierAppointments" className="block text-sm font-medium text-gray-700">
-                    Carrier Appointments
-                  </label>
-                  <input
-                    id="carrierAppointments"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("carrierAppointments")}
-                  />
-                  <p className="text-xs text-gray-500">Separate multiple carriers with commas</p>
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="specialties" className="block text-sm font-medium text-gray-700">
-                    Specialties
-                  </label>
-                  <input
-                    id="specialties"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("specialties")}
-                  />
-                  <p className="text-xs text-gray-500">Separate multiple specialties with commas</p>
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="commissionPercentage" className="block text-sm font-medium text-gray-700">
-                    Commission Percentage
-                  </label>
-                  <input
-                    id="commissionPercentage"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("commissionPercentage")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="overridePercentage" className="block text-sm font-medium text-gray-700">
-                    Override Percentage
-                  </label>
-                  <input
-                    id="overridePercentage"
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    {...register("overridePercentage")}
-                  />
-                </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>License Information</CardTitle>
+              <CardDescription>
+                Agent's license and certification details
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="licenseNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>License Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="License #" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="licenseExpiration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>License Expiration</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </div>
-            
-            {/* Notes */}
-            <div className="space-y-4 md:col-span-2">
-              <h2 className="text-xl font-semibold text-gray-800">Additional Information</h2>
-              <div className="space-y-2">
-                <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                  Notes
-                </label>
-                <textarea
-                  id="notes"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary h-32"
-                  {...register("notes")}
-                ></textarea>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="npn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>NPN Number</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="National Producer Number" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="licensedStates"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Licensed States</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="CA, NY, TX" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Separate state codes with commas
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </div>
-          </div>
-          
-          <div className="flex justify-end space-x-4 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setLocation("/agents")}
+
+              <FormField
+                control={form.control}
+                name="carrierAppointments"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Carrier Appointments</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Prudential, Pacific Life, etc." 
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Separate with commas
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Address Information</CardTitle>
+              <CardDescription>
+                Agent's contact address
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Street Address</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="123 Main St" 
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="New York" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="NY" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="zipCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ZIP Code</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="10001" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Commission Details</CardTitle>
+              <CardDescription>
+                Agent's commission information
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="commissionPercentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commission Percentage</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input 
+                            type="number" 
+                            min="0" 
+                            max="100" 
+                            step="0.01"
+                            placeholder="60.00" 
+                            {...field} 
+                            value={field.value || ""}
+                          />
+                          <span className="absolute right-3 top-2.5 text-muted-foreground">%</span>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="overridePercentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Override Percentage</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input 
+                            type="number" 
+                            min="0" 
+                            max="100" 
+                            step="0.01"
+                            placeholder="10.00" 
+                            {...field} 
+                            value={field.value || ""}
+                          />
+                          <span className="absolute right-3 top-2.5 text-muted-foreground">%</span>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Additional Information</CardTitle>
+              <CardDescription>
+                Other relevant agent details
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="notes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Notes</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Additional notes about this agent..." 
+                        className="h-32"
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end space-x-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => navigate(`/agent-detail/${id}`)}
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={updateAgentMutation.isPending}
-              className="bg-primary text-white hover:bg-primary/90"
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="min-w-[120px]"
             >
-              {updateAgentMutation.isPending ? "Saving..." : "Save Changes"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Changes
+                </>
+              )}
             </Button>
           </div>
         </form>
-      </div>
+      </Form>
     </div>
   );
-};
-
-export default AgentEditPage;
+}
