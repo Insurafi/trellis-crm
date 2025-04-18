@@ -12,9 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Alert, AlertCircle, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Link } from "wouter";
-import { ChevronLeft, Zap, TrendingUp, PieChart, BarChart4, Calendar } from "lucide-react";
+import { ChevronLeft, Zap, TrendingUp, PieChart, BarChart4, Calendar, AlertCircle } from "lucide-react";
 import { 
   ResponsiveContainer,
   BarChart,
