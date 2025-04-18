@@ -155,4 +155,90 @@ export function registerAnalyticsRoutes(app: Express) {
       res.status(500).json({ message: "Error fetching dashboard summary" });
     }
   });
+
+  // Individual agent analytics endpoints for the agent performance page
+  
+  // Get sales analytics for a specific agent
+  app.get("/api/analytics/sales/by-agent/:agentId", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const { from, to } = getDateRange(req.query.dateRange as string || "30d");
+      
+      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
+      const isOwnData = req.user?.id === agentId;
+      
+      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+        const salesData = await storage.getSalesAnalyticsByAgent(agentId, from, to);
+        res.json(salesData);
+      } else {
+        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+      }
+    } catch (error) {
+      console.error("Error fetching agent sales analytics:", error);
+      res.status(500).json({ message: "Error fetching agent sales analytics" });
+    }
+  });
+  
+  // Get conversion analytics for a specific agent
+  app.get("/api/analytics/conversion/by-agent/:agentId", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const { from, to } = getDateRange(req.query.dateRange as string || "30d");
+      
+      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
+      const isOwnData = req.user?.id === agentId;
+      
+      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+        const conversionData = await storage.getConversionAnalyticsByAgent(agentId, from, to);
+        res.json(conversionData);
+      } else {
+        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+      }
+    } catch (error) {
+      console.error("Error fetching agent conversion analytics:", error);
+      res.status(500).json({ message: "Error fetching agent conversion analytics" });
+    }
+  });
+  
+  // Get policy type distribution for a specific agent
+  app.get("/api/analytics/policy-types/by-agent/:agentId", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const { from, to } = getDateRange(req.query.dateRange as string || "30d");
+      
+      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
+      const isOwnData = req.user?.id === agentId;
+      
+      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+        const policyTypeData = await storage.getPolicyTypeAnalyticsByAgent(agentId, from, to);
+        res.json(policyTypeData);
+      } else {
+        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+      }
+    } catch (error) {
+      console.error("Error fetching agent policy type analytics:", error);
+      res.status(500).json({ message: "Error fetching agent policy type analytics" });
+    }
+  });
+  
+  // Get dashboard summary stats for a specific agent
+  app.get("/api/analytics/summary/by-agent/:agentId", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const agentId = parseInt(req.params.agentId);
+      const { from, to } = getDateRange(req.query.dateRange as string || "30d");
+      
+      // Check permissions: admins and team leaders can view any agent, agents can only view themselves
+      const isOwnData = req.user?.id === agentId;
+      
+      if (isOwnData || req.user?.role === "admin" || req.user?.role === "team_leader") {
+        const summaryData = await storage.getDashboardSummaryStatsByAgent(agentId, from, to);
+        res.json(summaryData);
+      } else {
+        res.status(403).json({ message: "You don't have permission to view this agent's data" });
+      }
+    } catch (error) {
+      console.error("Error fetching agent summary stats:", error);
+      res.status(500).json({ message: "Error fetching agent summary stats" });
+    }
+  });
 }

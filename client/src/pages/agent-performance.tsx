@@ -34,7 +34,8 @@ import {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A569BD', '#5DADE2', '#58D68D'];
 
 // Format currency for display
-const formatCurrency = (amount: number | string) => {
+const formatCurrency = (amount: number | string | undefined) => {
+  if (amount === undefined) return "$0";
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -44,70 +45,106 @@ const formatCurrency = (amount: number | string) => {
   }).format(numAmount);
 };
 
+// Define types for our data
+interface Agent {
+  id: number;
+  fullName?: string;
+  [key: string]: any;
+}
+
+interface SalesData {
+  date: string;
+  policies: number;
+  premium: number;
+  commissions: number;
+}
+
+interface ConversionData {
+  name: string;
+  value: number;
+}
+
+interface PolicyTypeData {
+  name: string;
+  value: number;
+}
+
+interface SummaryStats {
+  totalPolicies: number;
+  totalPremium: number;
+  totalCommissions: number;
+  conversionRate: number;
+  avgPolicyValue: number;
+  periodDescription: string;
+}
+
 export default function AgentPerformancePage() {
   const { id } = useParams<{ id: string }>();
   const [dateRange, setDateRange] = useState("30d"); // Default to 30 days
 
   // Fetch agent details
-  const { data: agent, isLoading: isLoadingAgent } = useQuery({
+  const { data: agent, isLoading: isLoadingAgent } = useQuery<Agent>({
     queryKey: [`/api/agents/${id}`],
     enabled: !!id
   });
 
   // Fetch agent's sales performance data
-  const { data: salesData, isLoading: isLoadingSales } = useQuery({
+  const { data: salesData, isLoading: isLoadingSales } = useQuery<SalesData[]>({
     queryKey: [`/api/analytics/sales/by-agent/${id}`, dateRange],
     enabled: !!id
   });
 
   // Fetch agent's conversion data
-  const { data: conversionData, isLoading: isLoadingConversion } = useQuery({
+  const { data: conversionData, isLoading: isLoadingConversion } = useQuery<ConversionData[]>({
     queryKey: [`/api/analytics/conversion/by-agent/${id}`, dateRange],
     enabled: !!id
   });
 
   // Fetch agent's policy type distribution
-  const { data: policyTypeData, isLoading: isLoadingPolicyTypes } = useQuery({
+  const { data: policyTypeData, isLoading: isLoadingPolicyTypes } = useQuery<PolicyTypeData[]>({
     queryKey: [`/api/analytics/policy-types/by-agent/${id}`, dateRange],
     enabled: !!id
   });
 
   // Fetch agent's summary statistics
-  const { data: summaryStats, isLoading: isLoadingSummary } = useQuery({
+  const { data: summaryStats, isLoading: isLoadingSummary } = useQuery<SummaryStats>({
     queryKey: [`/api/analytics/summary/by-agent/${id}`, dateRange],
     enabled: !!id
   });
 
-  // Generate mock data if real data is not available yet
-  const mockSalesData = [
+  // Default mock data for when real data is not available
+  const mockSalesData: SalesData[] = [
     { date: 'Week 1', policies: 3, premium: 4500, commissions: 1800 },
     { date: 'Week 2', policies: 2, premium: 3000, commissions: 1200 },
     { date: 'Week 3', policies: 4, premium: 6000, commissions: 2400 },
     { date: 'Week 4', policies: 3, premium: 4500, commissions: 1800 },
   ];
 
-  const mockConversionData = [
+  const mockConversionData: ConversionData[] = [
     { name: 'Converted', value: 25 },
     { name: 'Pending', value: 30 },
     { name: 'Lost', value: 45 },
   ];
 
-  const mockPolicyTypeData = [
+  const mockPolicyTypeData: PolicyTypeData[] = [
     { name: 'Term Life', value: 40 },
     { name: 'Whole Life', value: 30 },
     { name: 'Universal Life', value: 20 },
     { name: 'Final Expense', value: 10 },
   ];
 
-  // Prepare summary statistics with real or mock data
-  const performanceStats = summaryStats || {
-    totalPolicies: 12,
-    totalPremium: 18000,
-    totalCommissions: 7200,
-    conversionRate: 25,
-    avgPolicyValue: 1500,
+  // Default stats if no data available
+  const defaultStats: SummaryStats = {
+    totalPolicies: 0,
+    totalPremium: 0,
+    totalCommissions: 0,
+    conversionRate: 0,
+    avgPolicyValue: 0,
     periodDescription: 'Last 30 days'
   };
+
+  // Prepare summary statistics with real or default data
+  const performanceStats: SummaryStats = summaryStats || defaultStats;
 
   // Handle date range change
   const handleDateRangeChange = (range: string) => {
@@ -269,7 +306,7 @@ export default function AgentPerformancePage() {
                   <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
                   <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                   <Tooltip 
-                    formatter={(value, name) => {
+                    formatter={(value: any, name: string) => {
                       if (name === 'policies') return [value, 'Policies'];
                       return [formatCurrency(value), name.charAt(0).toUpperCase() + name.slice(1)];
                     }}
@@ -316,7 +353,7 @@ export default function AgentPerformancePage() {
                     cx="50%"
                     cy="50%"
                     labelLine={true}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }: { name: string, percent: number }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     outerRadius={120}
                     fill="#8884d8"
                     dataKey="value"
