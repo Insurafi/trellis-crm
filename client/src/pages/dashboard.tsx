@@ -119,6 +119,28 @@ export default function Dashboard() {
         </div>
       </div>
       
+      {/* Admin Notifications - Check for agents with incomplete banking info */}
+      <div className="mb-6">
+        <Card className="border-orange-300 bg-orange-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start">
+              <AlertTriangle className="h-5 w-5 text-orange-500 mr-3 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-orange-800 mb-1">Agent Banking Information Alert</h3>
+                <p className="text-orange-700 mb-2">
+                  Some agents need to complete their banking information for commission payments.
+                </p>
+                <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100" asChild>
+                  <Link href="/agents">
+                    View Agents
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
       {/* Dashboard Metrics */}
       <DashboardMetrics />
       
