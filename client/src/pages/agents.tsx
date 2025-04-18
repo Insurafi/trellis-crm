@@ -861,7 +861,8 @@ const AgentsPage: React.FC = () => {
                     <TableHead>Agent Name</TableHead>
                     <TableHead>Specialties</TableHead>
                     <TableHead>Commission</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Actions</TableHead>
+                    <TableHead className="w-[100px] text-center">Edit</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -927,11 +928,26 @@ const AgentsPage: React.FC = () => {
                             </Button>
                           </div>
                         </TableCell>
+                        <TableCell className="text-center">
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            className="bg-green-600 hover:bg-green-700 text-white font-bold w-full"
+                            onClick={() => {
+                              console.log("Dedicated Edit Button clicked for agent ID:", agent.id);
+                              setSelectedAgent(agent);
+                              setIsEditDialogOpen(true);
+                            }}
+                          >
+                            EDIT
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-4">
+                      <TableCell colSpan={5} className="text-center py-4">
                         No agents found
                       </TableCell>
                     </TableRow>
