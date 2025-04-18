@@ -119,9 +119,26 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
+      // Split fullName into firstName and lastName if needed
+      let firstName = req.body.firstName;
+      let lastName = req.body.lastName;
+      
+      if ((!firstName || !lastName) && req.body.fullName) {
+        const nameParts = req.body.fullName.trim().split(/\s+/);
+        if (nameParts.length > 1) {
+          firstName = firstName || nameParts[0];
+          lastName = lastName || nameParts.slice(1).join(' ');
+        } else {
+          firstName = firstName || req.body.fullName;
+          lastName = lastName || '-'; // Default last name if not available
+        }
+      }
+      
       // Ensure role is set
       const userData = {
         ...req.body,
+        firstName: firstName || req.body.username.split(' ')[0], // Default to username if no first name
+        lastName: lastName || '-', // Default to dash if no last name
         role: req.body.role || "agent", // Default to agent if no role provided
         password: await hashPassword(req.body.password),
       };
