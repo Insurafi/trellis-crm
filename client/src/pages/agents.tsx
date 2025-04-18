@@ -292,66 +292,8 @@ const AgentsPage: React.FC = () => {
     }
   };
 
-  // Setup edit form when an agent is selected - simplified approach
-  React.useEffect(() => {
-    if (selectedAgent) {
-      console.log("Agent selected for editing:", selectedAgent);
-      
-      // Simple approach - use the agent data directly without fetching user data
-      const setAgentFormValues = () => {
-        try {
-          // Get name by extracting from any field that might contain it
-          // When it comes from the API directly as agent-data/:id
-          let firstName = "";
-          let lastName = "";
-          
-          // Try to extract name from any field that might have it
-          if (typeof selectedAgent.fullName === 'string') {
-            const nameParts = selectedAgent.fullName.split(" ");
-            firstName = nameParts[0] || "";
-            lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-          } else {
-            // Use empty strings as fallback
-            console.log("No name information found in agent record, using empty strings");
-            firstName = "";
-            lastName = "";
-          }
-          
-          console.log("Setting form with name:", { firstName, lastName });
-          
-          editForm.reset({
-            firstName,
-            lastName,
-            licenseNumber: selectedAgent.licenseNumber || "",
-            licenseExpiration: formatDate(selectedAgent.licenseExpiration),
-            npn: selectedAgent.npn || "",
-            phoneNumber: selectedAgent.phoneNumber || "",
-            address: selectedAgent.address || "",
-            city: selectedAgent.city || "",
-            state: selectedAgent.state || "",
-            zipCode: selectedAgent.zipCode || "",
-            carrierAppointments: selectedAgent.carrierAppointments || "",
-            uplineAgentId: selectedAgent.uplineAgentId || null,
-            commissionPercentage: selectedAgent.commissionPercentage || "0.00",
-            overridePercentage: selectedAgent.overridePercentage || "0.00",
-            specialties: selectedAgent.specialties || "",
-            notes: selectedAgent.notes || "",
-          });
-          
-          console.log("Form reset with values from agent record");
-        } catch (error) {
-          console.error("Error setting form values:", error);
-          toast({
-            title: "Error",
-            description: "Failed to prepare form for editing: " + (error instanceof Error ? error.message : "Unknown error"),
-            variant: "destructive",
-          });
-        }
-      };
-      
-      setAgentFormValues();
-    }
-  }, [selectedAgent, editForm, toast]);
+  // Form values are now set directly in the edit button click handler
+  // This removes any potential race conditions with the useEffect
 
   // Handle add form submission
   const onAddSubmit = (data: AgentFormValues) => {
@@ -813,13 +755,50 @@ const AgentsPage: React.FC = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => {
-                                console.log("Edit button clicked for agent:", agent);
-                                // Direct approach - open dialog first, then set agent
-                                setIsEditDialogOpen(true);
-                                setTimeout(() => {
-                                  console.log("Setting selectedAgent in timeout");
+                                try {
+                                  // Extract name from fullName if available
+                                  let firstName = "";
+                                  let lastName = "";
+                                  
+                                  if (typeof agent.fullName === 'string' && agent.fullName) {
+                                    const nameParts = agent.fullName.split(" ");
+                                    firstName = nameParts[0] || "";
+                                    lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+                                  }
+                                  
+                                  // Set field values individually instead of using reset
+                                  editForm.setValue("firstName", firstName);
+                                  editForm.setValue("lastName", lastName);
+                                  editForm.setValue("licenseNumber", agent.licenseNumber || "");
+                                  editForm.setValue("licenseExpiration", formatDate(agent.licenseExpiration));
+                                  editForm.setValue("npn", agent.npn || "");
+                                  editForm.setValue("phoneNumber", agent.phoneNumber || "");
+                                  editForm.setValue("address", agent.address || "");
+                                  editForm.setValue("city", agent.city || "");
+                                  editForm.setValue("state", agent.state || "");
+                                  editForm.setValue("zipCode", agent.zipCode || "");
+                                  editForm.setValue("carrierAppointments", agent.carrierAppointments || "");
+                                  editForm.setValue("uplineAgentId", agent.uplineAgentId || null);
+                                  editForm.setValue("commissionPercentage", agent.commissionPercentage || "0.00");
+                                  editForm.setValue("overridePercentage", agent.overridePercentage || "0.00");
+                                  editForm.setValue("specialties", agent.specialties || "");
+                                  editForm.setValue("notes", agent.notes || "");
+                                  
+                                  // Set the selected agent for form submission
                                   setSelectedAgent(agent);
-                                }, 100);
+                                  
+                                  // Then open the dialog
+                                  setIsEditDialogOpen(true);
+                                  
+                                  console.log("Edit form prepared for agent:", agent.id);
+                                } catch (error) {
+                                  console.error("Error setting up edit form:", error);
+                                  toast({
+                                    title: "Error",
+                                    description: "Failed to prepare the edit form: " + (error instanceof Error ? error.message : "Unknown error"),
+                                    variant: "destructive",
+                                  });
+                                }
                               }}
                               title="Edit Agent"
                             >
