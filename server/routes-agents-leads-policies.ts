@@ -116,8 +116,19 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         };
       }
       
-      console.log("Returning agent data:", agent);
-      res.json(agent);
+      // Check if agent has banking information
+      const hasBankingInfo = !!(
+        agent.bankName || 
+        agent.bankAccountNumber || 
+        agent.bankRoutingNumber || 
+        agent.bankAccountType
+      );
+      
+      console.log(`Returning agent data for user ${req.user.id}. Has banking info: ${hasBankingInfo}`);
+      res.json({
+        ...agent,
+        bankInfoExists: hasBankingInfo
+      });
     } catch (error) {
       console.error("Error fetching agent for current user:", error);
       

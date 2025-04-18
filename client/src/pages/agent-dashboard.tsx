@@ -95,6 +95,7 @@ export default function AgentDashboard() {
   const updateBankingMutation = useMutation({
     mutationFn: async (data: any) => {
       if (!agentId) throw new Error('No agent ID available');
+      console.log(`Updating banking info for agent ${agentId}:`, data);
       return apiRequest('PATCH', `/api/agents/${agentId}/banking-info`, data);
     },
     onSuccess: () => {
