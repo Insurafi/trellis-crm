@@ -48,7 +48,7 @@ import {
   Edit,
   Save,
   X,
-  Bank,
+  Building,
   DollarSign,
 } from "lucide-react";
 import {
@@ -90,6 +90,68 @@ export default function AgentDashboard() {
     bankRoutingNumber: "",
     bankPaymentMethod: "direct_deposit" // Set Direct Deposit as default payment method
   });
+  
+  // Create banking information mutation
+  const updateBankingMutation = useMutation({
+    mutationFn: async (data: any) => {
+      if (!agentId) throw new Error('No agent ID available');
+      return apiRequest('PATCH', `/api/agents/${agentId}/banking-info`, data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Banking information updated",
+        description: "Your direct deposit information has been saved successfully.",
+      });
+      setIsEditingBankInfo(false);
+      
+      // Invalidate agent data query to reload the updated data
+      queryClient.invalidateQueries({ queryKey: ['/api/agents/by-user'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Update failed",
+        description: `Failed to update banking information: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Banking info validation schema
+  const bankingFormSchema = z.object({
+    bankName: z.string().min(2, "Bank name is required"),
+    bankAccountType: z.string().min(1, "Account type is required"),
+    bankAccountNumber: z.string().min(4, "Valid account number is required"),
+    bankRoutingNumber: z.string().min(9, "Valid routing number is required"),
+  });
+  
+  // Form for banking information
+  const bankingForm = useForm<z.infer<typeof bankingFormSchema>>({
+    resolver: zodResolver(bankingFormSchema),
+    defaultValues: {
+      bankName: bankInfo.bankName,
+      bankAccountType: bankInfo.bankAccountType,
+      bankAccountNumber: bankInfo.bankAccountNumber,
+      bankRoutingNumber: bankInfo.bankRoutingNumber,
+    }
+  });
+  
+  // Update form when bankInfo changes
+  useEffect(() => {
+    bankingForm.reset({
+      bankName: bankInfo.bankName,
+      bankAccountType: bankInfo.bankAccountType,
+      bankAccountNumber: bankInfo.bankAccountNumber,
+      bankRoutingNumber: bankInfo.bankRoutingNumber,
+    });
+  }, [bankInfo, bankingForm.reset]);
+  
+  // Handle form submission
+  const onSubmitBankingInfo = (data: z.infer<typeof bankingFormSchema>) => {
+    updateBankingMutation.mutate({
+      ...data,
+      bankPaymentMethod: "direct_deposit" // Always use direct deposit
+    });
+  };
 
   // Fetch agent details for the current user
   const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
@@ -876,6 +938,201 @@ export default function AgentDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="settings" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+            {/* Banking Information Card */}
+            <Card className="col-span-1">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div>
+                  <CardTitle className="text-xl">Banking Information</CardTitle>
+                  <CardDescription>
+                    Set up your direct deposit information for commission payments
+                  </CardDescription>
+                </div>
+                {!isEditingBankInfo && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setIsEditingBankInfo(true)}
+                    className="ml-auto"
+                  >
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit
+                  </Button>
+                )}
+              </CardHeader>
+              <CardContent>
+                {isEditingBankInfo ? (
+                  <Form {...bankingForm}>
+                    <form onSubmit={bankingForm.handleSubmit(onSubmitBankingInfo)} className="space-y-4">
+                      <FormField
+                        control={bankingForm.control}
+                        name="bankName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Bank Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter your bank name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={bankingForm.control}
+                        name="bankAccountType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Account Type</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select account type" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="checking">Checking</SelectItem>
+                                <SelectItem value="savings">Savings</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={bankingForm.control}
+                        name="bankAccountNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Account Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter account number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={bankingForm.control}
+                        name="bankRoutingNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Routing Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter routing number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <div className="pt-2">
+                        <FormLabel>Payment Method</FormLabel>
+                        <div className="flex items-center space-x-2 p-3 border rounded-md bg-blue-50">
+                          <DollarSign className="h-5 w-5 text-blue-500" />
+                          <span className="font-medium">Direct Deposit</span>
+                        </div>
+                        <FormDescription className="mt-1">
+                          All commission payments are processed via direct deposit
+                        </FormDescription>
+                      </div>
+                      
+                      <div className="flex justify-end space-x-2 pt-4">
+                        <Button 
+                          type="button" 
+                          variant="outline"
+                          onClick={() => setIsEditingBankInfo(false)}
+                        >
+                          <X className="mr-2 h-4 w-4" />
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="submit"
+                          disabled={updateBankingMutation.isPending}
+                        >
+                          {updateBankingMutation.isPending ? (
+                            <>
+                              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                              Saving...
+                            </>
+                          ) : (
+                            <>
+                              <Save className="mr-2 h-4 w-4" />
+                              Save
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                ) : (
+                  <div className="space-y-4">
+                    {bankInfo.bankName ? (
+                      <>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="text-sm font-medium text-muted-foreground">Bank Name</h4>
+                            <p className="mt-1">{bankInfo.bankName}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-muted-foreground">Account Type</h4>
+                            <p className="mt-1 capitalize">{bankInfo.bankAccountType}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="text-sm font-medium text-muted-foreground">Account Number</h4>
+                            <p className="mt-1">
+                              {bankInfo.bankAccountNumber ? `••••${bankInfo.bankAccountNumber.slice(-4)}` : 'Not set'}
+                            </p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-muted-foreground">Routing Number</h4>
+                            <p className="mt-1">
+                              {bankInfo.bankRoutingNumber ? `••••${bankInfo.bankRoutingNumber.slice(-4)}` : 'Not set'}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-sm font-medium text-muted-foreground">Payment Method</h4>
+                          <div className="mt-1 flex items-center">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                              <Building className="h-4 w-4 text-blue-700" />
+                            </div>
+                            <span className="ml-2 font-medium">Direct Deposit</span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="py-8 text-center">
+                        <Building className="mx-auto h-12 w-12 text-muted-foreground opacity-20" />
+                        <h3 className="mt-4 text-lg font-medium">No Banking Information</h3>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          Please add your banking information to receive commission payments via direct deposit.
+                        </p>
+                        <Button 
+                          onClick={() => setIsEditingBankInfo(true)} 
+                          className="mt-4"
+                        >
+                          Add Banking Information
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
