@@ -562,6 +562,15 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       
       res.json(updatedAgent);
     } catch (error) {
+      console.error("CRITICAL ERROR in PATCH /api/agents/:id:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+      
+      if (error.name === 'ZodError') {
+        console.error("Validation error details:", JSON.stringify(error.errors, null, 2));
+      }
+      
       handleValidationError(error, res);
     }
   });
@@ -658,6 +667,74 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     } catch (error) {
       console.error("Error updating agent banking information:", error);
       res.status(500).json({ message: "Failed to update banking information" });
+    }
+  });
+  
+  // Dedicated standalone endpoint for simple banking info update
+  app.post("/api/agents/:id/save-banking", isAuthenticated, async (req, res) => {
+    try {
+      // Parse agent ID
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      console.log(`Banking info save request for agent ${id} from user ${req.user?.id} (${req.user?.role})`);
+      console.log("Request body:", JSON.stringify(req.body, null, 2));
+      
+      // Get the agent
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      // Check permissions - allow the agent to update their own banking info
+      const userId = req.user?.id;
+      const isOwnAccount = agent.userId === userId;
+      const isAdmin = req.user?.role === 'admin' || req.user?.role === 'Administrator';
+      
+      if (!isOwnAccount && !isAdmin) {
+        console.error(`User ${userId} attempted to update banking for agent ${id} but is not authorized`);
+        return res.status(403).json({ message: "You are not authorized to update this agent's banking information" });
+      }
+      
+      // Build the banking data
+      const bankingData = {
+        bankName: req.body.bankName || null,
+        bankAccountType: req.body.bankAccountType || null,
+        bankAccountNumber: req.body.bankAccountNumber || null,
+        bankRoutingNumber: req.body.bankRoutingNumber || null,
+        bankPaymentMethod: "direct_deposit" // Always direct deposit
+      };
+      
+      console.log("Saving banking data:", JSON.stringify(bankingData, null, 2));
+      
+      // Update the banking information
+      const result = await storage.updateAgent(id, bankingData);
+      
+      if (!result) {
+        return res.status(500).json({ message: "Failed to update banking information" });
+      }
+      
+      console.log("Banking information successfully updated for agent:", id);
+      return res.status(200).json({ 
+        success: true,
+        message: "Banking information updated successfully",
+        agent: {
+          id: result.id,
+          bankName: result.bankName,
+          bankAccountType: result.bankAccountType,
+          bankAccountNumber: result.bankAccountNumber ? "********" + result.bankAccountNumber.slice(-4) : null,
+          bankRoutingNumber: result.bankRoutingNumber ? "********" + result.bankRoutingNumber.slice(-4) : null,
+          bankPaymentMethod: result.bankPaymentMethod
+        }
+      });
+    } catch (error) {
+      console.error("ERROR in /api/agents/:id/save-banking:", error);
+      return res.status(500).json({ 
+        success: false,
+        message: "Failed to update banking information. Please try again." 
+      });
     }
   });
 
