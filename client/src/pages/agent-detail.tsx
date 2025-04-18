@@ -156,14 +156,7 @@ export default function AgentDetail() {
           type: "email"
         }
       ],
-      // Top products data removed
-      weeklyActivityBreakdown: [
-        { day: "Mon", calls: 15, meetings: 2, quotes: 5 },
-        { day: "Tue", calls: 12, meetings: 1, quotes: 3 },
-        { day: "Wed", calls: 18, meetings: 3, quotes: 6 },
-        { day: "Thu", calls: 10, meetings: 2, quotes: 4 },
-        { day: "Fri", calls: 14, meetings: 1, quotes: 2 },
-      ],
+      // Top products data and weekly activity breakdown removed
     };
   });
 
@@ -472,11 +465,10 @@ export default function AgentDetail() {
           </Card>
 
           <Tabs defaultValue="commissions">
-            <TabsList className="grid grid-cols-4 mb-4">
+            <TabsList className="grid grid-cols-3 mb-4">
               <TabsTrigger value="commissions">Commissions</TabsTrigger>
               <TabsTrigger value="products">Top Products</TabsTrigger>
               <TabsTrigger value="clients">Recent Clients</TabsTrigger>
-              <TabsTrigger value="activity">Weekly Activity</TabsTrigger>
             </TabsList>
             
             <TabsContent value="commissions" className="mt-0">
@@ -645,62 +637,7 @@ export default function AgentDetail() {
               </Card>
             </TabsContent>
             
-            <TabsContent value="activity" className="mt-0">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Weekly Activity Breakdown</CardTitle>
-                  <CardDescription>Agent's productivity metrics</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-5 gap-2">
-                    {performanceData.weeklyActivityBreakdown.map((day, index) => (
-                      <div key={index} className="text-center">
-                        <div className="font-medium mb-2">{day.day}</div>
-                        <div className="space-y-2">
-                          <div className="flex flex-col items-center">
-                            <div className="h-20 bg-primary/10 rounded-t-md relative w-full">
-                              <div 
-                                className="absolute bottom-0 w-full bg-primary rounded-t-md"
-                                style={{ height: `${Math.min(100, day.calls * 5)}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs mt-1">{day.calls} calls</span>
-                          </div>
-                          
-                          <div className="flex flex-col items-center">
-                            <div className="h-14 bg-blue-100 rounded-t-md relative w-full">
-                              <div 
-                                className="absolute bottom-0 w-full bg-blue-500 rounded-t-md"
-                                style={{ height: `${Math.min(100, day.meetings * 25)}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs mt-1">{day.meetings} mtgs</span>
-                          </div>
-                          
-                          <div className="flex flex-col items-center">
-                            <div className="h-16 bg-emerald-100 rounded-t-md relative w-full">
-                              <div 
-                                className="absolute bottom-0 w-full bg-emerald-500 rounded-t-md"
-                                style={{ height: `${Math.min(100, day.quotes * 15)}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs mt-1">{day.quotes} quotes</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-center border-t pt-4">
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href={`/agents/${agent.id}/activity`}>
-                      <ClipboardList className="mr-2 h-4 w-4" />
-                      View Full Activity Log
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
+            {/* Weekly Activity tab removed */}
           </Tabs>
         </div>
       </div>
