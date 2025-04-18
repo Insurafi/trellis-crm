@@ -159,11 +159,44 @@ export default function EmergencyAgentEdit() {
       )}
       
       {success && (
-        <Alert className="mb-6 bg-green-50 border-green-200 text-green-800">
-          <CheckCircle2 className="h-4 w-4 text-green-500" />
-          <AlertTitle className="text-green-800">Success</AlertTitle>
-          <AlertDescription className="text-green-700">{success}</AlertDescription>
-        </Alert>
+        <div className="mb-6">
+          <Alert className="mb-4 bg-green-50 border-green-200 text-green-800">
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <AlertTitle className="text-green-800">Success</AlertTitle>
+            <AlertDescription className="text-green-700">{success}</AlertDescription>
+          </Alert>
+          
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start">
+              <div>
+                <h3 className="font-medium text-blue-800 mb-2">What happens next?</h3>
+                <p className="text-blue-700 mb-2">
+                  Your information has been saved successfully. Now you can:
+                </p>
+                <ul className="list-disc pl-5 text-blue-700 space-y-1">
+                  <li>Return to your agent dashboard to view your leads and clients</li>
+                  <li>Check your commission status in the Commissions tab</li>
+                  <li>Contact support if you have any questions</li>
+                </ul>
+                <div className="mt-4 flex gap-3">
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => navigate('/agent-dashboard')}
+                  >
+                    Go to Dashboard
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                    onClick={() => navigate(`/agent-detail/${id}`)}
+                  >
+                    View Profile
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
       
       <form onSubmit={handleSubmit}>
@@ -290,6 +323,7 @@ export default function EmergencyAgentEdit() {
             <Button 
               type="submit"
               disabled={isLoading}
+              className="bg-orange-500 hover:bg-orange-600 px-6 text-base"
             >
               {isLoading ? (
                 <>

@@ -56,8 +56,23 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(401).json({ message: "User not authenticated" });
       }
       
-      console.log("Attempting to find agent for user ID:", req.user.id);
+      // Check if this is Aaron (user ID 13)
+      const isAaron = req.user.id === 13;
+      if (isAaron) {
+        console.log("Aaron (user ID 13) is requesting their agent record");
+      }
+      
+      console.log("Attempting to find agent for user ID:", req.user.id, "Username:", req.user.username);
       let agent = await storage.getAgentByUserId(req.user.id);
+      
+      if (agent && isAaron) {
+        console.log("Found Aaron's agent ID:", agent.id);
+        // Flag that this agent needs to update their banking info
+        agent.bankInfoExists = agent.bankName && agent.bankAccountNumber && agent.bankRoutingNumber;
+        if (!agent.bankInfoExists) {
+          console.log("Aaron needs to update banking information");
+        }
+      }
       
       if (!agent) {
         // If no agent found for this user, create a default agent record
