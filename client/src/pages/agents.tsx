@@ -804,9 +804,8 @@ const AgentsPage: React.FC = () => {
                                 <Eye size={16} />
                               </Button>
                             </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
+                            <div
+                              className="p-2 cursor-pointer bg-blue-100 rounded-md hover:bg-blue-200"
                               onClick={() => {
                                 // Simple approach with minimal code
                                 setSelectedAgent(agent);
@@ -814,8 +813,8 @@ const AgentsPage: React.FC = () => {
                                 console.log("Edit clicked for agent:", agent.id);
                               }}
                             >
-                              Edit
-                            </Button>
+                              <span className="text-blue-600 font-medium">Edit Agent</span>
+                            </div>
                             <Button
                               variant="ghost"
                               size="icon"
