@@ -24,6 +24,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -168,7 +175,7 @@ export default function AgentEdit() {
       form.setValue("bankAccountType", agent.bankAccountType || null);
       form.setValue("bankAccountNumber", agent.bankAccountNumber || null);
       form.setValue("bankRoutingNumber", agent.bankRoutingNumber || null);
-      form.setValue("bankPaymentMethod", agent.bankPaymentMethod || null);
+      form.setValue("bankPaymentMethod", "Direct Deposit");
     }
   }, [agent, form]);
 
@@ -636,38 +643,41 @@ export default function AgentEdit() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Account Type</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Checking or Savings" 
-                          {...field} 
-                          value={field.value || ""}
-                        />
-                      </FormControl>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value || ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select account type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Checking">Checking</SelectItem>
+                          <SelectItem value="Savings">Savings</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="bankPaymentMethod"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Payment Method</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Direct Deposit" 
-                          value="Direct Deposit"
-                          disabled
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        All payments are made via direct deposit
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div>
+                  <FormLabel>Payment Method</FormLabel>
+                  <Input 
+                    placeholder="Direct Deposit" 
+                    value="Direct Deposit"
+                    disabled
+                    className="mb-1"
+                  />
+                  <input 
+                    type="hidden" 
+                    name="bankPaymentMethod"
+                    value="Direct Deposit"
+                  />
+                  <FormDescription>
+                    All payments are made via direct deposit
+                  </FormDescription>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
