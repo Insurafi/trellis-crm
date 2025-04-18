@@ -496,6 +496,72 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
   
+  // Dedicated endpoint for just updating an agent's name
+  app.patch("/api/agents/:id/name", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      // Validate input
+      const { firstName, lastName, fullName } = req.body;
+      
+      // We need at least one name field to update
+      if (!firstName && !lastName && !fullName) {
+        return res.status(400).json({ message: "At least one name field (firstName, lastName, or fullName) must be provided" });
+      }
+
+      // Get the agent to find the associated user ID
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      if (!agent.userId) {
+        return res.status(400).json({ message: "Agent doesn't have an associated user account" });
+      }
+
+      // Extract the name values we'll work with
+      let firstNameValue = firstName;
+      let lastNameValue = lastName;
+      
+      // If fullName is provided, derive first and last names
+      if (fullName) {
+        const nameParts = fullName.split(" ");
+        firstNameValue = firstNameValue || nameParts[0] || "";
+        lastNameValue = lastNameValue || (nameParts.length > 1 ? nameParts.slice(1).join(" ") : "");
+      }
+      
+      // If we still don't have both names, get the original user data
+      if (!firstNameValue || !lastNameValue) {
+        const user = await storage.getUser(agent.userId);
+        if (user) {
+          firstNameValue = firstNameValue || user.firstName || "";
+          lastNameValue = lastNameValue || user.lastName || "";
+        }
+      }
+      
+      // Construct the name fields for updating
+      const updateData = {
+        firstName: firstNameValue,
+        lastName: lastNameValue,
+        fullName: `${firstNameValue} ${lastNameValue}`
+      };
+      
+      // Update the user record
+      console.log(`Updating user ${agent.userId} name to:`, updateData);
+      const updatedUser = await storage.updateUser(agent.userId, updateData);
+      
+      // Return the updated agent data
+      const updatedAgent = await storage.getAgent(id);
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent name:", error);
+      res.status(500).json({ message: "Failed to update agent name" });
+    }
+  });
+
   // Get agent by ID - this must come last of all agent routes
   app.get("/api/agents/:id", async (req, res) => {
     try {

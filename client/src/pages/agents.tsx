@@ -56,7 +56,8 @@ import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Extend Agent type to include UI-specific properties
-interface AgentWithName extends Agent { 
+// Using Omit to remove the commissionPercentage property from Agent and redefine it
+interface AgentWithName extends Omit<Agent, 'commissionPercentage'> { 
   name?: string;
   fullName?: string;
   email?: string;
@@ -163,7 +164,51 @@ const AgentsPage: React.FC = () => {
     },
   });
 
-  // Update agent mutation
+  // Special mutation just for updating agent name
+  const updateAgentNameMutation = useMutation({
+    mutationFn: async ({ id, firstName, lastName }: { id: number; firstName: string; lastName: string }) => {
+      // Log the name data being sent
+      console.log("Updating agent name:", { firstName, lastName });
+      
+      // Make sure firstName and lastName are not empty
+      if (!firstName || !lastName) {
+        console.error("Missing firstName or lastName in agent name update");
+        toast({
+          title: "Error",
+          description: "First name and last name are required",
+          variant: "destructive",
+        });
+        throw new Error("First name and last name are required");
+      }
+      
+      // Create the full name from first and last name
+      const fullName = `${firstName} ${lastName}`;
+      
+      console.log(`Updating agent ${id} name to: ${fullName}`);
+      
+      // Use the dedicated name update endpoint
+      return apiRequest("PATCH", `/api/agents/${id}/name`, { firstName, lastName, fullName });
+    },
+    onSuccess: (data, variables) => {
+      // Make sure we refresh the agent list to show the updated name
+      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
+      
+      // Also refresh the specific agent data
+      queryClient.invalidateQueries({ queryKey: [`/api/agents/${variables.id}`] });
+      
+      console.log(`Successfully updated name for agent ${variables.id}`);
+    },
+    onError: (error) => {
+      console.error("Error updating agent name:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update agent name: " + (error instanceof Error ? error.message : "Unknown error"),
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Update agent mutation for full updates
   const updateAgentMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: AgentFormValues }) => {
       // Log the data being sent to ensure first/last name are included
@@ -180,19 +225,27 @@ const AgentsPage: React.FC = () => {
         throw new Error("First name and last name are required");
       }
       
-      // Create the full name from first and last name
-      const fullName = `${data.firstName} ${data.lastName}`;
+      // Extract the name fields and separate the other data
+      const { firstName, lastName, ...agentData } = data;
       
-      // We need to include the fullName in the update data
-      const updateData = {
-        ...data,
-        fullName // Add the fullName field
-      };
+      console.log("Separated name fields from agent data - updating name separately");
       
-      console.log("Sending update with fullName:", fullName);
-      
-      // Send the update request
-      return apiRequest("PATCH", `/api/agents/${id}`, updateData);
+      try {
+        // First update the name using our specialized endpoint
+        await updateAgentNameMutation.mutateAsync({ id, firstName, lastName });
+        
+        // If name update succeeded and we have other fields to update, continue with them
+        if (Object.keys(agentData).length > 0) {
+          // Send the non-name fields to the regular update endpoint
+          return apiRequest("PATCH", `/api/agents/${id}`, agentData);
+        }
+        
+        // If we only had name fields, we're already done
+        return { success: true, message: "Agent name updated successfully" };
+      } catch (error) {
+        console.error("Error updating agent name:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       // Invalidate multiple related queries to ensure UI is updated
