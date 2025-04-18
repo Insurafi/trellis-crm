@@ -661,23 +661,25 @@ export default function AgentEdit() {
                     </FormItem>
                   )}
                 />
-                <div>
-                  <FormLabel>Payment Method</FormLabel>
-                  <Input 
-                    placeholder="Direct Deposit" 
-                    value="Direct Deposit"
-                    disabled
-                    className="mb-1"
-                  />
-                  <input 
-                    type="hidden" 
-                    name="bankPaymentMethod"
-                    value="Direct Deposit"
-                  />
-                  <FormDescription>
-                    All payments are made via direct deposit
-                  </FormDescription>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="bankPaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled
+                          value="Direct Deposit"
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        All payments are made via direct deposit
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
