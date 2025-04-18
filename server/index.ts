@@ -4,6 +4,8 @@ import { setupVite, serveStatic, log } from "./vite";
 import { initializeData } from "./initialize-data";
 import { initializePipelineData } from "./initialize-pipeline-data";
 import { initializeCommissionData } from "./initialize-commission-data";
+import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
+import { syncExistingPoliciesToClients } from "./sync-existing-policies-to-clients";
 
 const app = express();
 app.use(express.json());
@@ -72,9 +74,18 @@ app.use((req, res, next) => {
     
     // Initialize database with sample data
     try {
+      // First synchronize leads with clients to ensure proper associations
+      await syncExistingLeadsToClients();
+      
+      // Then synchronize policies with clients to ensure proper linkage
+      await syncExistingPoliciesToClients();
+      
+      // Initialize database with sample data
       await initializeData();
+      
       // Initialize pipeline data after basic data is loaded
       await initializePipelineData();
+      
       // Initialize commission data
       await initializeCommissionData();
     } catch (error) {

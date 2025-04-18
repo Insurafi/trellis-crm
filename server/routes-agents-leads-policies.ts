@@ -7,6 +7,7 @@ import { fromZodError } from "zod-validation-error";
 import { isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
 import { sendAgentWelcomeEmail } from "./agent-welcome-email";
 import { syncLeadToClient } from "./lead-client-sync";
+import { syncPolicyToClient, associatePolicyWithClient } from "./policy-client-sync";
 
 export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Error handling middleware for validation errors
@@ -1320,9 +1321,24 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   app.post("/api/policies", isAuthenticated, async (req, res) => {
     try {
       const policyData = insertPolicySchema.parse(req.body);
-      const newPolicy = await storage.createPolicy(policyData);
+      
+      // Create the new policy
+      let newPolicy = await storage.createPolicy(policyData);
+      console.log(`Created new policy #${newPolicy.id} for agent #${newPolicy.agentId}`);
+      
+      // Automatically try to associate the policy with a client if not already linked
+      if (!newPolicy.clientId && newPolicy.leadId) {
+        newPolicy = await associatePolicyWithClient(newPolicy);
+        console.log(`Attempted to associate policy #${newPolicy.id} with a client via lead ID ${newPolicy.leadId}`);
+      }
+      
+      // Synchronize the policy with the client
+      await syncPolicyToClient(newPolicy.id, newPolicy);
+      console.log(`Policy #${newPolicy.id} synchronized with client accounts`);
+      
       res.status(201).json(newPolicy);
     } catch (error) {
+      console.error("Error creating policy:", error);
       handleValidationError(error, res);
     }
   });
@@ -1334,15 +1350,26 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid policy ID" });
       }
 
+      // Get the existing policy first
+      const existingPolicy = await storage.getPolicy(id);
+      if (!existingPolicy) {
+        return res.status(404).json({ message: "Policy not found" });
+      }
+
       const updateData = insertPolicySchema.partial().parse(req.body);
       const updatedPolicy = await storage.updatePolicy(id, updateData);
       
       if (!updatedPolicy) {
-        return res.status(404).json({ message: "Policy not found" });
+        return res.status(404).json({ message: "Failed to update policy" });
       }
+
+      // Synchronize the updated policy with client records
+      await syncPolicyToClient(id, updatedPolicy, updateData);
+      console.log(`Updated policy #${id} synchronized with client accounts`);
 
       res.json(updatedPolicy);
     } catch (error) {
+      console.error("Error updating policy:", error);
       handleValidationError(error, res);
     }
   });
