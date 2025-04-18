@@ -22,6 +22,7 @@ import {
   Star,
   MessageSquare,
   Landmark,
+  AlertTriangle,
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
