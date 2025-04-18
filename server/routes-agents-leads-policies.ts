@@ -490,16 +490,17 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       console.log("PATCH agent: Notes value being saved:", updateData.notes);
       
       // Special handling for empty strings vs null values
+      // Create a new object instead of modifying the constant
+      const sanitizedData = { ...updateData };
       Object.entries(updateData).forEach(([key, value]) => {
         if (value === "") {
           // Convert empty strings to null for consistency with database
-          // Use type-safe approach instead of direct indexing
-          updateData = {
-            ...updateData,
-            [key]: null
-          };
+          sanitizedData[key] = null;
         }
       });
+      
+      // Use the sanitized data for updates
+      const dataToUpdate = sanitizedData;
       
       // Get current agent data to ensure we don't lose any existing values
       const currentAgent = await storage.getAgent(id);
@@ -508,13 +509,13 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
       
       // If notes is not in the update data but exists on the current agent, preserve it
-      if (updateData.notes === undefined && currentAgent.notes) {
+      if (dataToUpdate.notes === undefined && currentAgent.notes) {
         console.log("PATCH agent: Preserving existing notes:", currentAgent.notes);
-        updateData.notes = currentAgent.notes;
+        dataToUpdate.notes = currentAgent.notes;
       }
       
       // Update the agent record
-      const updatedAgent = await storage.updateAgent(id, updateData);
+      const updatedAgent = await storage.updateAgent(id, dataToUpdate);
       
       if (!updatedAgent) {
         return res.status(404).json({ message: "Agent not found after update" });

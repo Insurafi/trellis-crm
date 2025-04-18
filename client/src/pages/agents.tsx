@@ -894,44 +894,36 @@ const AgentsPage: React.FC = () => {
                             </Button>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Link href={`/agent-detail/${agent.id}`}>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                title="View Agent Details"
-                              >
-                                <Eye size={16} />
-                              </Button>
-                            </Link>
+                        <TableCell>
+                          <div className="flex items-center justify-end space-x-3">
                             <Button
-                              variant="outline"
-                              className="px-3 py-2 text-base bg-blue-500 hover:bg-blue-600 text-white"
+                              variant="default"
+                              size="sm"
+                              asChild
+                            >
+                              <Link href={`/agent-detail/${agent.id}`}>View</Link>
+                            </Button>
+                            
+                            <Button
+                              type="button"
+                              variant="default"
+                              size="sm"
+                              className="bg-blue-500 hover:bg-blue-600"
                               onClick={() => {
-                                // Log for debugging
-                                console.log("Edit button clicked for agent:", JSON.stringify(agent, null, 2));
-                                
-                                // Force a delay before opening the dialog to ensure data is ready
-                                setTimeout(() => {
-                                  setSelectedAgent(agent);
-                                  setIsEditDialogOpen(true);
-                                  console.log("Edit dialog opened for agent:", agent.id);
-                                  
-                                  // Extra debugging to make sure values are populated
-                                  console.log("Notes value:", agent.notes);
-                                }, 100);
+                                console.log("New Edit Button clicked for agent ID:", agent.id);
+                                setSelectedAgent(agent);
+                                setIsEditDialogOpen(true);
                               }}
                             >
-                              Edit Agent
+                              Edit
                             </Button>
+                            
                             <Button
-                              variant="ghost"
-                              size="icon"
+                              variant="destructive"
+                              size="sm"
                               onClick={() => handleDelete(agent)}
-                              title="Delete Agent"
                             >
-                              <Trash2 size={16} />
+                              Delete
                             </Button>
                           </div>
                         </TableCell>
