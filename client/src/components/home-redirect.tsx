@@ -11,8 +11,26 @@ export default function HomeRedirect() {
     // Wait until auth is loaded
     if (isLoading) return;
 
-    // If user is logged in, redirect based on role
+    // If user is logged in, redirect based on role and ID
     if (user) {
+      // Special case for Aaron (agent with user ID 13)
+      if (user.id === 13) {
+        // Redirect Aaron specifically to his emergency edit page
+        const agentQuery = fetch('/api/agents/by-user').then(r => r.json());
+        agentQuery.then(agent => {
+          console.log("Redirecting Aaron to emergency page", agent);
+          if (agent && agent.id) {
+            setLocation(`/emergency-agent-edit/${agent.id}`);
+          } else {
+            setLocation("/agent-dashboard");
+          }
+        }).catch(() => {
+          setLocation("/agent-dashboard");
+        });
+        return;
+      }
+      
+      // Normal flow for other users
       if (isAgent) {
         setLocation("/agent-dashboard");
       } else {

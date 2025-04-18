@@ -3,6 +3,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { AlertTriangle } from "lucide-react";
 
 import {
   Card,
@@ -123,13 +124,30 @@ export default function EmergencyAgentEdit() {
     <div className="container py-8 max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold">Update Your Information</h2>
-          <p className="text-muted-foreground">Update your address and banking details</p>
+          <h2 className="text-3xl font-bold text-orange-600">
+            Update Required
+          </h2>
+          <p className="text-muted-foreground">
+            Please enter your address and banking information to continue
+          </p>
         </div>
         <Button onClick={() => navigate(`/agent-detail/${id}`)} variant="outline">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Profile
         </Button>
+      </div>
+      
+      <div className="p-4 mb-6 bg-orange-50 border border-orange-200 rounded-lg">
+        <div className="flex items-start">
+          <AlertTriangle className="h-6 w-6 text-orange-500 mr-3 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-orange-800">Important Notice</h3>
+            <p className="text-orange-700">
+              We need your correct address and banking information to process your commission payments. 
+              Please fill out this form completely to ensure you receive your payments without delay.
+            </p>
+          </div>
+        </div>
       </div>
       
       {error && (
