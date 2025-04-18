@@ -490,10 +490,14 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       console.log("PATCH agent: Notes value being saved:", updateData.notes);
       
       // Special handling for empty strings vs null values
-      Object.keys(updateData).forEach(key => {
-        if (updateData[key] === "") {
+      Object.entries(updateData).forEach(([key, value]) => {
+        if (value === "") {
           // Convert empty strings to null for consistency with database
-          updateData[key] = null;
+          // Use type-safe approach instead of direct indexing
+          updateData = {
+            ...updateData,
+            [key]: null
+          };
         }
       });
       

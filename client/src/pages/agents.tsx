@@ -905,8 +905,9 @@ const AgentsPage: React.FC = () => {
                                 <Eye size={16} />
                               </Button>
                             </Link>
-                            <div
-                              className="p-2 cursor-pointer bg-blue-100 rounded-md hover:bg-blue-200"
+                            <Button
+                              variant="outline"
+                              className="px-3 py-2 text-base bg-blue-500 hover:bg-blue-600 text-white"
                               onClick={() => {
                                 // Log for debugging
                                 console.log("Edit button clicked for agent:", JSON.stringify(agent, null, 2));
@@ -922,8 +923,8 @@ const AgentsPage: React.FC = () => {
                                 }, 100);
                               }}
                             >
-                              <span className="text-blue-600 font-medium">Edit Agent</span>
-                            </div>
+                              Edit Agent
+                            </Button>
                             <Button
                               variant="ghost"
                               size="icon"
