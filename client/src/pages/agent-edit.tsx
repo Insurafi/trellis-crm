@@ -68,14 +68,16 @@ export default function AgentEdit() {
 
   // Fetch agent data
   const { data: agent, isLoading } = useQuery({
-    queryKey: [`/api/agents/${id}`],
+    queryKey: [`/api/agent-data/${id}`],
     queryFn: async () => {
       try {
-        const response = await fetch(`/api/agents/${id}`);
+        const response = await fetch(`/api/agent-data/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch agent data");
         }
-        return await response.json();
+        const data = await response.json();
+        console.log("Loaded agent data:", data);
+        return data;
       } catch (error) {
         console.error("Error fetching agent:", error);
         setError("Could not load agent data. Please try again later.");
@@ -156,12 +158,9 @@ export default function AgentEdit() {
     mutationFn: async (data: AgentFormValues) => {
       setIsSubmitting(true);
       try {
+        // The apiRequest function already returns the parsed JSON data
         const response = await apiRequest("PATCH", `/api/agents/${id}`, data);
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to update agent");
-        }
-        return await response.json();
+        return response;
       } catch (error: any) {
         console.error("Error updating agent:", error);
         throw new Error(error.message || "Failed to update agent");
@@ -176,7 +175,7 @@ export default function AgentEdit() {
         variant: "default",
       });
       // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: [`/api/agents/${id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/agent-data/${id}`] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       // Navigate back to agent detail page
       navigate(`/agent-detail/${id}`);
