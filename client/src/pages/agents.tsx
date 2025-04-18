@@ -929,19 +929,17 @@ const AgentsPage: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            className="bg-green-600 hover:bg-green-700 text-white font-bold w-full"
-                            onClick={() => {
-                              console.log("Dedicated Edit Button clicked for agent ID:", agent.id);
-                              setSelectedAgent(agent);
-                              setIsEditDialogOpen(true);
-                            }}
+                          <a href="#edit-agent" 
+                             className="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-center"
+                             onClick={(e) => {
+                               e.preventDefault();
+                               console.log("Link EDIT button clicked for agent ID:", agent.id);
+                               setSelectedAgent(agent);
+                               setIsEditDialogOpen(true);
+                             }}
                           >
-                            EDIT
-                          </Button>
+                            EDIT NOW
+                          </a>
                         </TableCell>
                       </TableRow>
                     ))
