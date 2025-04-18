@@ -206,15 +206,28 @@ export default function AgentDetail() {
   }, 0);
   
   // Get total commissions from actual policies
+  // Calculate commissions based on premium if commission value not available
   const totalCommission = agentPolicies.reduce((sum: number, policy: any) => {
-    const commissionValue = policy.commission ? parseFloat(policy.commission) : 0;
-    return sum + commissionValue;
+    // If commission is directly available, use it
+    if (policy.commission) {
+      return sum + parseFloat(policy.commission);
+    }
+    
+    // Otherwise calculate commission as percentage of premium (using agent's commission rate)
+    const premium = policy.premium ? parseFloat(policy.premium.replace(/[^0-9.-]+/g, "")) : 0;
+    const commissionRate = parseFloat(agent?.commissionPercentage || "60") / 100;
+    return sum + (premium * commissionRate);
   }, 0);
   
-  // Use actual targets if set, or use 1 as minimum to avoid division by zero
-  const policyTarget = agent?.targets?.policyCount || 1;
-  const premiumTarget = agent?.targets?.premiumAmount || 1;
-  const commissionTarget = agent?.targets?.commissionAmount || 1;
+  // Set realistic targets or use the agent's actual values as targets
+  // For agents with policies, we use their current values + modest growth
+  // For agents with no policies, we use relatively low default values
+  const hasPolicies = agentPolicies.length > 0;
+  
+  // If agent has policies, set 50% higher than current as target, otherwise use standard defaults
+  const policyTarget = hasPolicies ? Math.max(Math.ceil(agentPolicies.length * 1.5), 5) : 5;
+  const premiumTarget = hasPolicies ? Math.max(Math.ceil(totalPremium * 1.5), 5000) : 5000;
+  const commissionTarget = hasPolicies ? Math.max(Math.ceil(totalCommission * 1.5), 1000) : 1000;
   
   // Calculate progress percentages based on actual data
   const policyProgress = Math.min(100, Math.round((agentPolicies.length / policyTarget) * 100));
