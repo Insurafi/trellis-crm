@@ -211,10 +211,10 @@ export default function AgentDetail() {
     return sum + commissionValue;
   }, 0);
   
-  // Use default targets if not set by the agent or admin
-  const policyTarget = agent?.targets?.policyCount || 10;
-  const premiumTarget = agent?.targets?.premiumAmount || 10000;
-  const commissionTarget = agent?.targets?.commissionAmount || 2000;
+  // Use actual targets if set, or use 1 as minimum to avoid division by zero
+  const policyTarget = agent?.targets?.policyCount || 1;
+  const premiumTarget = agent?.targets?.premiumAmount || 1;
+  const commissionTarget = agent?.targets?.commissionAmount || 1;
   
   // Calculate progress percentages based on actual data
   const policyProgress = Math.min(100, Math.round((agentPolicies.length / policyTarget) * 100));
@@ -604,21 +604,21 @@ export default function AgentDetail() {
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>Policies</span>
-                    <span>{agentPolicies.length} / {policyTarget}</span>
+                    <span>{agentPolicies.length}</span>
                   </div>
                   <Progress value={policyProgress} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>Premium</span>
-                    <span>${totalPremium.toLocaleString()} / ${premiumTarget.toLocaleString()}</span>
+                    <span>${totalPremium.toLocaleString()}</span>
                   </div>
                   <Progress value={premiumProgress} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span>Commissions</span>
-                    <span>${totalCommission.toLocaleString()} / ${commissionTarget.toLocaleString()}</span>
+                    <span>${totalCommission.toLocaleString()}</span>
                   </div>
                   <Progress value={commissionProgress} className="h-2" />
                 </div>
