@@ -348,7 +348,7 @@ export default function AgentDetail() {
               </div>
               <div className="col-span-2">
                 <p className="text-muted-foreground">Upline Agent</p>
-                <p className="font-medium">{"Insurafi"}</p>
+                <p className="font-medium">{agent.uplineAgentId ? `Agent #${agent.uplineAgentId}` : "None"}</p>
               </div>
               
               <div className="col-span-2 p-3 rounded-lg border border-blue-200 bg-blue-50">
@@ -687,9 +687,9 @@ export default function AgentDetail() {
                         <FileText className="h-4 w-4" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Sold {policy.type || "Insurance"} Policy</p>
+                        <p className="text-sm font-medium">Sold {policy.policyType || "Insurance"} Policy</p>
                         <p className="text-xs text-muted-foreground">
-                          Client: {policy.clientName || "Client"} • Premium: ${policy.premium?.replace(/[^0-9.-]+/g, "") || "0"}
+                          Policy #: {policy.policyNumber || "Unknown"} • Premium: ${parseFloat(policy.premium || "0").toFixed(2)}
                         </p>
                       </div>
                     </div>
