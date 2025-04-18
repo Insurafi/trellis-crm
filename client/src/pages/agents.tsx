@@ -1083,249 +1083,184 @@ const AgentsPage: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Edit Agent Dialog - Using alternative modal implementation */}
-      {isEditDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg shadow-lg sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-6 w-full mx-4">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold">Edit Agent</h2>
-              <p className="text-sm text-gray-500">Update agent information.</p>
-            </div>
-          <Form {...editForm}>
+      {/* Edit Agent Dialog */}
+      <Dialog
+        open={isEditDialogOpen}
+        onOpenChange={(open) => {
+          setIsEditDialogOpen(open);
+          if (!open) setSelectedAgent(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Agent</DialogTitle>
+            <DialogDescription>
+              Update agent information.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
             <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={editForm.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Smith" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-2">
+                  <label htmlFor="firstName" className="text-sm font-medium">First Name</label>
+                  <input
+                    id="firstName"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="John"
+                    {...editForm.register("firstName")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="lastName" className="text-sm font-medium">Last Name</label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="Smith"
+                    {...editForm.register("lastName")}
+                  />
+                </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={editForm.control}
-                  name="licenseNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>License Number</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="licenseExpiration"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>License Expiration</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-2">
+                  <label htmlFor="licenseNumber" className="text-sm font-medium">License Number</label>
+                  <input
+                    id="licenseNumber"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    {...editForm.register("licenseNumber")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="licenseExpiration" className="text-sm font-medium">License Expiration</label>
+                  <input
+                    id="licenseExpiration"
+                    type="date"
+                    className="w-full px-3 py-2 border rounded-md"
+                    {...editForm.register("licenseExpiration")}
+                  />
+                </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={editForm.control}
-                  name="npn"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>NPN</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-2">
+                  <label htmlFor="npn" className="text-sm font-medium">NPN</label>
+                  <input
+                    id="npn"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    {...editForm.register("npn")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="phoneNumber" className="text-sm font-medium">Phone Number</label>
+                  <input
+                    id="phoneNumber"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    {...editForm.register("phoneNumber")}
+                  />
+                </div>
               </div>
               
-              <FormField
-                control={editForm.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Street Address</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <label htmlFor="address" className="text-sm font-medium">Street Address</label>
+                <input
+                  id="address"
+                  type="text"
+                  className="w-full px-3 py-2 border rounded-md"
+                  {...editForm.register("address")}
+                />
+              </div>
               
               <div className="grid grid-cols-3 gap-4">
-                <FormField
-                  control={editForm.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input placeholder="New York" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>State</FormLabel>
-                      <FormControl>
-                        <Input placeholder="NY" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="zipCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>ZIP Code</FormLabel>
-                      <FormControl>
-                        <Input placeholder="10001" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-2">
+                  <label htmlFor="city" className="text-sm font-medium">City</label>
+                  <input
+                    id="city"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="New York"
+                    {...editForm.register("city")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="state" className="text-sm font-medium">State</label>
+                  <input
+                    id="state"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="NY"
+                    {...editForm.register("state")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="zipCode" className="text-sm font-medium">ZIP Code</label>
+                  <input
+                    id="zipCode"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="10001"
+                    {...editForm.register("zipCode")}
+                  />
+                </div>
               </div>
               
-              <FormField
-                control={editForm.control}
-                name="carrierAppointments"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Carrier Appointments</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>Separate multiple carriers with commas</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <label htmlFor="carrierAppointments" className="text-sm font-medium">Carrier Appointments</label>
+                <input
+                  id="carrierAppointments"
+                  type="text"
+                  className="w-full px-3 py-2 border rounded-md"
+                  {...editForm.register("carrierAppointments")}
+                />
+                <p className="text-xs text-gray-500">Separate multiple carriers with commas</p>
+              </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={editForm.control}
-                  name="commissionPercentage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Commission Percentage</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <div className="space-y-2">
+                  <label htmlFor="commissionPercentage" className="text-sm font-medium">Commission Percentage</label>
+                  <input
+                    id="commissionPercentage"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    {...editForm.register("commissionPercentage")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="overridePercentage" className="text-sm font-medium">Override Percentage</label>
+                  <input
+                    id="overridePercentage"
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-md"
+                    {...editForm.register("overridePercentage")}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="specialties" className="text-sm font-medium">Specialties</label>
+                <input
+                  id="specialties"
+                  type="text"
+                  className="w-full px-3 py-2 border rounded-md"
+                  {...editForm.register("specialties")}
                 />
-                <FormField
-                  control={editForm.control}
-                  name="overridePercentage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Override Percentage</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <p className="text-xs text-gray-500">Separate multiple specialties with commas</p>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="notes" className="text-sm font-medium">Notes</label>
+                <textarea
+                  id="notes"
+                  className="w-full px-3 py-2 border rounded-md h-24"
+                  {...editForm.register("notes")}
                 />
               </div>
               
-              <FormField
-                control={editForm.control}
-                name="specialties"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Specialties</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>Separate multiple specialties with commas</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={editForm.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Notes</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditDialogOpen(false);
-                    setSelectedAgent(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={updateAgentMutation.isPending}
-                >
-                  {updateAgentMutation.isPending ? "Saving..." : "Update Agent"}
-                </Button>
               <div className="flex justify-end space-x-4 mt-6">
                 <button
                   type="button"
@@ -1346,10 +1281,9 @@ const AgentsPage: React.FC = () => {
                 </button>
               </div>
             </form>
-          </Form>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
