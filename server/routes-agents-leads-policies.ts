@@ -30,6 +30,33 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
+  // Get agents with missing banking information
+  app.get("/api/agents/missing-banking-info", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const agents = await storage.getAgents();
+      
+      // Filter agents that don't have complete banking information
+      const agentsWithMissingBanking = agents.filter(agent => {
+        return !(
+          agent.bankName && 
+          agent.bankAccountNumber && 
+          agent.bankRoutingNumber && 
+          agent.bankPaymentMethod
+        );
+      }).map(agent => ({
+        id: agent.id,
+        fullName: agent.fullName || "Unknown",
+        email: agent.email || "",
+        bankInfoExists: false
+      }));
+      
+      res.json(agentsWithMissingBanking);
+    } catch (error) {
+      console.error("Error fetching agents with missing banking info:", error);
+      res.status(500).json({ message: "Failed to fetch agents with missing banking info" });
+    }
+  });
+
   // Get agent by user ID - must come before the :id route to avoid param conflicts
   app.get("/api/agents/user/:userId", isAuthenticated, async (req, res) => {
     try {

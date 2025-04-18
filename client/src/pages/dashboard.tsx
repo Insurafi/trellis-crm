@@ -4,10 +4,11 @@ import CalendarCard from "@/components/ui/calendar-card";
 import AgentStatusList from "@/components/dashboard/agent-status-list";
 import ClientList from "@/components/ui/client-list";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter, ExternalLink, UserPlus, Mail } from "lucide-react";
+import { Plus, Filter, ExternalLink, UserPlus, Mail, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
 import { 
   Dialog, 
   DialogContent, 
@@ -23,11 +24,25 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
+interface Agent {
+  id: number;
+  fullName: string;
+  email: string;
+  bankInfoExists?: boolean;
+}
+
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [emailTo, setEmailTo] = useState("");
   const [isSending, setIsSending] = useState(false);
   const { toast } = useToast();
+  
+  // Fetch agents with incomplete banking information
+  const { data: agentsWithMissingBanking } = useQuery<Agent[]>({
+    queryKey: ['/api/agents/missing-banking-info'],
+    // If this API endpoint doesn't exist, the query will fail gracefully
+    enabled: isAdmin // Only run this query for admin users
+  });
   
   const sendTestEmail = async () => {
     if (!emailTo) {
@@ -120,26 +135,31 @@ export default function Dashboard() {
       </div>
       
       {/* Admin Notifications - Check for agents with incomplete banking info */}
-      <div className="mb-6">
-        <Card className="border-orange-300 bg-orange-50">
-          <CardContent className="pt-6">
-            <div className="flex items-start">
-              <AlertTriangle className="h-5 w-5 text-orange-500 mr-3 mt-0.5" />
-              <div>
-                <h3 className="font-medium text-orange-800 mb-1">Agent Banking Information Alert</h3>
-                <p className="text-orange-700 mb-2">
-                  Some agents need to complete their banking information for commission payments.
-                </p>
-                <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100" asChild>
-                  <Link href="/agents">
-                    View Agents
-                  </Link>
-                </Button>
+      {isAdmin && agentsWithMissingBanking && agentsWithMissingBanking.length > 0 && (
+        <div className="mb-6">
+          <Card className="border-orange-300 bg-orange-50">
+            <CardContent className="pt-6">
+              <div className="flex items-start">
+                <AlertTriangle className="h-5 w-5 text-orange-500 mr-3 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-orange-800 mb-1">Agent Banking Information Alert</h3>
+                  <p className="text-orange-700 mb-2">
+                    {agentsWithMissingBanking.length === 1 
+                      ? "1 agent needs to complete their banking information for commission payments."
+                      : `${agentsWithMissingBanking.length} agents need to complete their banking information for commission payments.`
+                    }
+                  </p>
+                  <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-100" asChild>
+                    <Link href="/agents">
+                      View Agents
+                    </Link>
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       
       {/* Dashboard Metrics */}
       <DashboardMetrics />
