@@ -113,10 +113,13 @@ const AgentsPage: React.FC = () => {
   const [isCommissionDialogOpen, setIsCommissionDialogOpen] = useState(false);
   
   // Fetch weekly commission data for selected agent
-  const { data: weeklyCommissionData, isLoading: isLoadingCommission } = useQuery({
+  const { data: weeklyCommissionData, isLoading: isLoadingCommission, error: commissionError } = useQuery({
     queryKey: ["/api/commissions/weekly/by-agent", selectedAgentId],
-    enabled: !!selectedAgentId,
-    throwOnError: true,
+    enabled: !!selectedAgentId && isCommissionDialogOpen, // Only fetch when dialog is open
+    throwOnError: false, // Don't throw errors, handle them gracefully
+    retry: false,  // Don't retry failed requests
+    gcTime: 0, // Don't cache failed requests
+    refetchOnMount: false, // Don't refetch automatically
   });
 
   // Add agent mutation
