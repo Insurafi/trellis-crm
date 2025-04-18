@@ -178,13 +178,33 @@ export function setupSimpleRegister(app: Express) {
         return res.status(400).json({ message: 'Username already exists' });
       }
       
-      // Create the user
+      // Create the user with properly split firstName and lastName
       const hashedPassword = await hashPassword(password);
+      
+      // Split fullName into firstName and lastName
+      let firstName = "";
+      let lastName = "";
+      
+      if (fullName) {
+        const nameParts = fullName.trim().split(/\s+/);
+        if (nameParts.length > 1) {
+          firstName = nameParts[0];
+          lastName = nameParts.slice(1).join(' ');
+        } else {
+          firstName = fullName;
+          lastName = "-"; // Default last name if not available
+        }
+      }
+      
+      console.log("Simple registration - Splitting name:", { fullName, firstName, lastName });
+      
       const user = await storage.createUser({
         username,
         email,
         password: hashedPassword,
-        fullName,
+        firstName,
+        lastName,
+        fullName, // Keep for backward compatibility
         role: 'agent',
         active: true
       });
