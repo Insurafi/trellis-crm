@@ -391,8 +391,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         );
       
@@ -421,8 +421,8 @@ export const analyticsService = {
         .from(policies)
         .where(
           and(
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         )
         .groupBy(policies.policyType);
@@ -668,8 +668,8 @@ export const analyticsService = {
         .from(policies)
         .where(
           and(
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         );
       
@@ -679,8 +679,8 @@ export const analyticsService = {
         .from(policies)
         .where(
           and(
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         );
         
@@ -756,8 +756,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         );
       
@@ -768,8 +768,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         );
         
