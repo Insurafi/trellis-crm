@@ -306,9 +306,12 @@ export default function AgentPerformancePage() {
                   <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
                   <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                   <Tooltip 
-                    formatter={(value: any, name: string) => {
+                    formatter={(value: any, name: any) => {
                       if (name === 'policies') return [value, 'Policies'];
-                      return [formatCurrency(value), name.charAt(0).toUpperCase() + name.slice(1)];
+                      if (typeof name === 'string') {
+                        return [formatCurrency(value), name.charAt(0).toUpperCase() + name.slice(1)];
+                      }
+                      return [formatCurrency(value), String(name)];
                     }}
                   />
                   <Legend />
@@ -362,7 +365,7 @@ export default function AgentPerformancePage() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => [`${value} leads`, ""]} />
+                  <Tooltip formatter={(value: any) => [`${value} leads`, ""]} />
                   <Legend />
                 </RechartsPieChart>
               </ResponsiveContainer>
@@ -388,7 +391,7 @@ export default function AgentPerformancePage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" />
                   <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip formatter={(value) => [`${value} policies`, ""]} />
+                  <Tooltip formatter={(value: any) => [`${value} policies`, ""]} />
                   <Legend />
                   <Bar dataKey="value" name="Policies Sold" fill="#8884d8">
                     {(policyTypeData || mockPolicyTypeData).map((entry, index) => (
