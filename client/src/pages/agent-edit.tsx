@@ -113,6 +113,12 @@ export default function AgentEdit() {
       specialties: null,
       notes: null,
       licensedStates: null,
+      // Banking information default values
+      bankName: null,
+      bankAccountType: null,
+      bankAccountNumber: null,
+      bankRoutingNumber: null,
+      bankPaymentMethod: null,
     },
   });
 
@@ -156,6 +162,13 @@ export default function AgentEdit() {
       form.setValue("specialties", agent.specialties || null);
       form.setValue("notes", agent.notes || null);
       form.setValue("licensedStates", agent.licensedStates || null);
+      
+      // Set banking information values
+      form.setValue("bankName", agent.bankName || null);
+      form.setValue("bankAccountType", agent.bankAccountType || null);
+      form.setValue("bankAccountNumber", agent.bankAccountNumber || null);
+      form.setValue("bankRoutingNumber", agent.bankRoutingNumber || null);
+      form.setValue("bankPaymentMethod", agent.bankPaymentMethod || null);
     }
   }, [agent, form]);
 
@@ -587,6 +600,112 @@ export default function AgentEdit() {
                   </FormItem>
                 )}
               />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Banking Information</CardTitle>
+              <CardDescription>
+                Agent's banking details for commission payments
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="bankName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bank Name</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Chase, Wells Fargo, etc." 
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="bankAccountType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Account Type</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Checking or Savings" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bankPaymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Direct Deposit" 
+                          value="Direct Deposit"
+                          disabled
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        All payments are made via direct deposit
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="bankRoutingNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Routing Number</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="9-digit routing number" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bankAccountNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Account Number</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Account number" 
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
 
