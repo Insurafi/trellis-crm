@@ -56,7 +56,7 @@ const agentFormSchema = z.object({
   state: z.string().nullable(),
   zipCode: z.string().nullable(),
   carrierAppointments: z.string().nullable(),
-  uplineAgentId: z.number().nullable(),
+  uplineAgentId: z.union([z.number(), z.string(), z.null()]), // Accept number, string or null
   commissionPercentage: z.string().nullable(),
   overridePercentage: z.string().nullable(),
   specialties: z.string().nullable(),
@@ -64,7 +64,7 @@ const agentFormSchema = z.object({
   licensedStates: z.string().nullable(),
   // Banking information fields
   bankName: z.string().nullable(),
-  bankAccountType: z.string().nullable(),
+  bankAccountType: z.string().nullable(), 
   bankAccountNumber: z.string().nullable(),
   bankRoutingNumber: z.string().nullable(),
   bankPaymentMethod: z.string().nullable(),
@@ -184,11 +184,25 @@ export default function AgentEdit() {
     mutationFn: async (data: AgentFormValues) => {
       setIsSubmitting(true);
       try {
+        // Debug the submission data
+        console.log("Submitting agent data:", JSON.stringify(data, null, 2));
+        
+        // Ensure payment method is set correctly
+        if (!data.bankPaymentMethod) {
+          data.bankPaymentMethod = "Direct Deposit";
+        }
+        
         // The apiRequest function already returns the parsed JSON data
         const response = await apiRequest("PATCH", `/api/agents/${id}`, data);
+        console.log("Server response:", response);
         return response;
       } catch (error: any) {
         console.error("Error updating agent:", error);
+        // Show the detailed error response if available
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+        }
         throw new Error(error.message || "Failed to update agent");
       } finally {
         setIsSubmitting(false);
