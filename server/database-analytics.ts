@@ -81,6 +81,11 @@ function extractNumericValue(currencyStr: string): number {
 }
 
 // Database analytics implementation
+// Helper to format Date objects for PostgreSQL
+function formatDateForPostgres(date: Date): string {
+  return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+}
+
 export const analyticsService = {
   // Sales analytics by date
   async getSalesAnalytics(from: Date, to: Date): Promise<SalesAnalytics[]> {
@@ -450,8 +455,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.issueDate, from),
-            lte(policies.issueDate, to)
+            gte(policies.applicationDate, from),
+            lte(policies.applicationDate, to)
           )
         )
         .groupBy(policies.policyType);
@@ -489,8 +494,8 @@ export const analyticsService = {
           .where(
             and(
               eq(policies.agentId, agent.id),
-              gte(policies.issueDate, from),
-              lte(policies.issueDate, to)
+              gte(policies.applicationDate, from),
+              lte(policies.applicationDate, to)
             )
           );
         
@@ -501,8 +506,8 @@ export const analyticsService = {
           .where(
             and(
               eq(policies.agentId, agent.id),
-              gte(policies.issueDate, from),
-              lte(policies.issueDate, to)
+              gte(policies.applicationDate, from),
+              lte(policies.applicationDate, to)
             )
           );
           
@@ -586,8 +591,8 @@ export const analyticsService = {
           .where(
             and(
               eq(policies.agentId, agent.id),
-              gte(policies.issueDate, from),
-              lte(policies.issueDate, to)
+              gte(policies.applicationDate, from),
+              lte(policies.applicationDate, to)
             )
           );
         
@@ -598,8 +603,8 @@ export const analyticsService = {
           .where(
             and(
               eq(policies.agentId, agent.id),
-              gte(policies.issueDate, from),
-              lte(policies.issueDate, to)
+              gte(policies.applicationDate, from),
+              lte(policies.applicationDate, to)
             )
           );
           
