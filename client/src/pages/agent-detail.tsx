@@ -597,47 +597,43 @@ export default function AgentDetail() {
               </div>
             </div>
             
-            {/* Performance Metrics - Only shown when agent has policies */}
-            {agentPolicies.length > 0 && (
-              <div className="pt-4 border-t">
-                <h3 className="font-medium mb-2">Performance Metrics</h3>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Policies</span>
-                      <span>{agentPolicies.length} / {policyTarget}</span>
-                    </div>
-                    <Progress value={policyProgress} className="h-2" />
+            {/* Performance Metrics - Always shown but with actual data */}
+            <div className="pt-4 border-t">
+              <h3 className="font-medium mb-2">Performance Metrics</h3>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Policies</span>
+                    <span>{agentPolicies.length} / {policyTarget}</span>
                   </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Premium</span>
-                      <span>${totalPremium.toLocaleString()} / ${premiumTarget.toLocaleString()}</span>
-                    </div>
-                    <Progress value={premiumProgress} className="h-2" />
+                  <Progress value={policyProgress} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Premium</span>
+                    <span>${totalPremium.toLocaleString()} / ${premiumTarget.toLocaleString()}</span>
                   </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Commissions</span>
-                      <span>${totalCommission.toLocaleString()} / ${commissionTarget.toLocaleString()}</span>
-                    </div>
-                    <Progress value={commissionProgress} className="h-2" />
+                  <Progress value={premiumProgress} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Commissions</span>
+                    <span>${totalCommission.toLocaleString()} / ${commissionTarget.toLocaleString()}</span>
                   </div>
+                  <Progress value={commissionProgress} className="h-2" />
                 </div>
               </div>
-            )}
+            </div>
           </CardContent>
-          {/* Only show Performance Button when agent has policies */}
-          {agentPolicies.length > 0 && (
-            <CardFooter className="flex justify-center border-t pt-4">
-              <Button variant="outline" className="w-full" asChild>
-                <Link href={`/agents/${agent.id}/performance`}>
-                  <BarChart4 className="mr-2 h-4 w-4" />
-                  View Full Performance
-                </Link>
-              </Button>
-            </CardFooter>
-          )}
+          {/* Always show Performance Button */}
+          <CardFooter className="flex justify-center border-t pt-4">
+            <Button variant="outline" className="w-full" asChild>
+              <Link href={`/agents/${agent.id}/performance`}>
+                <BarChart4 className="mr-2 h-4 w-4" />
+                View Full Performance
+              </Link>
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Main content area */}
