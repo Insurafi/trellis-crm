@@ -56,7 +56,10 @@ import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
 // Extend Agent type to include the name property from the user
-type AgentWithName = Agent & { name?: string };
+type AgentWithName = Agent & { 
+  name?: string;
+  fullName?: string;
+};
 
 // Form schema - Supporting both full and simplified agent creation
 const agentFormSchema = z.object({
@@ -96,11 +99,11 @@ const AgentsPage: React.FC = () => {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<AgentWithName | null>(null);
   const [isSimplifiedMode, setIsSimplifiedMode] = useState(true); // Default to simplified mode
 
   // Fetch agents
-  const { data: agentsData, isLoading, error } = useQuery<(Agent & { name?: string })[]>({
+  const { data: agentsData, isLoading, error } = useQuery<AgentWithName[]>({
     queryKey: ["/api/agents"],
     throwOnError: true,
   });
@@ -289,7 +292,7 @@ const AgentsPage: React.FC = () => {
     }
   };
 
-  // Set up edit form when an agent is selected - simplified approach
+  // Setup edit form when an agent is selected - simplified approach
   React.useEffect(() => {
     if (selectedAgent) {
       console.log("Agent selected for editing:", selectedAgent);
@@ -297,11 +300,24 @@ const AgentsPage: React.FC = () => {
       // Simple approach - use the agent data directly without fetching user data
       const setAgentFormValues = () => {
         try {
-          // Initialize name from agent data if available, otherwise use empty strings
-          const fullName = selectedAgent.name || selectedAgent.fullName || "";
-          const nameParts = fullName.split(" ");
-          const firstName = nameParts[0] || "";
-          const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+          // Get name by extracting from any field that might contain it
+          // When it comes from the API directly as agent-data/:id
+          let firstName = "";
+          let lastName = "";
+          
+          // Try to extract name from any field that might have it
+          if (typeof selectedAgent.fullName === 'string') {
+            const nameParts = selectedAgent.fullName.split(" ");
+            firstName = nameParts[0] || "";
+            lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+          } else {
+            // Use empty strings as fallback
+            console.log("No name information found in agent record, using empty strings");
+            firstName = "";
+            lastName = "";
+          }
+          
+          console.log("Setting form with name:", { firstName, lastName });
           
           editForm.reset({
             firstName,
@@ -323,7 +339,6 @@ const AgentsPage: React.FC = () => {
           });
           
           console.log("Form reset with values from agent record");
-          setIsEditDialogOpen(true);
         } catch (error) {
           console.error("Error setting form values:", error);
           toast({
@@ -370,9 +385,10 @@ const AgentsPage: React.FC = () => {
   };
 
   // Handle delete agent
-  const handleDelete = (agent: Agent) => {
-    const agentName = agent.userId ? `agent with license ${agent.licenseNumber}` : agent.licenseNumber;
-    if (window.confirm(`Are you sure you want to delete ${agentName}? This will also remove this agent from any leads, clients, and other relationships.`)) {
+  const handleDelete = (agent: AgentWithName) => {
+    // Use fullName or licenseNumber to identify the agent in confirmation dialog
+    const displayName = agent.fullName || agent.licenseNumber || `Agent #${agent.id}`;
+    if (window.confirm(`Are you sure you want to delete ${displayName}? This will also remove this agent from any leads, clients, and other relationships.`)) {
       console.log(`User confirmed deletion of agent ID: ${agent.id}`);
       deleteAgentMutation.mutate(agent.id);
     }
@@ -796,7 +812,15 @@ const AgentsPage: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setSelectedAgent(agent)}
+                              onClick={() => {
+                                console.log("Edit button clicked for agent:", agent);
+                                // Direct approach - open dialog first, then set agent
+                                setIsEditDialogOpen(true);
+                                setTimeout(() => {
+                                  console.log("Setting selectedAgent in timeout");
+                                  setSelectedAgent(agent);
+                                }, 100);
+                              }}
                               title="Edit Agent"
                             >
                               <Pencil size={16} />
