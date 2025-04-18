@@ -160,6 +160,41 @@ export default function AgentPerformancePage() {
       </div>
     );
   }
+  
+  // Check if the agent has actual performance data (policies sold)
+  const hasPerformanceData = performanceStats.totalPolicies > 0;
+
+  // If there's no performance data, show a message to the user instead of empty charts
+  if (!hasPerformanceData) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="flex items-center mb-6">
+          <Button variant="outline" size="sm" className="mr-4" asChild>
+            <Link href={`/agent-detail/${id}`}>
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Back to Agent
+            </Link>
+          </Button>
+          <h1 className="text-2xl font-bold">{agent.fullName || 'Agent'} Performance</h1>
+        </div>
+        
+        <Card className="border-dashed border-2 p-6">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <BarChart4 className="h-16 w-16 text-muted-foreground mb-4" />
+            <h2 className="text-xl font-bold mb-2">No Performance Data Available</h2>
+            <p className="text-muted-foreground max-w-md mx-auto mb-6">
+              This agent hasn't sold any policies yet. Performance metrics will appear here once the agent starts selling policies.
+            </p>
+            <Button variant="outline" asChild>
+              <Link href={`/agent-detail/${id}`}>
+                Return to Agent Profile
+              </Link>
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6">
