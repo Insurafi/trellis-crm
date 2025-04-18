@@ -272,27 +272,44 @@ const AgentsPage: React.FC = () => {
   });
 
   // Format date from ISO string to YYYY-MM-DD
-  const formatDate = (isoDate: string) => {
-    const date = new Date(isoDate);
-    return date.toISOString().split("T")[0];
+  const formatDate = (isoDate: string | null | undefined) => {
+    if (!isoDate) return ""; // Handle null or undefined dates
+    
+    try {
+      const date = new Date(isoDate);
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.log("Invalid date:", isoDate);
+        return "";
+      }
+      return date.toISOString().split("T")[0];
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "";
+    }
   };
 
-  // Set up edit form when an agent is selected
+  // Set up edit form when an agent is selected - simplified approach
   React.useEffect(() => {
     if (selectedAgent) {
-      // Fetch user data to get firstName and lastName
-      const fetchUserData = async () => {
+      console.log("Agent selected for editing:", selectedAgent);
+      
+      // Simple approach - use the agent data directly without fetching user data
+      const setAgentFormValues = () => {
         try {
-          const userResponse = await apiRequest("GET", `/api/users/${selectedAgent.userId}`);
-          const userData = userResponse;
+          // Initialize name from agent data if available, otherwise use empty strings
+          const fullName = selectedAgent.name || selectedAgent.fullName || "";
+          const nameParts = fullName.split(" ");
+          const firstName = nameParts[0] || "";
+          const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
           
           editForm.reset({
-            firstName: userData.firstName || "",
-            lastName: userData.lastName || "",
-            licenseNumber: selectedAgent.licenseNumber,
+            firstName,
+            lastName,
+            licenseNumber: selectedAgent.licenseNumber || "",
             licenseExpiration: formatDate(selectedAgent.licenseExpiration),
             npn: selectedAgent.npn || "",
-            phoneNumber: selectedAgent.phoneNumber,
+            phoneNumber: selectedAgent.phoneNumber || "",
             address: selectedAgent.address || "",
             city: selectedAgent.city || "",
             state: selectedAgent.state || "",
@@ -304,39 +321,20 @@ const AgentsPage: React.FC = () => {
             specialties: selectedAgent.specialties || "",
             notes: selectedAgent.notes || "",
           });
+          
+          console.log("Form reset with values from agent record");
+          setIsEditDialogOpen(true);
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error("Error setting form values:", error);
           toast({
             title: "Error",
-            description: "Failed to load user data",
+            description: "Failed to prepare form for editing: " + (error instanceof Error ? error.message : "Unknown error"),
             variant: "destructive",
           });
-          
-          // Set form with available data even if user fetch fails
-          editForm.reset({
-            firstName: "",
-            lastName: "",
-            licenseNumber: selectedAgent.licenseNumber,
-            licenseExpiration: formatDate(selectedAgent.licenseExpiration),
-            npn: selectedAgent.npn || "",
-            phoneNumber: selectedAgent.phoneNumber,
-            address: selectedAgent.address || "",
-            city: selectedAgent.city || "",
-            state: selectedAgent.state || "",
-            zipCode: selectedAgent.zipCode || "",
-            carrierAppointments: selectedAgent.carrierAppointments || "",
-            uplineAgentId: selectedAgent.uplineAgentId || null,
-            commissionPercentage: selectedAgent.commissionPercentage || "0.00",
-            overridePercentage: selectedAgent.overridePercentage || "0.00",
-            specialties: selectedAgent.specialties || "",
-            notes: selectedAgent.notes || "",
-          });
         }
-        
-        setIsEditDialogOpen(true);
       };
       
-      fetchUserData();
+      setAgentFormValues();
     }
   }, [selectedAgent, editForm, toast]);
 

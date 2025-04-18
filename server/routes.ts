@@ -1177,6 +1177,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch users" });
     }
   });
+  
+  // Get a single user by ID
+  app.get("/api/users/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
+      console.log(`Fetching user with ID: ${id}`);
+      const user = await storage.getUser(id);
+      if (!user) {
+        console.log(`No user found with ID: ${id}`);
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Only allow admins or team leaders to view other users
+      // Or allow users to view their own information
+      if (
+        req.user?.id === id || 
+        req.user?.role === 'admin' || 
+        req.user?.role === 'Administrator' || 
+        req.user?.role === 'team_leader'
+      ) {
+        console.log(`User ${req.user?.username} is authorized to view user ${id}`);
+        return res.json(user);
+      } else {
+        console.log(`User ${req.user?.username} is not authorized to view user ${id}`);
+        return res.status(403).json({ message: "Unauthorized to view this user" });
+      }
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
 
   // Create new user (admin only)
   app.post("/api/users", isAdmin, async (req, res) => {
