@@ -86,6 +86,15 @@ function formatDateForPostgres(date: Date): string {
   return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
 }
 
+// SQL helper for date comparisons in PostgreSQL
+function sqlDateGTE(column: any, date: Date) {
+  return sql`${column}::date >= ${formatDateForPostgres(date)}::date`;
+}
+
+function sqlDateLTE(column: any, date: Date) {
+  return sql`${column}::date <= ${formatDateForPostgres(date)}::date`;
+}
+
 export const analyticsService = {
   // Sales analytics by date
   async getSalesAnalytics(from: Date, to: Date): Promise<SalesAnalytics[]> {
@@ -426,8 +435,8 @@ export const analyticsService = {
         .from(policies)
         .where(
           and(
-            gte(policies.applicationDate, from),
-            lte(policies.applicationDate, to)
+            sqlDateGTE(policies.applicationDate, from),
+            sqlDateLTE(policies.applicationDate, to)
           )
         )
         .groupBy(policies.policyType);
@@ -455,8 +464,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.applicationDate, from),
-            lte(policies.applicationDate, to)
+            sqlDateGTE(policies.applicationDate, from),
+            sqlDateLTE(policies.applicationDate, to)
           )
         )
         .groupBy(policies.policyType);
@@ -673,8 +682,8 @@ export const analyticsService = {
         .from(policies)
         .where(
           and(
-            gte(policies.applicationDate, from),
-            lte(policies.applicationDate, to)
+            sqlDateGTE(policies.applicationDate, from),
+            sqlDateLTE(policies.applicationDate, to)
           )
         );
       
@@ -684,8 +693,8 @@ export const analyticsService = {
         .from(policies)
         .where(
           and(
-            gte(policies.applicationDate, from),
-            lte(policies.applicationDate, to)
+            sqlDateGTE(policies.applicationDate, from),
+            sqlDateLTE(policies.applicationDate, to)
           )
         );
         
@@ -761,8 +770,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.applicationDate, from),
-            lte(policies.applicationDate, to)
+            sqlDateGTE(policies.applicationDate, from),
+            sqlDateLTE(policies.applicationDate, to)
           )
         );
       
@@ -773,8 +782,8 @@ export const analyticsService = {
         .where(
           and(
             eq(policies.agentId, agentId),
-            gte(policies.applicationDate, from),
-            lte(policies.applicationDate, to)
+            sqlDateGTE(policies.applicationDate, from),
+            sqlDateLTE(policies.applicationDate, to)
           )
         );
         
