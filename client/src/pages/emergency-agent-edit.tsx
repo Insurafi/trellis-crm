@@ -50,25 +50,24 @@ export default function EmergencyAgentEdit() {
   
   // Load agent data
   const { data: agent } = useQuery({
-    queryKey: [`/api/agent-data/${id}`],
-    enabled: !!id,
-    onSuccess: (data) => {
-      console.log("Loaded agent data:", data);
-      // Set initial form values
-      setAddress(data.address || "");
-      setCity(data.city || "");
-      setState(data.state || "");
-      setZipCode(data.zipCode || "");
-      setBankName(data.bankName || "");
-      setBankAccountType(data.bankAccountType || "");
-      setBankAccountNumber(data.bankAccountNumber || "");
-      setBankRoutingNumber(data.bankRoutingNumber || "");
-    },
-    onError: (err) => {
-      console.error("Error loading agent:", err);
-      setError("Could not load agent data. Please try again later.");
-    }
+    queryKey: [`/api/agents/${id}`],
+    enabled: !!id
   });
+  
+  // When agent data is loaded, set form values
+  useEffect(() => {
+    if (agent) {
+      console.log("Loaded agent data:", agent);
+      setAddress(agent.address || "");
+      setCity(agent.city || "");
+      setState(agent.state || "");
+      setZipCode(agent.zipCode || "");
+      setBankName(agent.bankName || "");
+      setBankAccountType(agent.bankAccountType || "");
+      setBankAccountNumber(agent.bankAccountNumber || "");
+      setBankRoutingNumber(agent.bankRoutingNumber || "");
+    }
+  }, [agent]);
   
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -142,7 +141,7 @@ export default function EmergencyAgentEdit() {
       )}
       
       {success && (
-        <Alert variant="success" className="mb-6 bg-green-50 border-green-200 text-green-800">
+        <Alert className="mb-6 bg-green-50 border-green-200 text-green-800">
           <CheckCircle2 className="h-4 w-4 text-green-500" />
           <AlertTitle className="text-green-800">Success</AlertTitle>
           <AlertDescription className="text-green-700">{success}</AlertDescription>

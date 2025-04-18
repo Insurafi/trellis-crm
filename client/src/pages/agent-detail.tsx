@@ -299,12 +299,21 @@ export default function AgentDetail() {
             <Calendar className="mr-2 h-4 w-4" />
             Schedule
           </Button>
-          <Button size="sm" asChild>
-            <Link href={`/agent-edit/${agent.id}`}>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </Link>
-          </Button>
+          {agent.id === 4 ? (
+            <Button size="sm" asChild className="bg-orange-500 hover:bg-orange-600">
+              <Link href={`/emergency-agent-edit/${agent.id}`}>
+                <AlertTriangle className="mr-2 h-4 w-4" />
+                Emergency Fix
+              </Link>
+            </Button>
+          ) : (
+            <Button size="sm" asChild>
+              <Link href={`/agent-edit/${agent.id}`}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 

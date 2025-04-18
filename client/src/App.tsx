@@ -102,6 +102,16 @@ const AgentProfilePage = () => {
   );
 };
 
+// Emergency fix for Aaron's profile editing
+const EmergencyAgentEditPage = () => {
+  const EmergencyAgentEdit = lazy(() => import("@/pages/emergency-agent-edit"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <EmergencyAgentEdit />
+    </Suspense>
+  );
+};
+
 // Create a ClientDetailPage component to handle lazy loading
 const ClientDetailPage = () => {
   return (
@@ -133,6 +143,7 @@ function Router() {
       <ProtectedRoute path="/agent-dashboard" component={AgentDashboardPage} />
       <ProtectedRoute path="/agent-detail/:id" component={AgentDetailPage} />
       <ProtectedRoute path="/agent-edit/:id" component={AgentEditPage} />
+      <ProtectedRoute path="/emergency-agent-edit/:id" component={EmergencyAgentEditPage} />
       <ProtectedRoute path="/agent-profile" component={AgentProfilePage} />
       <ProtectedRoute path="/training" component={Training} />
       <ProtectedRoute path="/analytics" component={Analytics} />
