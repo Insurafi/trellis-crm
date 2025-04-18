@@ -94,11 +94,16 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       
       if (agent && isAaron) {
         console.log("Found Aaron's agent ID:", agent.id);
+        // SPECIAL CASE: Reset Aaron's banking information to empty
+        // because current values need to be replaced with his own
+        agent.bankName = null;
+        agent.bankAccountNumber = null;
+        agent.bankRoutingNumber = null;
+        agent.bankAccountType = null;
+        
         // Flag that this agent needs to update their banking info
-        agent.bankInfoExists = agent.bankName && agent.bankAccountNumber && agent.bankRoutingNumber;
-        if (!agent.bankInfoExists) {
-          console.log("Aaron needs to update banking information");
-        }
+        agent.bankInfoExists = false;
+        console.log("Aaron needs to update banking information (forced requirement)");
       }
       
       if (!agent) {
@@ -933,6 +938,17 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const agent = await storage.getAgent(id);
       if (!agent) {
         return res.status(404).json({ message: "Agent not found" });
+      }
+
+      // SPECIAL CASE: Check if this is Aaron (agent ID 4, user ID 13)
+      const isAaron = agent.id === 4 || agent.userId === 13;
+      if (isAaron) {
+        console.log("Aaron (agent ID 4) requesting their agent record - forcing bank info to be empty");
+        // Reset Aaron's banking information to null when his data is accessed
+        agent.bankName = null;
+        agent.bankAccountNumber = null;
+        agent.bankRoutingNumber = null;
+        agent.bankAccountType = null;
       }
 
       // The agent data already includes fullName from the database-storage.ts changes

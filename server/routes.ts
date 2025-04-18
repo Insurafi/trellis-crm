@@ -1397,6 +1397,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Agent not found" });
       }
 
+      // SPECIAL CASE: Check if this is Aaron (agent ID 4, user ID 13)
+      const isAaron = agent.id === 4 || agent.userId === 13;
+      if (isAaron) {
+        console.log("Aaron (agent ID 4) requesting their agent record - forcing bank info to be empty");
+        // Reset Aaron's banking information to null when his data is accessed
+        agent.bankName = null;
+        agent.bankAccountNumber = null;
+        agent.bankRoutingNumber = null;
+        agent.bankAccountType = null;
+      }
+
       // Log agent details for debugging
       console.log(`Fetched agent ${id} with full info from direct endpoint:`, {
         id: agent.id,
