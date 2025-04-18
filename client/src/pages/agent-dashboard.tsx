@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   Card,
   CardContent,
@@ -43,7 +44,33 @@ import {
   Briefcase,
   CheckCircle2,
   Clock,
+  CreditCard,
+  Edit,
+  Save,
+  X,
+  Bank,
+  DollarSign,
 } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
@@ -53,12 +80,35 @@ export default function AgentDashboard() {
   const [monthlyQuota, setMonthlyQuota] = useState(85);
   const [yearlyQuota, setYearlyQuota] = useState(62);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Banking information state
+  const [isEditingBankInfo, setIsEditingBankInfo] = useState(false);
+  const [bankInfo, setBankInfo] = useState({
+    bankName: "",
+    bankAccountType: "",
+    bankAccountNumber: "",
+    bankRoutingNumber: "",
+    bankPaymentMethod: "direct_deposit" // Set Direct Deposit as default payment method
+  });
 
   // Fetch agent details for the current user
   const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
     queryKey: ["/api/agents/by-user"],
-    enabled: !!user?.id,
+    enabled: !!user?.id
   });
+  
+  // Initialize banking info when agent data is available
+  useEffect(() => {
+    if (agentData && agentData.id) {
+      setBankInfo({
+        bankName: agentData.bankName || "",
+        bankAccountType: agentData.bankAccountType || "",
+        bankAccountNumber: agentData.bankAccountNumber || "",
+        bankRoutingNumber: agentData.bankRoutingNumber || "",
+        bankPaymentMethod: "direct_deposit" // Always use direct deposit
+      });
+    }
+  }, [agentData]);
 
   // Check if agent ID is valid for data fetching (must be a positive integer)
   const hasValidAgentId = agentData && agentData.id !== undefined && agentData.id !== null && agentData.id > 0;
@@ -223,6 +273,7 @@ export default function AgentDashboard() {
           <TabsTrigger value="leads">Leads</TabsTrigger>
           <TabsTrigger value="policies">Policies</TabsTrigger>
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
