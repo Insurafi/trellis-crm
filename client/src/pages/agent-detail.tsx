@@ -161,12 +161,7 @@ export default function AgentDetail() {
           type: "client"
         },
       ],
-      topPerformingProducts: [
-        { name: "Term Life Insurance", policies: 12, commission: "$5,420" },
-        { name: "Whole Life Insurance", policies: 8, commission: "$4,800" },
-        { name: "Universal Life Insurance", policies: 5, commission: "$3,200" },
-        { name: "Disability Insurance", policies: 3, commission: "$1,150" },
-      ],
+      // Top products data removed
       weeklyActivityBreakdown: [
         { day: "Mon", calls: 15, meetings: 2, quotes: 5 },
         { day: "Tue", calls: 12, meetings: 1, quotes: 3 },
@@ -479,9 +474,8 @@ export default function AgentDetail() {
           </Card>
 
           <Tabs defaultValue="commissions">
-            <TabsList className="grid grid-cols-4 mb-4">
+            <TabsList className="grid grid-cols-3 mb-4">
               <TabsTrigger value="commissions">Commissions</TabsTrigger>
-              <TabsTrigger value="products">Top Products</TabsTrigger>
               <TabsTrigger value="clients">Recent Clients</TabsTrigger>
               <TabsTrigger value="activity">Weekly Activity</TabsTrigger>
             </TabsList>
@@ -580,35 +574,7 @@ export default function AgentDetail() {
               </Card>
             </TabsContent>
             
-            <TabsContent value="products" className="mt-0">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Top Performing Products</CardTitle>
-                  <CardDescription>Agent's most successful insurance products</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {performanceData.topPerformingProducts.map((product, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center">
-                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
-                            <Award className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{product.name}</p>
-                            <p className="text-xs text-muted-foreground">{product.policies} policies sold</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">{product.commission}</p>
-                          <p className="text-xs text-muted-foreground">commission</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+            {/* Top Products tab removed */}
             
             <TabsContent value="clients" className="mt-0">
               <Card>
