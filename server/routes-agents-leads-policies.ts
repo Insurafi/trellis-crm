@@ -691,7 +691,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const id = parseInt(req.params.id);
       console.log("EMERGENCY UPDATE ROUTE: Agent ID =", id);
       console.log("EMERGENCY UPDATE ROUTE: User =", req.user?.id, req.user?.username);
-      console.log("EMERGENCY UPDATE ROUTE: Request body:", JSON.stringify(req.body, null, 2));
+      
+      // Just log that we received banking data, not the actual data
+      console.log("EMERGENCY UPDATE ROUTE: Received address and banking update request");
       
       // Get the agent
       const agent = await storage.getAgent(id);
@@ -719,7 +721,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       // Always use direct deposit
       updateData.bankPaymentMethod = "direct_deposit";
       
-      console.log("EMERGENCY UPDATE: Data to save:", JSON.stringify(updateData, null, 2));
+      console.log("EMERGENCY UPDATE: Processed banking and address information");
       
       // Direct database update
       const updatedAgent = await storage.updateAgent(id, updateData);
@@ -776,7 +778,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         bankPaymentMethod: "direct_deposit" // Always direct deposit
       };
       
-      console.log("Saving banking data:", JSON.stringify(bankingData, null, 2));
+      // Log without sensitive data
+      console.log("Saving banking data for bank:", bankingData.bankName);
       
       // Update the banking information
       const result = await storage.updateAgent(id, bankingData);

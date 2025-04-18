@@ -80,6 +80,7 @@ export default function AgentDashboard() {
   const [monthlyQuota, setMonthlyQuota] = useState(85);
   const [yearlyQuota, setYearlyQuota] = useState(62);
   const [isLoading, setIsLoading] = useState(true);
+  const [showBankingSuccessAlert, setShowBankingSuccessAlert] = useState(false);
   
   // Banking information state
   const [isEditingBankInfo, setIsEditingBankInfo] = useState(false);
@@ -316,6 +317,22 @@ export default function AgentDashboard() {
           </div>
         </div>
       </div>
+      
+      {/* Banking info success notification */}
+      {user?.id === 13 && agentData?.bankName && agentData?.bankAccountNumber && (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-start">
+            <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-green-800">Banking Information Complete</h3>
+              <p className="text-green-700">
+                Your banking information has been successfully saved. 
+                Your commission payments will be processed via direct deposit to your account.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modern Quote Button */}
       <div className="my-6 flex justify-center">

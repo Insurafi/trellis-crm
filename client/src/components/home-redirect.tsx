@@ -15,12 +15,30 @@ export default function HomeRedirect() {
     if (user) {
       // Special case for Aaron (agent with user ID 13)
       if (user.id === 13) {
+        // First, make a prominent notification about the emergency form
+        console.log("Detected Aaron's login - redirecting to emergency banking form");
+        
         // Redirect Aaron specifically to his emergency edit page
         const agentQuery = fetch('/api/agents/by-user').then(r => r.json());
         agentQuery.then(agent => {
           console.log("Redirecting Aaron to emergency page", agent);
+          
+          // Check if agent has banking info
+          const hasBankingInfo = !!(
+            agent.bankName && 
+            agent.bankAccountNumber && 
+            agent.bankRoutingNumber
+          );
+          
           if (agent && agent.id) {
-            setLocation(`/emergency-agent-edit/${agent.id}`);
+            if (!hasBankingInfo) {
+              // Only redirect to emergency form if banking info is missing
+              setLocation(`/emergency-agent-edit/${agent.id}`);
+            } else {
+              // Banking info is present, go to dashboard
+              console.log("Aaron already has banking info, redirecting to dashboard");
+              setLocation("/agent-dashboard");
+            }
           } else {
             setLocation("/agent-dashboard");
           }
