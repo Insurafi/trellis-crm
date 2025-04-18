@@ -55,10 +55,12 @@ import { Agent } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
-// Extend Agent type to include the name property from the user
+// Extend Agent type to include the name and fullName properties
 type AgentWithName = Agent & { 
   name?: string;
   fullName?: string;
+  email?: string;
+  commissionPercentage?: string;
 };
 
 // Form schema - Supporting both full and simplified agent creation
@@ -292,8 +294,59 @@ const AgentsPage: React.FC = () => {
     }
   };
 
-  // Form values are now set directly in the edit button click handler
-  // This removes any potential race conditions with the useEffect
+  // Initialize the edit form when an agent is selected
+  React.useEffect(() => {
+    if (selectedAgent && isEditDialogOpen) {
+      console.log("Edit dialog opened for agent:", selectedAgent);
+      
+      // We need to populate the form with agent data
+      try {
+        // Try to get the name from fullName or name field
+        let firstName = "";
+        let lastName = "";
+        
+        // Check for name in various properties
+        if (selectedAgent.fullName) {
+          const nameParts = selectedAgent.fullName.split(" ");
+          firstName = nameParts[0] || "";
+          lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+        } else if (selectedAgent.name) {
+          const nameParts = selectedAgent.name.split(" ");
+          firstName = nameParts[0] || "";
+          lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+        }
+        
+        // Reset the form with all values
+        editForm.reset({
+          firstName,
+          lastName,
+          licenseNumber: selectedAgent.licenseNumber || "",
+          licenseExpiration: formatDate(selectedAgent.licenseExpiration),
+          npn: selectedAgent.npn || "",
+          phoneNumber: selectedAgent.phoneNumber || "",
+          address: selectedAgent.address || "",
+          city: selectedAgent.city || "",
+          state: selectedAgent.state || "",
+          zipCode: selectedAgent.zipCode || "",
+          carrierAppointments: selectedAgent.carrierAppointments || "",
+          uplineAgentId: selectedAgent.uplineAgentId || null,
+          commissionPercentage: selectedAgent.commissionPercentage || "0.00",
+          overridePercentage: selectedAgent.overridePercentage || "0.00",
+          specialties: selectedAgent.specialties || "",
+          notes: selectedAgent.notes || "",
+        });
+        
+        console.log("Form reset completed with values from agent");
+      } catch (error) {
+        console.error("Error setting form values:", error);
+        toast({
+          title: "Error",
+          description: "Failed to prepare form for editing: " + (error instanceof Error ? error.message : "Unknown error"),
+          variant: "destructive",
+        });
+      }
+    }
+  }, [selectedAgent, isEditDialogOpen, editForm, toast, formatDate]);
 
   // Handle add form submission
   const onAddSubmit = (data: AgentFormValues) => {
@@ -755,50 +808,10 @@ const AgentsPage: React.FC = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => {
-                                try {
-                                  // Extract name from fullName if available
-                                  let firstName = "";
-                                  let lastName = "";
-                                  
-                                  if (typeof agent.fullName === 'string' && agent.fullName) {
-                                    const nameParts = agent.fullName.split(" ");
-                                    firstName = nameParts[0] || "";
-                                    lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-                                  }
-                                  
-                                  // Set field values individually instead of using reset
-                                  editForm.setValue("firstName", firstName);
-                                  editForm.setValue("lastName", lastName);
-                                  editForm.setValue("licenseNumber", agent.licenseNumber || "");
-                                  editForm.setValue("licenseExpiration", formatDate(agent.licenseExpiration));
-                                  editForm.setValue("npn", agent.npn || "");
-                                  editForm.setValue("phoneNumber", agent.phoneNumber || "");
-                                  editForm.setValue("address", agent.address || "");
-                                  editForm.setValue("city", agent.city || "");
-                                  editForm.setValue("state", agent.state || "");
-                                  editForm.setValue("zipCode", agent.zipCode || "");
-                                  editForm.setValue("carrierAppointments", agent.carrierAppointments || "");
-                                  editForm.setValue("uplineAgentId", agent.uplineAgentId || null);
-                                  editForm.setValue("commissionPercentage", agent.commissionPercentage || "0.00");
-                                  editForm.setValue("overridePercentage", agent.overridePercentage || "0.00");
-                                  editForm.setValue("specialties", agent.specialties || "");
-                                  editForm.setValue("notes", agent.notes || "");
-                                  
-                                  // Set the selected agent for form submission
-                                  setSelectedAgent(agent);
-                                  
-                                  // Then open the dialog
-                                  setIsEditDialogOpen(true);
-                                  
-                                  console.log("Edit form prepared for agent:", agent.id);
-                                } catch (error) {
-                                  console.error("Error setting up edit form:", error);
-                                  toast({
-                                    title: "Error",
-                                    description: "Failed to prepare the edit form: " + (error instanceof Error ? error.message : "Unknown error"),
-                                    variant: "destructive",
-                                  });
-                                }
+                                // Simple approach with minimal code
+                                setSelectedAgent(agent);
+                                setIsEditDialogOpen(true);
+                                console.log("Edit clicked for agent:", agent.id);
                               }}
                               title="Edit Agent"
                             >
