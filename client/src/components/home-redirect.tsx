@@ -23,22 +23,13 @@ export default function HomeRedirect() {
         agentQuery.then(agent => {
           console.log("Redirecting Aaron to emergency page", agent);
           
-          // Check if agent has banking info
-          const hasBankingInfo = !!(
-            agent.bankName && 
-            agent.bankAccountNumber && 
-            agent.bankRoutingNumber
-          );
+          // SPECIAL CASE: Always force Aaron to the emergency edit page
+          // regardless of what banking info is in the database
+          // This is because the values in the database don't belong to him
           
           if (agent && agent.id) {
-            if (!hasBankingInfo) {
-              // Only redirect to emergency form if banking info is missing
-              setLocation(`/emergency-agent-edit/${agent.id}`);
-            } else {
-              // Banking info is present, go to dashboard
-              console.log("Aaron already has banking info, redirecting to dashboard");
-              setLocation("/agent-dashboard");
-            }
+            console.log("Always redirecting Aaron to emergency banking info form");
+            setLocation(`/emergency-agent-edit/${agent.id}`);
           } else {
             setLocation("/agent-dashboard");
           }
