@@ -21,6 +21,7 @@ import {
   X,
   Star,
   MessageSquare,
+  Landmark,
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -344,6 +345,47 @@ export default function AgentDetail() {
                 ) : (
                   <p className="text-2xl font-bold text-primary mt-1">{agent.commissionPercentage || "60.00"}%</p>
                 )}
+              </div>
+              
+              <div className="col-span-2 mt-3 bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+                <div className="flex justify-between items-center">
+                  <p className="text-base font-semibold flex items-center text-emerald-700">
+                    <Landmark className="h-4 w-4 mr-2" />
+                    Banking Details
+                  </p>
+                  {user?.role === 'admin' && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 px-2 text-emerald-700"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="mt-2 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-emerald-800">Account Type:</span>
+                    <span className="text-sm font-medium text-emerald-800">Checking</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-emerald-800">Bank Name:</span>
+                    <span className="text-sm font-medium text-emerald-800">Chase Bank</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-emerald-800">Account Number:</span>
+                    <span className="text-sm font-medium text-emerald-800">****6789</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-emerald-800">Routing Number:</span>
+                    <span className="text-sm font-medium text-emerald-800">****1234</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-emerald-800">Payment Method:</span>
+                    <span className="text-sm font-medium text-emerald-800">Direct Deposit</span>
+                  </div>
+                </div>
               </div>
             </div>
 
