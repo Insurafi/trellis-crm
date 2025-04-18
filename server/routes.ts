@@ -1402,7 +1402,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: agent.id,
         fullName: agent.fullName,
         email: agent.email,
-        commissionPercentage: agent.commissionPercentage
+        commissionPercentage: agent.commissionPercentage,
+        // Include banking info in logs for debugging (redacted for privacy)
+        bankInfoExists: !!(agent.bankName || agent.bankAccountNumber)
       });
       
       // Return the agent data in JSON format

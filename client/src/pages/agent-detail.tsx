@@ -81,7 +81,7 @@ export default function AgentDetail() {
     bankAccountType: "",
     bankAccountNumber: "",
     bankRoutingNumber: "",
-    bankPaymentMethod: ""
+    bankPaymentMethod: "direct_deposit" // Set Direct Deposit as default payment method
   });
 
   // Fetch agent data using the new API endpoint to avoid routing conflicts
@@ -103,7 +103,7 @@ export default function AgentDetail() {
         bankAccountType: agent.bankAccountType || "",
         bankAccountNumber: agent.bankAccountNumber || "",
         bankRoutingNumber: agent.bankRoutingNumber || "",
-        bankPaymentMethod: agent.bankPaymentMethod || ""
+        bankPaymentMethod: agent.bankPaymentMethod || "direct_deposit" // Default to Direct Deposit
       });
     }
   }, [agent]);
@@ -504,11 +504,10 @@ export default function AgentDetail() {
                       <label htmlFor="paymentMethod" className="text-sm font-medium text-emerald-800">Payment Method</label>
                       <select 
                         id="paymentMethod" 
-                        value={bankInfo.bankPaymentMethod || ''} 
+                        value={bankInfo.bankPaymentMethod || 'direct_deposit'} 
                         onChange={(e) => setBankInfo({...bankInfo, bankPaymentMethod: e.target.value})}
                         className="w-full px-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
                       >
-                        <option value="">Select payment method</option>
                         <option value="direct_deposit">Direct Deposit</option>
                         <option value="check">Check</option>
                         <option value="wire_transfer">Wire Transfer</option>
