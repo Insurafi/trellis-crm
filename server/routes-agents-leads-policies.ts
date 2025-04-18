@@ -432,13 +432,35 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/agents/:id", isAdminOrTeamLeader, async (req, res) => {
+  app.patch("/api/agents/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-
+      
+      // Get the agent to check permissions
+      const agent = await storage.getAgent(id);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      // Check if the user is allowed to update this agent
+      const userId = req.user?.id;
+      const userRole = req.user?.role;
+      const isAdmin = userRole === 'admin' || userRole === 'Administrator';
+      const isTeamLeader = userRole === 'team_leader' || userRole === 'Team Leader';
+      const isOwnAccount = agent.userId === userId;
+      
+      // Only allow admins, team leaders, or the agent themselves to update
+      if (!isAdmin && !isTeamLeader && !isOwnAccount) {
+        console.log(`User ${userId} (${userRole}) attempted to update agent ${id} but is not authorized`);
+        return res.status(403).json({ 
+          message: "You are not authorized to update this agent's information" 
+        });
+      }
+      
+      console.log(`User ${userId} (${userRole}) authorized to update agent ${id}`);
       const updateData = extendedAgentSchema.partial().parse(req.body);
       
       console.log("PATCH /api/agents/:id - Received data:", JSON.stringify(updateData, null, 2));
