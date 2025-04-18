@@ -474,8 +474,9 @@ export default function AgentDetail() {
           </Card>
 
           <Tabs defaultValue="commissions">
-            <TabsList className="grid grid-cols-3 mb-4">
+            <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="commissions">Commissions</TabsTrigger>
+              <TabsTrigger value="products">Top Products</TabsTrigger>
               <TabsTrigger value="clients">Recent Clients</TabsTrigger>
               <TabsTrigger value="activity">Weekly Activity</TabsTrigger>
             </TabsList>
@@ -574,7 +575,29 @@ export default function AgentDetail() {
               </Card>
             </TabsContent>
             
-            {/* Top Products tab removed */}
+            <TabsContent value="products" className="mt-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Top Performing Products</CardTitle>
+                  <CardDescription>Agent's most successful insurance products</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <Award className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                    <h3 className="text-lg font-medium mb-1">No product data yet</h3>
+                    <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                      This agent hasn't ranked their top-performing products yet.
+                    </p>
+                    <div className="mt-6">
+                      <Button variant="outline" className="mr-2">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add Product
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
             
             <TabsContent value="clients" className="mt-0">
               <Card>
