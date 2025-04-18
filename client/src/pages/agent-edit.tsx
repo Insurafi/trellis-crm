@@ -55,6 +55,12 @@ const agentFormSchema = z.object({
   specialties: z.string().nullable(),
   notes: z.string().nullable(),
   licensedStates: z.string().nullable(),
+  // Banking information fields
+  bankName: z.string().nullable(),
+  bankAccountType: z.string().nullable(),
+  bankAccountNumber: z.string().nullable(),
+  bankRoutingNumber: z.string().nullable(),
+  bankPaymentMethod: z.string().nullable(),
 });
 
 type AgentFormValues = z.infer<typeof agentFormSchema>;
