@@ -55,13 +55,13 @@ import { Agent } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, UserPlus, Eye } from "lucide-react";
 
-// Extend Agent type to include the name and fullName properties
-type AgentWithName = Agent & { 
+// Extend Agent type to include UI-specific properties
+interface AgentWithName extends Agent { 
   name?: string;
   fullName?: string;
   email?: string;
-  commissionPercentage?: string;
-};
+  commissionPercentage?: string | null;
+}
 
 // Form schema - Supporting both full and simplified agent creation
 const agentFormSchema = z.object({
@@ -805,17 +805,16 @@ const AgentsPage: React.FC = () => {
                               </Button>
                             </Link>
                             <Button
-                              variant="ghost"
-                              size="icon"
+                              variant="outline"
+                              size="sm"
                               onClick={() => {
                                 // Simple approach with minimal code
                                 setSelectedAgent(agent);
                                 setIsEditDialogOpen(true);
                                 console.log("Edit clicked for agent:", agent.id);
                               }}
-                              title="Edit Agent"
                             >
-                              <Pencil size={16} />
+                              Edit
                             </Button>
                             <Button
                               variant="ghost"
