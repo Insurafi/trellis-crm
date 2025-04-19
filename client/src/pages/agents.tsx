@@ -883,7 +883,6 @@ const AgentsPage: React.FC = () => {
                     <TableHead>Specialties</TableHead>
                     <TableHead>Commission</TableHead>
                     <TableHead>Actions</TableHead>
-                    <TableHead className="w-[100px] text-center">Edit</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -947,23 +946,11 @@ const AgentsPage: React.FC = () => {
                             </Button>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center">
-                          <Button
-                            type="button"
-                            variant="default"
-                            className="w-full bg-green-600 hover:bg-green-700"
-                            asChild
-                          >
-                            <Link href={`/agent-edit/${agent.id}`}>
-                              EDIT NOW
-                            </Link>
-                          </Button>
-                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-4">
+                      <TableCell colSpan={4} className="text-center py-4">
                         No agents found
                       </TableCell>
                     </TableRow>
