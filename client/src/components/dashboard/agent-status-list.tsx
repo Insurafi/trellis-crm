@@ -34,18 +34,15 @@ export default function AgentStatusList() {
     queryKey: ["/api/agents"],
   });
 
-  // For now, we'll use a simulated approach since we haven't 
-  // yet migrated the database to include the isOnline field
+  // Use the real-time online status from the database
+  // The isOnline field is now properly tracked in the users table
   
-  // Generate enhanced agent data with simulated online status
+  // Use the actual online status data from the agent's linked user
   const agentsWithStatus = agents.map(agent => {
-    // Temporarily simulate online status - in a real app this would come from the database
-    // Some agents will show as online for demo purposes
-    const isOnline = agent.id % 3 === 0; // Every third agent is online for demo
-    
+    // The server now provides accurate online status based on user activity
+    // No need to simulate anymore - using real data
     return {
-      ...agent,
-      isOnline
+      ...agent
     };
   });
 
@@ -126,7 +123,7 @@ export default function AgentStatusList() {
                     <div>
                       <div className="font-medium">{agent.name}</div>
                       <div className="text-xs text-neutral-500 flex items-center gap-1">
-                        <span>Life Insurance Agent</span>
+                        <span>Agent</span>
                       </div>
                     </div>
                   </div>

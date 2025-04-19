@@ -24,7 +24,23 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   app.get("/api/agents", async (req, res) => {
     try {
       const agents = await storage.getAgents();
-      res.json(agents);
+      
+      // Get all users to check their online status
+      const users = await storage.getAllUsers();
+      
+      // Map agent data with online status information from their linked user
+      const agentsWithOnlineStatus = agents.map(agent => {
+        // Find the associated user for this agent
+        const user = users.find(u => u.id === agent.userId);
+        
+        // Add isOnline flag based on the user's online status
+        return {
+          ...agent,
+          isOnline: user?.isOnline || false
+        };
+      });
+      
+      res.json(agentsWithOnlineStatus);
     } catch (error) {
       console.error("Error fetching agents:", error);
       res.status(500).json({ message: "Failed to fetch agents" });
