@@ -157,7 +157,6 @@ async function handleCalendarEventUpdates(
           clientId: updatedTask.clientId, // Link to client if specified
           createdBy: updatedTask.createdBy || updatedTask.assignedTo || 1, // Track who created it (default to admin if unknown)
           taskId: updatedTask.id, // Link back to the task
-          color: '#9333ea', // Add purple color for task events
         };
         
         console.log("Creating calendar event:", JSON.stringify(calendarEvent));
