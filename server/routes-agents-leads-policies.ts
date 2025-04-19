@@ -725,8 +725,10 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       console.log("EMERGENCY UPDATE ROUTE: Agent ID =", id);
       console.log("EMERGENCY UPDATE ROUTE: User =", req.user?.id, req.user?.username);
       
-      // Just log that we received banking data, not the actual data
+      // Log sanitized banking data (no account numbers)
       console.log("EMERGENCY UPDATE ROUTE: Received address and banking update request");
+      console.log("EMERGENCY UPDATE ROUTE: Bank Name:", req.body.bankName);
+      console.log("EMERGENCY UPDATE ROUTE: Account Type:", req.body.bankAccountType);
       
       // Get the agent
       const agent = await storage.getAgent(id);
@@ -746,24 +748,50 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       if (req.body.state !== undefined) updateData.state = req.body.state || null;
       if (req.body.zipCode !== undefined) updateData.zipCode = req.body.zipCode || null;
       
-      // Banking fields
-      if (req.body.bankName !== undefined) updateData.bankName = req.body.bankName || null;
-      if (req.body.bankAccountType !== undefined) updateData.bankAccountType = req.body.bankAccountType || null;
-      if (req.body.bankAccountNumber !== undefined) updateData.bankAccountNumber = req.body.bankAccountNumber || null;
-      if (req.body.bankRoutingNumber !== undefined) updateData.bankRoutingNumber = req.body.bankRoutingNumber || null;
+      // Banking fields - ensure we're not getting empty strings
+      if (req.body.bankName) updateData.bankName = req.body.bankName;
+      if (req.body.bankAccountType) updateData.bankAccountType = req.body.bankAccountType;
+      if (req.body.bankAccountNumber) updateData.bankAccountNumber = req.body.bankAccountNumber;
+      if (req.body.bankRoutingNumber) updateData.bankRoutingNumber = req.body.bankRoutingNumber;
+      
       // Always use direct deposit
       updateData.bankPaymentMethod = "direct_deposit";
       
       console.log("EMERGENCY UPDATE: Processed banking and address information");
+      console.log("EMERGENCY UPDATE: Update data fields:", Object.keys(updateData).join(", "));
+      
+      // Check if there's actually anything to update
+      if (Object.keys(updateData).length === 0) {
+        console.error("EMERGENCY UPDATE: No data fields to update!");
+        return res.status(400).json({
+          success: false,
+          message: "No data provided for update"
+        });
+      }
       
       // Direct database update
       const updatedAgent = await storage.updateAgent(id, updateData);
       console.log("EMERGENCY UPDATE: Success! Updated agent:", updatedAgent?.id);
       
+      // Verify banking info was updated
+      if (req.body.bankName && (!updatedAgent?.bankName || updatedAgent.bankName !== req.body.bankName)) {
+        console.warn("EMERGENCY UPDATE: Bank name may not have been properly updated!");
+      }
+      
       return res.status(200).json({
         success: true,
         message: "Agent information updated successfully",
-        agent: updatedAgent
+        agent: {
+          id: updatedAgent?.id,
+          bankName: updatedAgent?.bankName,
+          bankAccountType: updatedAgent?.bankAccountType,
+          // Mask sensitive data
+          bankAccountNumber: updatedAgent?.bankAccountNumber ? 
+            "********" + updatedAgent.bankAccountNumber.slice(-4) : null,
+          bankRoutingNumber: updatedAgent?.bankRoutingNumber ? 
+            "********" + updatedAgent.bankRoutingNumber.slice(-4) : null,
+          bankPaymentMethod: updatedAgent?.bankPaymentMethod
+        }
       });
     } catch (error) {
       console.error("CRITICAL ERROR in emergency agent update:", error);
