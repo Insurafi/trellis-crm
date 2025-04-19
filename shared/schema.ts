@@ -144,6 +144,7 @@ export const insertTaskSchema = baseTaskSchema
     ),
     completedAt: z.preprocess(
       (arg) => {
+        if (arg === null) return undefined;
         if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
         return arg;
       },

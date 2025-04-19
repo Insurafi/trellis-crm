@@ -573,11 +573,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       }
       
-      // If task is being marked as pending, clear completedAt
-      if (taskData.status === 'pending' && originalTask.status === 'completed') {
+      // If task is being marked as pending or in_progress, clear completedAt
+      if ((taskData.status === 'pending' || taskData.status === 'in_progress') && originalTask.status === 'completed') {
         taskData = {
           ...taskData,
-          completedAt: null
+          completedAt: undefined // Using undefined instead of null to avoid Zod validation errors
         };
       }
       
