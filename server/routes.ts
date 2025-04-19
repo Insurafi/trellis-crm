@@ -943,8 +943,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         events = await storage.getCalendarEventsByClient(clientId);
       } else if (userId && !isNaN(userId)) {
         // Get events for a specific user
-        const allEvents = await storage.getCalendarEvents();
-        events = allEvents.filter(event => event.userId === userId);
+        events = await storage.getCalendarEventsByUser(userId);
       } else {
         events = await storage.getCalendarEvents();
       }

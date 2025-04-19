@@ -679,6 +679,12 @@ export class MemStorage implements IStorage {
       (event) => event.clientId === clientId,
     );
   }
+  
+  async getCalendarEventsByUser(userId: number): Promise<CalendarEvent[]> {
+    return Array.from(this.calendarEvents.values()).filter(
+      (event) => event.userId === userId,
+    );
+  }
 
   async getCalendarEvent(id: number): Promise<CalendarEvent | undefined> {
     return this.calendarEvents.get(id);
