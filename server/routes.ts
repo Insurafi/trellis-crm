@@ -384,6 +384,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Validated task data:", JSON.stringify(validatedData));
       
       const newTask = await storage.createTask(validatedData);
+      
+      // If task has assignedTo and dueDate, sync with calendar
+      if (newTask.assignedTo && newTask.dueDate) {
+        try {
+          console.log(`Syncing task ${newTask.id} to calendar for user ${newTask.assignedTo}`);
+          
+          // Create calendar event for the task
+          const dueDate = new Date(newTask.dueDate);
+          
+          // Set end time to 1 hour after start time if dueTime exists, otherwise default to 1 hour duration
+          let startTime = new Date(dueDate);
+          let endTime = new Date(dueDate);
+          
+          // If dueTime exists, parse it (format: "HH:MM")
+          if (newTask.dueTime) {
+            const [hours, minutes] = newTask.dueTime.split(':').map(Number);
+            startTime.setHours(hours, minutes, 0, 0);
+            endTime.setHours(hours + 1, minutes, 0, 0);
+          } else {
+            // Default to 9:00 AM if no time specified
+            startTime.setHours(9, 0, 0, 0);
+            endTime.setHours(10, 0, 0, 0);
+          }
+          
+          // Create the calendar event
+          const calendarEvent = {
+            title: `Task: ${newTask.title}`,
+            description: newTask.description || '',
+            startTime: startTime,
+            endTime: endTime,
+            userId: newTask.assignedTo, // Set the assigned user as the event owner
+            type: 'task', // Mark as task type
+            clientId: newTask.clientId, // Link to client if specified
+            createdBy: newTask.createdBy || newTask.assignedTo, // Track who created it
+            taskId: newTask.id, // Link back to the task
+          };
+          
+          console.log("Creating calendar event:", JSON.stringify(calendarEvent));
+          const newEvent = await storage.createCalendarEvent(calendarEvent);
+          console.log(`Created calendar event ${newEvent.id} for task ${newTask.id}`);
+          
+          // Update task with the calendar event ID for reference
+          await storage.updateTask(newTask.id, { calendarEventId: newEvent.id });
+          console.log(`Updated task ${newTask.id} with calendar event ID ${newEvent.id}`);
+        } catch (calendarError) {
+          // Log error but don't fail the task creation
+          console.error("Error syncing task to calendar:", calendarError);
+        }
+        
+        // Send notification to assigned user
+        try {
+          // Get the assigned user details
+          const assignedUser = await storage.getUser(newTask.assignedTo);
+          if (assignedUser && assignedUser.email) {
+            console.log(`Sending task notification to ${assignedUser.email}`);
+            
+            // Determine who assigned the task
+            let assignerName = "Administrator";
+            if (newTask.createdBy && newTask.createdBy !== newTask.assignedTo) {
+              const assignerUser = await storage.getUser(newTask.createdBy);
+              if (assignerUser) {
+                assignerName = assignerUser.fullName || assignerUser.name || assignerUser.username;
+              }
+            }
+            
+            // Prepare notification details
+            const dueDateTime = newTask.dueTime
+              ? `${dueDate.toLocaleDateString()} at ${newTask.dueTime}`
+              : dueDate.toLocaleDateString();
+              
+            const notificationDetails = {
+              to: assignedUser.email,
+              from: "notifications@trelliscrm.com",
+              subject: `New Task Assigned: ${newTask.title}`,
+              text: `A new task "${newTask.title}" has been assigned to you by ${assignerName}. It is due on ${dueDateTime}.`,
+              html: `
+                <h2>New Task Assignment</h2>
+                <p>A new task has been assigned to you by ${assignerName}:</p>
+                <div style="padding: 15px; border-left: 4px solid #2563eb; margin: 10px 0;">
+                  <h3>${newTask.title}</h3>
+                  <p><strong>Due:</strong> ${dueDateTime}</p>
+                  <p><strong>Priority:</strong> ${newTask.priority || 'Normal'}</p>
+                  ${newTask.description ? `<p><strong>Description:</strong> ${newTask.description}</p>` : ''}
+                  ${newTask.clientId ? `<p><strong>Client:</strong> ID: ${newTask.clientId}</p>` : ''}
+                </div>
+                <p>Please log in to the Trellis CRM to view and manage your tasks.</p>
+              `
+            };
+            
+            // In production, we would send an actual email here
+            console.log("Would send email notification:", JSON.stringify(notificationDetails));
+            
+            // Consider logging notifications in the database for an in-app notification system
+          }
+        } catch (notificationError) {
+          console.error("Error sending task notification:", notificationError);
+        }
+      }
+      
       res.status(201).json(newTask);
     } catch (error) {
       console.error("Task creation error:", error);
@@ -399,6 +498,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log("Received task update data:", JSON.stringify(req.body));
+      
+      // Get the original task for comparison
+      const originalTask = await storage.getTask(id);
+      if (!originalTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
       
       // Special handling for dueDate field
       let taskData = req.body;
@@ -417,6 +522,159 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!updatedTask) {
         return res.status(404).json({ message: "Task not found" });
+      }
+      
+      // Check if we need to update the calendar event
+      const dateChanged = taskData.dueDate && originalTask.dueDate !== updatedTask.dueDate;
+      const timeChanged = taskData.dueTime && originalTask.dueTime !== updatedTask.dueTime;
+      const titleChanged = taskData.title && originalTask.title !== updatedTask.title;
+      const descriptionChanged = taskData.description && originalTask.description !== updatedTask.description;
+      const assigneeChanged = taskData.assignedTo && originalTask.assignedTo !== updatedTask.assignedTo;
+      
+      // If the task has a linked calendar event, update it
+      if (updatedTask.calendarEventId && (dateChanged || timeChanged || titleChanged || descriptionChanged)) {
+        try {
+          console.log(`Updating calendar event ${updatedTask.calendarEventId} for task ${updatedTask.id}`);
+          
+          const event = await storage.getCalendarEvent(updatedTask.calendarEventId);
+          if (event) {
+            // Create calendar event updated data
+            const dueDate = new Date(updatedTask.dueDate);
+            
+            // Set times based on dueTime
+            let startTime = new Date(dueDate);
+            let endTime = new Date(dueDate);
+            
+            if (updatedTask.dueTime) {
+              const [hours, minutes] = updatedTask.dueTime.split(':').map(Number);
+              startTime.setHours(hours, minutes, 0, 0);
+              endTime.setHours(hours + 1, minutes, 0, 0);
+            } else {
+              // Default to 9:00 AM if no time specified
+              startTime.setHours(9, 0, 0, 0);
+              endTime.setHours(10, 0, 0, 0);
+            }
+            
+            // Update the calendar event
+            const calendarUpdateData = {
+              title: titleChanged ? `Task: ${updatedTask.title}` : undefined,
+              description: descriptionChanged ? (updatedTask.description || '') : undefined,
+              startTime: dateChanged || timeChanged ? startTime : undefined,
+              endTime: dateChanged || timeChanged ? endTime : undefined,
+              userId: assigneeChanged ? updatedTask.assignedTo : undefined
+            };
+            
+            // Remove any undefined values
+            Object.keys(calendarUpdateData).forEach(key => 
+              calendarUpdateData[key] === undefined && delete calendarUpdateData[key]
+            );
+            
+            if (Object.keys(calendarUpdateData).length > 0) {
+              console.log("Updating calendar event:", JSON.stringify(calendarUpdateData));
+              await storage.updateCalendarEvent(updatedTask.calendarEventId, calendarUpdateData);
+              console.log(`Updated calendar event ${updatedTask.calendarEventId}`);
+            }
+          }
+        } catch (calendarError) {
+          console.error("Error updating calendar event:", calendarError);
+        }
+      } 
+      // If task has no calendar event but now has assignee and date, create one
+      else if (!updatedTask.calendarEventId && updatedTask.assignedTo && updatedTask.dueDate) {
+        try {
+          console.log(`Creating new calendar event for task ${updatedTask.id}`);
+          
+          // Create calendar event for the task
+          const dueDate = new Date(updatedTask.dueDate);
+          
+          // Set end time to 1 hour after start time if dueTime exists, otherwise default to 1 hour duration
+          let startTime = new Date(dueDate);
+          let endTime = new Date(dueDate);
+          
+          // If dueTime exists, parse it (format: "HH:MM")
+          if (updatedTask.dueTime) {
+            const [hours, minutes] = updatedTask.dueTime.split(':').map(Number);
+            startTime.setHours(hours, minutes, 0, 0);
+            endTime.setHours(hours + 1, minutes, 0, 0);
+          } else {
+            // Default to 9:00 AM if no time specified
+            startTime.setHours(9, 0, 0, 0);
+            endTime.setHours(10, 0, 0, 0);
+          }
+          
+          // Create the calendar event
+          const calendarEvent = {
+            title: `Task: ${updatedTask.title}`,
+            description: updatedTask.description || '',
+            startTime: startTime,
+            endTime: endTime,
+            userId: updatedTask.assignedTo, // Set the assigned user as the event owner
+            type: 'task', // Mark as task type
+            clientId: updatedTask.clientId, // Link to client if specified
+            createdBy: updatedTask.createdBy || updatedTask.assignedTo, // Track who created it
+            taskId: updatedTask.id, // Link back to the task
+          };
+          
+          console.log("Creating calendar event:", JSON.stringify(calendarEvent));
+          const newEvent = await storage.createCalendarEvent(calendarEvent);
+          console.log(`Created calendar event ${newEvent.id} for task ${updatedTask.id}`);
+          
+          // Update task with the calendar event ID for reference
+          await storage.updateTask(updatedTask.id, { calendarEventId: newEvent.id });
+          console.log(`Updated task ${updatedTask.id} with calendar event ID ${newEvent.id}`);
+        } catch (calendarError) {
+          console.error("Error creating calendar event for updated task:", calendarError);
+        }
+      }
+      
+      // If the assignee has changed, notify the new assignee
+      if (assigneeChanged) {
+        try {
+          // Get the new assigned user details
+          const assignedUser = await storage.getUser(updatedTask.assignedTo);
+          if (assignedUser && assignedUser.email) {
+            console.log(`Sending task reassignment notification to ${assignedUser.email}`);
+            
+            // Determine who updated the task
+            let updaterName = "Administrator";
+            if (req.user?.id) {
+              const updaterUser = await storage.getUser(req.user.id);
+              if (updaterUser) {
+                updaterName = updaterUser.fullName || updaterUser.name || updaterUser.username;
+              }
+            }
+            
+            // Prepare notification details
+            const dueDate = new Date(updatedTask.dueDate);
+            const dueDateTime = updatedTask.dueTime
+              ? `${dueDate.toLocaleDateString()} at ${updatedTask.dueTime}`
+              : dueDate.toLocaleDateString();
+              
+            const notificationDetails = {
+              to: assignedUser.email,
+              from: "notifications@trelliscrm.com",
+              subject: `Task Assigned to You: ${updatedTask.title}`,
+              text: `A task "${updatedTask.title}" has been assigned to you by ${updaterName}. It is due on ${dueDateTime}.`,
+              html: `
+                <h2>Task Assignment</h2>
+                <p>A task has been assigned to you by ${updaterName}:</p>
+                <div style="padding: 15px; border-left: 4px solid #2563eb; margin: 10px 0;">
+                  <h3>${updatedTask.title}</h3>
+                  <p><strong>Due:</strong> ${dueDateTime}</p>
+                  <p><strong>Priority:</strong> ${updatedTask.priority || 'Normal'}</p>
+                  ${updatedTask.description ? `<p><strong>Description:</strong> ${updatedTask.description}</p>` : ''}
+                  ${updatedTask.clientId ? `<p><strong>Client:</strong> ID: ${updatedTask.clientId}</p>` : ''}
+                </div>
+                <p>Please log in to the Trellis CRM to view and manage your tasks.</p>
+              `
+            };
+            
+            // In production, we would send an actual email here
+            console.log("Would send task reassignment email notification:", JSON.stringify(notificationDetails));
+          }
+        } catch (notificationError) {
+          console.error("Error sending task reassignment notification:", notificationError);
+        }
       }
 
       res.json(updatedTask);

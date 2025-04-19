@@ -104,11 +104,13 @@ export const tasks = pgTable("tasks", {
   description: text("description"),
   clientId: integer("client_id").references(() => clients.id),
   assignedTo: integer("assigned_to").references(() => users.id),
+  createdBy: integer("created_by").references(() => users.id), // Who created the task
   dueDate: timestamp("due_date"),
   dueTime: text("due_time"), // Store time as string in format "HH:MM"
   priority: text("priority").default("medium"), // low, medium, high, urgent
   status: text("status").default("pending"), // pending, completed
   createdAt: timestamp("created_at").defaultNow(),
+  calendarEventId: integer("calendar_event_id"), // Reference to associated calendar event
 });
 
 // Create a base schema for the database
@@ -117,10 +119,12 @@ const baseTaskSchema = createInsertSchema(tasks).pick({
   description: true,
   clientId: true,
   assignedTo: true,
+  createdBy: true,
   dueDate: true,
   dueTime: true,
   priority: true,
   status: true,
+  calendarEventId: true,
 });
 
 // Create an API-friendly schema that handles date conversion properly
@@ -135,6 +139,8 @@ export const insertTaskSchema = baseTaskSchema
       z.date().optional()
     ),
     dueTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
+    createdBy: z.number().optional(),
+    calendarEventId: z.number().optional(),
   });
 
 export type InsertTask = z.infer<typeof insertTaskSchema>;
@@ -195,7 +201,9 @@ export const calendarEvents = pgTable("calendar_events", {
   endTime: timestamp("end_time").notNull(),
   clientId: integer("client_id").references(() => clients.id),
   createdBy: integer("created_by").references(() => users.id),
-  type: text("type").default("meeting"), // meeting, call, reminder
+  userId: integer("user_id").references(() => users.id), // The user this event belongs to (assignee)
+  type: text("type").default("meeting"), // meeting, call, reminder, task
+  taskId: integer("task_id"), // Optional reference to a task (for calendar events that are tasks)
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -266,6 +274,14 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
     fields: [tasks.assignedTo],
     references: [users.id],
   }),
+  createdByUser: one(users, {
+    fields: [tasks.createdBy],
+    references: [users.id],
+  }),
+  calendarEvent: one(calendarEvents, {
+    fields: [tasks.calendarEventId],
+    references: [calendarEvents.id],
+  }),
 }));
 
 export const quotesRelations = relations(quotes, ({ one }) => ({
@@ -275,7 +291,7 @@ export const quotesRelations = relations(quotes, ({ one }) => ({
   }),
 }));
 
-export const calendarEventsRelations = relations(calendarEvents, ({ one }) => ({
+export const calendarEventsRelations = relations(calendarEvents, ({ one, many }) => ({
   client: one(clients, {
     fields: [calendarEvents.clientId],
     references: [clients.id],
@@ -284,6 +300,8 @@ export const calendarEventsRelations = relations(calendarEvents, ({ one }) => ({
     fields: [calendarEvents.createdBy],
     references: [users.id],
   }),
+  // A calendar event might be linked to a task, but this is a backwards reference
+  // A more explicit link will be in the tasks schema with calendarEventId
 }));
 
 // Pipeline Stages
