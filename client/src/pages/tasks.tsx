@@ -17,6 +17,8 @@ interface User {
   email?: string;
   name?: string;
   fullName?: string;
+  firstName?: string;
+  lastName?: string;
   role?: string;
 }
 
@@ -40,6 +42,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -167,6 +170,18 @@ export default function Tasks() {
     if (!clientId || !clients) return null;
     const client = clients.find(c => c.id === clientId);
     return client ? client.name : null;
+  };
+  
+  // Get user name by id
+  const getUserName = (userId?: number) => {
+    if (!userId || !users) return null;
+    const userFound = users.find(u => u.id === userId);
+    if (!userFound) return null;
+    
+    return userFound.fullName || 
+      userFound.name || 
+      (userFound.firstName && userFound.lastName ? `${userFound.firstName} ${userFound.lastName}` : null) || 
+      userFound.username;
   };
 
   // Extended schema for validation
@@ -549,6 +564,38 @@ export default function Tasks() {
                       )}
                     />
                   </div>
+                  
+                  {/* User Assignment Field */}
+                  <FormField
+                    control={form.control}
+                    name="assignedTo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Assign To</FormLabel>
+                        <Select
+                          onValueChange={(value) => field.onChange(parseInt(value))}
+                          value={field.value?.toString() || user?.id?.toString() || ""}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select user" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {users?.map(u => (
+                              <SelectItem key={u.id} value={u.id.toString()}>
+                                {getUserName(u.id) || u.username}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          By default, tasks are assigned to you.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   
                   <DialogFooter>
                     <Button 
