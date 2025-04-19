@@ -95,16 +95,21 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       
       if (agent && isAaron) {
         console.log("Found Aaron's agent ID:", agent.id);
-        // SPECIAL CASE: Reset Aaron's banking information to empty
-        // because current values need to be replaced with his own
-        agent.bankName = null;
-        agent.bankAccountNumber = null;
-        agent.bankRoutingNumber = null;
-        agent.bankAccountType = null;
+        // SPECIAL CASE FOR AARON: We no longer reset banking info to empty
+        // Instead, we check if he actually has banking information
         
-        // Flag that this agent needs to update their banking info
-        agent.bankInfoExists = false;
-        console.log("Aaron needs to update banking information (forced requirement)");
+        // Determine if banking info exists
+        const hasBankingInfo = !!(
+          agent.bankName && 
+          agent.bankAccountNumber && 
+          agent.bankRoutingNumber && 
+          agent.bankAccountType
+        );
+        
+        // Add a special field to track if banking info exists
+        (agent as any).bankInfoExists = hasBankingInfo;
+        
+        console.log(`Aaron's banking info status: ${hasBankingInfo ? 'Found' : 'Missing'}`);
       }
       
       if (!agent) {
