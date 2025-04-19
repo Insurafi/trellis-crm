@@ -140,11 +140,11 @@ export default function EmergencyAgentEdit() {
     <div className="container py-8 max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold text-orange-600">
-            Update Required
+          <h2 className="text-3xl font-bold text-primary">
+            Update Banking Information
           </h2>
           <p className="text-muted-foreground">
-            Please enter your address and banking information to continue
+            Edit your address and banking information below
           </p>
         </div>
         <Button onClick={() => navigate(`/agent-detail/${id}`)} variant="outline">

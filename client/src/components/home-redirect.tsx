@@ -13,31 +13,8 @@ export default function HomeRedirect() {
 
     // If user is logged in, redirect based on role and ID
     if (user) {
-      // Special case for Aaron (agent with user ID 13)
-      if (user.id === 13) {
-        // First, make a prominent notification about the emergency form
-        console.log("Detected Aaron's login - redirecting to emergency banking form");
-        
-        // Redirect Aaron specifically to his emergency edit page
-        const agentQuery = fetch('/api/agents/by-user').then(r => r.json());
-        agentQuery.then(agent => {
-          console.log("Redirecting Aaron to emergency page", agent);
-          
-          // SPECIAL CASE: Always force Aaron to the emergency edit page
-          // regardless of what banking info is in the database
-          // This is because the values in the database don't belong to him
-          
-          if (agent && agent.id) {
-            console.log("Always redirecting Aaron to emergency banking info form");
-            setLocation(`/emergency-agent-edit/${agent.id}`);
-          } else {
-            setLocation("/agent-dashboard");
-          }
-        }).catch(() => {
-          setLocation("/agent-dashboard");
-        });
-        return;
-      }
+      // No more special case for Aaron (user ID 13)
+      // All users are handled the same way now
       
       // Normal flow for other users
       if (isAgent) {
