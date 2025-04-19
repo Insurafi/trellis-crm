@@ -29,6 +29,8 @@ const TaskManagement = () => {
   // Extended schema for validation
   const formSchema = insertTaskSchema.extend({
     dueDate: z.string().optional(),
+    dueTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
+    assignedTo: z.number().optional(),
   });
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -38,6 +40,9 @@ const TaskManagement = () => {
       description: "",
       priority: "medium",
       status: "pending",
+      dueDate: undefined,
+      dueTime: undefined,
+      assignedTo: undefined,
     },
   });
 
@@ -48,10 +53,13 @@ const TaskManagement = () => {
         ? new Date(values.dueDate).toISOString() 
         : undefined;
       
+      // Create task with all provided fields
       const taskData = {
         ...values,
-        assignedTo: 1, // Default to current user
         dueDate: dueDateTransformed,
+        assignedTo: values.assignedTo || 1, // Default to admin if not specified
+        dueTime: values.dueTime || undefined,
+        createdBy: 1, // Current logged in user (admin)
       };
 
       return await apiRequest("POST", "/api/tasks", taskData);
@@ -187,7 +195,14 @@ const TaskManagement = () => {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Task description" {...field} />
+                        <Textarea 
+                          placeholder="Task description" 
+                          value={field.value || ''} 
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          ref={field.ref}
+                          name={field.name}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -231,6 +246,48 @@ const TaskManagement = () => {
                         <FormControl>
                           <Input type="date" {...field} />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="dueTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Due Time</FormLabel>
+                        <FormControl>
+                          <Input type="time" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="assignedTo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Assign To</FormLabel>
+                        <Select
+                          onValueChange={(value) => field.onChange(parseInt(value))}
+                          value={field.value?.toString()}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select user" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="1">Admin</SelectItem>
+                            <SelectItem value="9">Tremaine Taylor</SelectItem>
+                            <SelectItem value="13">Aaron Barnes</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
