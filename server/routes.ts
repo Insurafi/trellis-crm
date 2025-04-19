@@ -333,6 +333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
       const assignedTo = req.query.assignedTo ? parseInt(req.query.assignedTo as string) : undefined;
+      const currentUserId = req.user?.id || 1; // Default to admin if not authenticated
       
       let tasks;
       if (clientId && !isNaN(clientId)) {
@@ -343,7 +344,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tasks = await storage.getTasks();
       }
       
-      res.json(tasks);
+      // Filter tasks based on visibility permissions
+      const visibleTasks = tasks.filter(task => {
+        // Task is visible if:
+        // 1. User created the task
+        if (task.createdBy === currentUserId) return true;
+        
+        // 2. Task is assigned to the user
+        if (task.assignedTo === currentUserId) return true;
+        
+        // 3. User is in the visibleTo array
+        if (task.visibleTo && Array.isArray(task.visibleTo) && task.visibleTo.includes(currentUserId)) return true;
+        
+        // 4. No visibility restrictions (null or empty visibleTo array)
+        if (!task.visibleTo || !Array.isArray(task.visibleTo) || task.visibleTo.length === 0) return true;
+        
+        // Otherwise, task is not visible to this user
+        return false;
+      });
+      
+      res.json(visibleTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
       res.status(500).json({ message: "Failed to fetch tasks" });
@@ -362,7 +382,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      res.json(task);
+      // Check if user has permission to view this task
+      const currentUserId = req.user?.id || 1; // Default to admin if not authenticated
+      
+      // Task is visible if:
+      // 1. User created the task
+      const isCreator = task.createdBy === currentUserId;
+      
+      // 2. Task is assigned to the user
+      const isAssignee = task.assignedTo === currentUserId;
+      
+      // 3. User is in the visibleTo array
+      const isInVisibleTo = task.visibleTo && 
+                          Array.isArray(task.visibleTo) && 
+                          task.visibleTo.includes(currentUserId);
+      
+      // 4. No visibility restrictions (null or empty visibleTo array)
+      const noRestrictions = !task.visibleTo || 
+                            !Array.isArray(task.visibleTo) || 
+                            task.visibleTo.length === 0;
+      
+      if (isCreator || isAssignee || isInVisibleTo || noRestrictions) {
+        res.json(task);
+      } else {
+        // User doesn't have permission to view this task
+        res.status(403).json({ message: "You do not have permission to view this task" });
+      }
     } catch (error) {
       console.error("Error fetching task:", error);
       res.status(500).json({ message: "Failed to fetch task" });
