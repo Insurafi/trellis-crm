@@ -55,7 +55,7 @@ const agentProfileSchema = z.object({
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zipCode: z.string().min(5, "ZIP code is required"),
-  licenseNumber: z.string().min(1, "License number is required"),
+  licenseNumber: z.string().optional(),
   licenseExpiration: z.string().min(1, "License expiration date is required"),
   licensedStates: z.string().min(1, "Licensed states are required"),
   npn: z.string().optional(),

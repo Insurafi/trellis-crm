@@ -47,7 +47,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 const agentFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  licenseNumber: z.string().min(1, "License number is required"),
+  licenseNumber: z.string().optional(),
   licenseExpiration: z.string().min(1, "License expiration is required"),
   npn: z.string().nullable(),
   phoneNumber: z.string().min(1, "Phone number is required"),

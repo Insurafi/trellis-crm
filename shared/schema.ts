@@ -500,7 +500,7 @@ export const usersTemplatesRelations = relations(users, ({ many }) => ({
 export const agents = pgTable("agents", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  licenseNumber: text("license_number").notNull(),
+  licenseNumber: text("license_number"),
   licenseExpiration: date("license_expiration").notNull(),
   npn: text("npn"), // National Producer Number
   phoneNumber: text("phone_number").notNull(),
