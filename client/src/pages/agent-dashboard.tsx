@@ -3,6 +3,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import TaskManagement from "@/components/dashboard/task-management";
+import CalendarCard from "@/components/ui/calendar-card";
 import {
   Card,
   CardContent,

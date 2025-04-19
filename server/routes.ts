@@ -452,6 +452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
             
             // Prepare notification details
+            const dueDate = newTask.dueDate ? new Date(newTask.dueDate) : new Date();
             const dueDateTime = newTask.dueTime
               ? `${dueDate.toLocaleDateString()} at ${newTask.dueTime}`
               : dueDate.toLocaleDateString();
