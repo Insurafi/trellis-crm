@@ -575,10 +575,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If task is being marked as pending or in_progress, clear completedAt
       if ((taskData.status === 'pending' || taskData.status === 'in_progress') && originalTask.status === 'completed') {
-        taskData = {
-          ...taskData,
-          completedAt: undefined // Using undefined instead of null to avoid Zod validation errors
-        };
+        // Remove completedAt from the object entirely instead of setting it to null or undefined
+        const { completedAt, ...restOfTaskData } = taskData;
+        taskData = restOfTaskData;
       }
       
       console.log("Transformed task update data:", JSON.stringify(taskData));
@@ -608,19 +607,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (event) {
             // Create calendar event updated data - handle null dueDate
             const dueDate = updatedTask.dueDate ? new Date(updatedTask.dueDate) : new Date();
+            console.log(`Task update - dueDate: ${dueDate.toISOString()}`);
             
             // Set times based on dueTime
-            let startTime = new Date(dueDate);
-            let endTime = new Date(dueDate);
+            let startTime, endTime;
             
             if (updatedTask.dueTime) {
+              console.log(`Task update - dueTime: ${updatedTask.dueTime}`);
               const [hours, minutes] = updatedTask.dueTime.split(':').map(Number);
+              
+              // Create fresh Date objects to ensure we're not modifying the same object
+              startTime = new Date(dueDate);
               startTime.setHours(hours, minutes, 0, 0);
+              
+              endTime = new Date(dueDate);
               endTime.setHours(hours + 1, minutes, 0, 0);
+              
+              console.log(`Task update - calculated startTime: ${startTime.toISOString()}`);
+              console.log(`Task update - calculated endTime: ${endTime.toISOString()}`);
             } else {
               // Default to 9:00 AM if no time specified
+              startTime = new Date(dueDate);
               startTime.setHours(9, 0, 0, 0);
+              
+              endTime = new Date(dueDate);
               endTime.setHours(10, 0, 0, 0);
+              
+              console.log(`Task update - default startTime: ${startTime.toISOString()}`);
+              console.log(`Task update - default endTime: ${endTime.toISOString()}`);
             }
             
             // Update the calendar event
@@ -659,7 +673,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Creating new calendar event for task ${updatedTask.id}`);
           
           // Create calendar event for the task
+          // Use a fresh Date object to ensure we're working with a clean date
           const dueDate = new Date(updatedTask.dueDate);
+          console.log(`Task dueDate: ${dueDate.toISOString()}`);
           
           // Set end time to 1 hour after start time if dueTime exists, otherwise default to 1 hour duration
           let startTime = new Date(dueDate);
@@ -667,13 +683,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // If dueTime exists, parse it (format: "HH:MM")
           if (updatedTask.dueTime) {
+            console.log(`Task dueTime: ${updatedTask.dueTime}`);
             const [hours, minutes] = updatedTask.dueTime.split(':').map(Number);
+            // Make sure we're properly setting the hours and minutes on the same day as dueDate
+            startTime = new Date(dueDate);
             startTime.setHours(hours, minutes, 0, 0);
+            
+            endTime = new Date(dueDate);
             endTime.setHours(hours + 1, minutes, 0, 0);
+            
+            console.log(`Calculated startTime: ${startTime.toISOString()}`);
+            console.log(`Calculated endTime: ${endTime.toISOString()}`);
           } else {
             // Default to 9:00 AM if no time specified
+            startTime = new Date(dueDate);
             startTime.setHours(9, 0, 0, 0);
+            
+            endTime = new Date(dueDate);
             endTime.setHours(10, 0, 0, 0);
+            
+            console.log(`Default startTime: ${startTime.toISOString()}`);
+            console.log(`Default endTime: ${endTime.toISOString()}`);
           }
           
           // Create the calendar event
