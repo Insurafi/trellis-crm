@@ -559,7 +559,7 @@ export default function Tasks() {
                           <div className="mt-2 flex flex-wrap gap-2 text-xs text-neutral-500">
                             {task.dueDate && (
                               <div className="mr-4">
-                                {getDueDate(task.dueDate?.toString() || '')}
+                                {getDueDate(task.dueDate?.toString() || '', task.dueTime)}
                               </div>
                             )}
                             
