@@ -182,6 +182,14 @@ export default function AgentDashboard() {
   // Check if agent has banking information
   const hasBankingInfo = !!(agentData?.bankName && agentData?.bankAccountNumber && agentData?.bankRoutingNumber);
   
+  // Debug logging for banking info check
+  console.log("Agent Banking Info Status:", { 
+    bankName: agentData?.bankName,
+    bankAccountNumber: agentData?.bankAccountNumber, 
+    bankRoutingNumber: agentData?.bankRoutingNumber,
+    hasBankingInfo
+  });
+  
   // Use the agent ID only after it's been loaded and validated
   const agentId = hasValidAgentId ? agentData.id : null;
 

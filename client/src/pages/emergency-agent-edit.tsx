@@ -60,29 +60,17 @@ export default function EmergencyAgentEdit() {
     if (agent) {
       console.log("Loaded agent data:", agent);
       
-      // Special case for Aaron (agent ID 4) - the banking info in the database isn't his
-      const isAaron = id === "4" || agent.userId === 13;
-      
-      // Set address fields but ALWAYS reset banking info for Aaron
+      // Set address fields for all agents
       setAddress(agent.address || "");
       setCity(agent.city || "");
       setState(agent.state || "");
       setZipCode(agent.zipCode || "");
       
-      // For Aaron, always set these to empty strings regardless of what's in the database
-      if (isAaron) {
-        setBankName("");
-        setBankAccountType("");
-        setBankAccountNumber("");
-        setBankRoutingNumber("");
-        console.log("Cleared banking info fields for Aaron");
-      } else {
-        // For other agents, use existing values
-        setBankName(agent.bankName || "");
-        setBankAccountType(agent.bankAccountType || "");
-        setBankAccountNumber(agent.bankAccountNumber || "");
-        setBankRoutingNumber(agent.bankRoutingNumber || "");
-      }
+      // For all agents, use existing banking info values from the database
+      setBankName(agent.bankName || "");
+      setBankAccountType(agent.bankAccountType || "");
+      setBankAccountNumber(agent.bankAccountNumber || "");
+      setBankRoutingNumber(agent.bankRoutingNumber || "");
     }
   }, [agent]);
   
