@@ -970,14 +970,22 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
 
       // SPECIAL CASE: Check if this is Aaron (agent ID 4, user ID 13)
+      // We're not clearing bank info anymore to allow proper banking info display
       const isAaron = agent.id === 4 || agent.userId === 13;
       if (isAaron) {
-        console.log("Aaron (agent ID 4) requesting their agent record - forcing bank info to be empty");
-        // Reset Aaron's banking information to null when his data is accessed
-        agent.bankName = null;
-        agent.bankAccountNumber = null;
-        agent.bankRoutingNumber = null;
-        agent.bankAccountType = null;
+        console.log("Aaron (agent ID 4) requesting their agent record - banking info enabled");
+        // Now we actually show the real banking info
+        
+        // Determine if banking info exists
+        const hasBankingInfo = !!(
+          agent.bankName && 
+          agent.bankAccountNumber && 
+          agent.bankRoutingNumber && 
+          agent.bankAccountType
+        );
+        
+        // Add a special field to track if banking info exists
+        (agent as any).bankInfoExists = hasBankingInfo;
       }
 
       // The agent data already includes fullName from the database-storage.ts changes
