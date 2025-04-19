@@ -320,8 +320,8 @@ export default function AgentDashboard() {
         </div>
       </div>
       
-      {/* Special orange banner for Aaron - regardless of banking info status */}
-      {user?.id === 13 && (
+      {/* Banking information notice - only shows if banking info is missing */}
+      {!hasBankingInfo && (
         <Card className="border-orange-300 bg-orange-50 mb-6">
           <CardContent className="pt-6 pb-6">
             <div className="flex items-start">
