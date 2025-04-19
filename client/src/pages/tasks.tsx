@@ -6,8 +6,19 @@ import { useAuth } from "@/hooks/use-auth";
 import { Task, Client, insertTaskSchema } from "@shared/schema";
 import { format, isPast, isToday, addDays, isFuture } from "date-fns";
 import { useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+// Define a User interface for API data
+interface User {
+  id: number;
+  username: string;
+  email?: string;
+  name?: string;
+  fullName?: string;
+  role?: string;
+}
 
 import {
   Card,
@@ -97,9 +108,14 @@ export default function Tasks() {
   const { data: clients, isLoading: isLoadingClients, error: clientsError } = useQuery<Client[]>({
     queryKey: ['/api/clients'],
   });
+  
+  // Get users/agents to assign tasks to
+  const { data: users, isLoading: isLoadingUsers, error: usersError } = useQuery<User[]>({
+    queryKey: ['/api/users'],
+  });
 
-  const isLoading = isLoadingTasks || isLoadingClients || isAgentLoading;
-  const error = tasksError || clientsError;
+  const isLoading = isLoadingTasks || isLoadingClients || isLoadingUsers || isAgentLoading;
+  const error = tasksError || clientsError || usersError;
 
   // Filter tasks based on search term and current tab
   const filteredTasks = tasks?.filter(task => {
@@ -612,7 +628,32 @@ export default function Tasks() {
                             <h3 className={`font-medium ${task.status === "completed" ? "text-neutral-500 line-through" : "text-neutral-900"}`}>
                               {task.title}
                             </h3>
-                            <div>
+                            <div className="flex items-center gap-2">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditDialog(task);
+                                }}
+                              >
+                                <svg 
+                                  xmlns="http://www.w3.org/2000/svg" 
+                                  width="16" 
+                                  height="16" 
+                                  viewBox="0 0 24 24" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  strokeWidth="2" 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  className="mr-1"
+                                >
+                                  <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                                </svg>
+                                Edit
+                              </Button>
                               {getPriorityBadge(task.priority || 'medium')}
                             </div>
                           </div>
