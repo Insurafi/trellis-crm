@@ -240,6 +240,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupClientAuth(app);
   setupSimpleRegister(app);
   
+  // User online status handling
+  app.post("/api/users/:userId/online-status", isAuthenticated, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const isOnline = req.body.isOnline === true;
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
+      // Only allow users to update their own status or admins to update any status
+      if (req.user?.id !== userId && req.user?.role !== 'admin') {
+        return res.status(403).json({ message: "Not authorized to update this user's status" });
+      }
+      
+      // Update the user's online status in the database
+      await db.execute(
+        sql`UPDATE users SET is_online = ${isOnline}, last_active = NOW() WHERE id = ${userId}`
+      );
+      
+      return res.json({ success: true, status: isOnline ? "online" : "offline" });
+    } catch (error) {
+      console.error("Error updating user online status:", error);
+      return res.status(500).json({ message: "Failed to update online status" });
+    }
+  });
+  
   // Serve static HTML files
   app.get("/pure-client-login", (req, res) => {
     res.sendFile("client-login-test.html", { root: "./client" });
