@@ -81,6 +81,14 @@ export default function AgentDetail() {
   // Fetch agent data using the new API endpoint to avoid routing conflicts
   const { data: agent, isLoading: isAgentLoading } = useQuery<any>({
     queryKey: [`/api/agent-data/${agentId}`],
+    queryFn: async () => {
+      console.log(`Fetching agent data for ID: ${agentId}`);
+      const response = await fetch(`/api/agent-data/${agentId}`);
+      const data = await response.json();
+      console.log("Agent data received:", data);
+      console.log("Banking info exists:", data.bankInfoExists);
+      return data;
+    },
     enabled: !!agentId
   });
   
@@ -262,8 +270,8 @@ export default function AgentDetail() {
 
   return (
     <div className="p-4 md:p-8 pt-6 space-y-6">
-      {/* Special notification banner for Aaron (ID 4) */}
-      {agent.id === 4 && (
+      {/* Special notification banner for Aaron (ID 4) only if banking info doesn't exist */}
+      {agent.id === 4 && agent.bankInfoExists !== true && (
         <Card className="border-orange-300 bg-orange-50 mb-6">
           <CardContent className="pt-6 pb-6">
             <div className="flex items-start">
@@ -307,7 +315,7 @@ export default function AgentDetail() {
             <Calendar className="mr-2 h-4 w-4" />
             Schedule
           </Button>
-          {agent.id === 4 ? (
+          {agent.id === 4 && agent.bankInfoExists !== true ? (
             <Button size="sm" asChild className="bg-orange-500 hover:bg-orange-600">
               <Link href={`/emergency-agent-edit/${agent.id}`}>
                 <AlertTriangle className="mr-2 h-4 w-4" />
