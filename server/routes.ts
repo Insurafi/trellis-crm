@@ -369,10 +369,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tasks", async (req, res) => {
     try {
-      const taskData = insertTaskSchema.parse(req.body);
-      const newTask = await storage.createTask(taskData);
+      console.log("Received task data:", JSON.stringify(req.body));
+      // Special handling for dueDate field
+      let taskData = req.body;
+      if (taskData.dueDate) {
+        taskData = {
+          ...taskData,
+          dueDate: new Date(taskData.dueDate)
+        };
+      }
+      console.log("Transformed task data:", JSON.stringify(taskData));
+      
+      const validatedData = insertTaskSchema.parse(taskData);
+      console.log("Validated task data:", JSON.stringify(validatedData));
+      
+      const newTask = await storage.createTask(validatedData);
       res.status(201).json(newTask);
     } catch (error) {
+      console.error("Task creation error:", error);
       handleValidationError(error, res);
     }
   });
@@ -384,7 +398,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid task ID" });
       }
 
-      const updateData = insertTaskSchema.partial().parse(req.body);
+      console.log("Received task update data:", JSON.stringify(req.body));
+      
+      // Special handling for dueDate field
+      let taskData = req.body;
+      if (taskData.dueDate) {
+        taskData = {
+          ...taskData,
+          dueDate: new Date(taskData.dueDate)
+        };
+      }
+      console.log("Transformed task update data:", JSON.stringify(taskData));
+
+      const updateData = insertTaskSchema.partial().parse(taskData);
+      console.log("Validated task update data:", JSON.stringify(updateData));
+      
       const updatedTask = await storage.updateTask(id, updateData);
       
       if (!updatedTask) {
@@ -393,6 +421,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(updatedTask);
     } catch (error) {
+      console.error("Task update error:", error);
       handleValidationError(error, res);
     }
   });
