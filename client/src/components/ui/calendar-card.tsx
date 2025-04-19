@@ -1,16 +1,23 @@
 import { useState } from 'react';
-import { useQuery } from "@tanstack/react-query";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, isSameMonth, isSameDay, parseISO } from 'date-fns';
-import { CalendarEvent } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { Skeleton } from '@/components/ui/skeleton';
 
+// Define a simple CalendarEvent interface
+interface CalendarEvent {
+  id: number;
+  title: string;
+  startTime: string | Date;
+  endTime: string | Date;
+  type: string | null;
+}
+
 interface CalendarDayProps {
   day: Date;
   currentMonth: Date;
-  events: CalendarEvent[];
+  events: Array<CalendarEvent>;
   today: Date;
 }
 
@@ -22,7 +29,9 @@ const CalendarDay = ({ day, currentMonth, events, today }: CalendarDayProps) => 
   const dayEvents = events.filter(event => isSameDay(parseISO(event.startTime.toString()), day));
   
   // Get styles for the event indicators
-  const getEventTypeColor = (type: string) => {
+  const getEventTypeColor = (type: string | null) => {
+    if (!type) return 'bg-neutral-500';
+    
     switch (type) {
       case 'meeting':
         return 'bg-primary';
@@ -62,7 +71,9 @@ const CalendarDay = ({ day, currentMonth, events, today }: CalendarDayProps) => 
 };
 
 const UpcomingEventCard = ({ event }: { event: CalendarEvent }) => {
-  const getEventTypeColor = (type: string) => {
+  const getEventTypeColor = (type: string | null) => {
+    if (!type) return 'bg-neutral-50 border-neutral-100';
+    
     switch (type) {
       case 'meeting':
         return 'bg-neutral-50 border-neutral-100';
@@ -75,7 +86,9 @@ const UpcomingEventCard = ({ event }: { event: CalendarEvent }) => {
     }
   };
 
-  const getEventTypeIconColor = (type: string) => {
+  const getEventTypeIconColor = (type: string | null) => {
+    if (!type) return 'text-neutral-600';
+    
     switch (type) {
       case 'meeting':
         return 'text-neutral-600';
@@ -106,13 +119,17 @@ const UpcomingEventCard = ({ event }: { event: CalendarEvent }) => {
   );
 };
 
-const CalendarCard = () => {
+interface CalendarCardProps {
+  events?: any[];
+}
+
+const CalendarCard = ({ events = [] }: CalendarCardProps) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today);
   
-  const { data: events, isLoading, error } = useQuery<CalendarEvent[]>({
-    queryKey: ['/api/calendar/events'],
-  });
+  // Use events passed as props, don't query for events again
+  const isLoading = false;
+  const error = null;
 
   const renderCalendarDays = () => {
     const monthStart = startOfMonth(currentMonth);
