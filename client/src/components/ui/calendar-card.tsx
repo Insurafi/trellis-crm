@@ -120,7 +120,7 @@ const UpcomingEventCard = ({ event }: { event: CalendarEvent }) => {
 };
 
 interface CalendarCardProps {
-  events?: any[];
+  events?: Array<CalendarEvent>;
 }
 
 const CalendarCard = ({ events = [] }: CalendarCardProps) => {
