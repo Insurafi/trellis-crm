@@ -95,7 +95,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           {isCompleted ? (
             <CheckCircle2 className="h-5 w-5 text-green-500" />
           ) : (
-            <Circle className="h-5 w-5 text-red-500 fill-red-500 hover:text-red-600 hover:fill-red-600" />
+            <Circle className="h-5 w-5 text-neutral-300 hover:text-neutral-400" />
           )}
         </button>
       </div>
