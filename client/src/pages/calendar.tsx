@@ -81,20 +81,36 @@ export default function Calendar() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Get the current user first
+  const { data: currentUser } = useQuery({
+    queryKey: ['/api/user'],
+  });
+
+  // Then use the user ID to get their calendar events
   const { data: events, isLoading: isLoadingEvents, error: eventsError } = useQuery<CalendarEvent[]>({
-    queryKey: ['/api/calendar/events'],
-    onSuccess: (data) => {
-      console.log("Calendar events loaded:", data?.length || 0);
-      console.log("Task-related events:", data?.filter(e => e.type === 'task').length || 0);
+    queryKey: ['/api/calendar/events', currentUser?.id],
+    queryFn: async () => {
+      if (!currentUser?.id) return [];
+      const response = await fetch(`/api/calendar/events?userId=${currentUser.id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch calendar events');
+      }
+      const data = await response.json();
+      
+      console.log(`Calendar events loaded for user ${currentUser.id}:`, data.length);
+      console.log("Task-related events:", data.filter(e => e.type === 'task').length);
       
       // Log the first few task events for debugging
-      const taskEvents = data?.filter(e => e.type === 'task') || [];
+      const taskEvents = data.filter(e => e.type === 'task') || [];
       if (taskEvents.length > 0) {
         console.log("Sample task events:", taskEvents.slice(0, 3));
       } else {
         console.log("No task events found in calendar data");
       }
-    }
+      
+      return data;
+    },
+    enabled: !!currentUser?.id
   });
 
   const { data: clients, isLoading: isLoadingClients, error: clientsError } = useQuery<Client[]>({
@@ -185,7 +201,11 @@ export default function Calendar() {
       }
     },
     onSuccess: () => {
+      // Invalidate all calendar event queries including user-specific ones
       queryClient.invalidateQueries({ queryKey: ['/api/calendar/events'] });
+      if (currentUser?.id) {
+        queryClient.invalidateQueries({ queryKey: ['/api/calendar/events', currentUser.id] });
+      }
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
       toast({
         title: "Event created",
@@ -208,7 +228,11 @@ export default function Calendar() {
       return await apiRequest("DELETE", `/api/calendar/events/${id}`);
     },
     onSuccess: () => {
+      // Invalidate all calendar event queries including user-specific ones
       queryClient.invalidateQueries({ queryKey: ['/api/calendar/events'] });
+      if (currentUser?.id) {
+        queryClient.invalidateQueries({ queryKey: ['/api/calendar/events', currentUser.id] });
+      }
       toast({
         title: "Event deleted",
         description: "The event has been deleted successfully.",
