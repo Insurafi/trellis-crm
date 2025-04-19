@@ -273,7 +273,7 @@ export default function Calendar() {
       case "reminder":
         return "bg-red-500";
       case "task":
-        return "bg-purple-600"; // Make tasks stand out with bolder purple
+        return "bg-purple-700 font-semibold"; // Bolder purple with semibold text for tasks
       default:
         return "bg-neutral-500";
     }
@@ -346,8 +346,16 @@ export default function Calendar() {
                     console.log("Selected event details:", event);
                   }}
                 >
-                  {format(parseISO(event.startTime.toString()), 'h:mm a')} - {event.title}
-                  {event.type === 'task' && <span className="ml-1">📋</span>}
+                  {event.type === 'task' ? (
+                    <>
+                      <span className="inline-flex items-center">
+                        <span className="mr-1">📋</span> {/* Task icon at beginning */}
+                        <span className="font-semibold">{format(parseISO(event.startTime.toString()), 'h:mm a')} - {event.title}</span>
+                      </span>
+                    </>
+                  ) : (
+                    <>{format(parseISO(event.startTime.toString()), 'h:mm a')} - {event.title}</>
+                  )}
                 </div>
               ))}
             </div>
@@ -406,11 +414,26 @@ export default function Calendar() {
                       .then(res => res.json())
                       .then(events => {
                         console.log(`Found ${events.length} calendar events for user ${user.id}`);
-                        console.log(`Task events: ${events.filter(e => e.type === 'task').length}`);
-                        toast({
-                          title: "Calendar Debug Info",
-                          description: `Found ${events.length} events (${events.filter(e => e.type === 'task').length} tasks)`
-                        });
+                        const taskEvents = events.filter(e => e.type === 'task');
+                        console.log(`Task events: ${taskEvents.length}`);
+                        
+                        // Create a detailed debug report
+                        if (taskEvents.length > 0) {
+                          const taskIdsList = taskEvents.map(e => e.taskId).join(', ');
+                          console.log(`Task IDs: ${taskIdsList}`);
+                          const taskTitles = taskEvents.map(e => `"${e.title}"`).join(', ');
+                          toast({
+                            title: "Calendar Tasks Found",
+                            description: `Found ${events.length} events (${taskEvents.length} tasks). Task titles: ${taskTitles.slice(0, 100)}${taskTitles.length > 100 ? '...' : ''}`,
+                            duration: 5000,
+                          });
+                        } else {
+                          toast({
+                            title: "No Task Events Found",
+                            description: `Found ${events.length} total events, but no task events. Try assigning tasks to your user.`,
+                            variant: "destructive"
+                          });
+                        }
                       });
                   }
                 });
