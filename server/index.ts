@@ -6,6 +6,7 @@ import { initializePipelineData } from "./initialize-pipeline-data";
 import { initializeCommissionData } from "./initialize-commission-data";
 import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
 import { syncExistingPoliciesToClients } from "./sync-existing-policies-to-clients";
+import { setupOnlineStatusCleanup } from "./online-status-cleanup";
 
 const app = express();
 app.use(express.json());
@@ -88,6 +89,9 @@ app.use((req, res, next) => {
       
       // Initialize commission data
       await initializeCommissionData();
+      
+      // Start the online status cleanup job
+      setupOnlineStatusCleanup();
     } catch (error) {
       log(`Error initializing data: ${error}`);
     }

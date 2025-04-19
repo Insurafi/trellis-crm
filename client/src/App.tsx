@@ -218,6 +218,15 @@ function ClientPortalLayout() {
 }
 
 // Component for the regular app pages
+// Import our online status tracking hook
+import { useOnlineStatus } from "@/hooks/use-online-status";
+
+// Component to handle online status tracking
+function OnlineStatusTracker() {
+  useOnlineStatus();
+  return null; // This component doesn't render anything
+}
+
 function MainAppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -227,6 +236,8 @@ function MainAppLayout() {
   
   return (
     <AuthProvider>
+      {/* OnlineStatusTracker will update user's online status periodically */}
+      <OnlineStatusTracker />
       <div className="flex h-screen overflow-hidden">
         <Sidebar isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
         <div className="flex-1 overflow-auto">
