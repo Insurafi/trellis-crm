@@ -34,24 +34,37 @@ export default function AgentStatusList() {
     queryKey: ["/api/agents"],
   });
 
-  // Generate enhanced agent data with real data where possible, defaults otherwise
+  // Fetch users data to get online status
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ["/api/users"],
+  });
+
+  // Generate enhanced agent data with real online status
   const agentsWithStatus = agents.map(agent => {
-    // Set all agents to be online for demo purposes
-    const isOnline = true;
-    // No random stats - use zeros instead for data integrity
+    // Find user corresponding to this agent to get online status
+    const user = users.find(u => u.id === agent.userId);
+    
+    // Use actual online status from user data if available
+    const isOnline = user?.isOnline || false;
+    const lastActive = user?.lastActive ? new Date(user.lastActive) : null;
+    
+    // Format the last active time if available
+    const lastActiveFormatted = lastActive 
+      ? new Date().getTime() - new Date(lastActive).getTime() < 24 * 60 * 60 * 1000 
+        ? new Date(lastActive).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        : new Date(lastActive).toLocaleDateString()
+      : 'Never';
+    
+    // Default statistics
     const productivity = 0;
     const leads = 0;
     const policies = 0;
     const commissions = "$0.00";
     
-    // No random statuses
-    const currentStatus = "Available";
-    
     return {
       ...agent,
       isOnline,
-      lastActive: 'Now',
-      currentStatus,
+      lastActive: isOnline ? 'Now' : lastActiveFormatted,
       productivity,
       leads,
       policies,
@@ -153,13 +166,7 @@ export default function AgentStatusList() {
                     <div>
                       <div className="font-medium">{agent.name}</div>
                       <div className="text-xs text-neutral-500 flex items-center gap-1">
-                        {agent.specialties?.split(",")[0] || "Life Insurance Agent"}
-                        {agent.currentStatus && (
-                          <>
-                            <span className="mx-1">•</span>
-                            <span>{agent.currentStatus}</span>
-                          </>
-                        )}
+                        <span>Life Insurance Agent</span>
                       </div>
                     </div>
                   </div>

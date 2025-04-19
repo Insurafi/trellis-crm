@@ -16,6 +16,8 @@ export const users = pgTable("users", {
   avatarUrl: text("avatar_url"),
   active: boolean("active").default(true),
   lastLogin: timestamp("last_login"),
+  isOnline: boolean("is_online").default(false),
+  lastActive: timestamp("last_active"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
