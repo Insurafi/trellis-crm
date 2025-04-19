@@ -11,7 +11,9 @@ interface TaskCardProps {
   task: Task;
 }
 
-const getPriorityColor = (priority: string) => {
+const getPriorityColor = (priority: string | null | undefined): string => {
+  if (!priority) return "bg-neutral-100 text-neutral-600";
+  
   switch (priority) {
     case "low":
       return "bg-green-100 text-green-600";
@@ -26,7 +28,9 @@ const getPriorityColor = (priority: string) => {
   }
 };
 
-const getPriorityLabel = (priority: string) => {
+const getPriorityLabel = (priority: string | null | undefined): string => {
+  if (!priority) return "No Priority";
+  
   switch (priority) {
     case "low":
       return "Low Priority";
@@ -112,9 +116,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
       <div className="ml-4 flex-shrink-0">
         <Badge 
           variant="outline" 
-          className={`${getPriorityColor(task.priority)}`}
+          className={`${getPriorityColor(task.priority || 'medium')}`}
         >
-          {getPriorityLabel(task.priority)}
+          {getPriorityLabel(task.priority || 'medium')}
         </Badge>
       </div>
     </div>
