@@ -160,6 +160,13 @@ export default function AgentDashboard() {
   // Fetch agent details for the current user
   const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
     queryKey: ["/api/agents/by-user"],
+    queryFn: async () => {
+      console.log("Fetching agent data for user:", user?.id);
+      const response = await fetch('/api/agents/by-user');
+      const data = await response.json();
+      console.log("Agent data from server:", data);
+      return data;
+    },
     enabled: !!user?.id
   });
   
@@ -182,6 +189,15 @@ export default function AgentDashboard() {
   // Use the bankInfoExists property from the backend as the source of truth
   // This value comes directly from the agent data endpoint
   const hasBankingInfo = agentData?.bankInfoExists === true;
+  
+  // Add debug logging for bankInfoExists flag
+  useEffect(() => {
+    if (agentData) {
+      console.log("Agent bankInfoExists:", agentData.bankInfoExists);
+      console.log("hasBankingInfo value:", hasBankingInfo);
+      console.log("Agent data full object:", JSON.stringify(agentData, null, 2));
+    }
+  }, [agentData, hasBankingInfo]);
   
   // Use the agent ID only after it's been loaded and validated
   const agentId = hasValidAgentId ? agentData.id : null;
