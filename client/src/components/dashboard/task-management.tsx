@@ -42,7 +42,8 @@ const TaskManagement = () => {
   const users: User[] = [
     { id: 1, username: "admin", firstName: "Inga", lastName: "Admin", fullName: "Inga Admin", role: "admin" },
     { id: 9, username: "tremaine", firstName: "Tremaine", lastName: "Taylor", fullName: "Tremaine Taylor", role: "agent" },
-    { id: 13, username: "aaronbarnes743", firstName: "Aaron", lastName: "Barnes", fullName: "Aaron Barnes", role: "agent" }
+    { id: 13, username: "aaronbarnes743", firstName: "Aaron", lastName: "Barnes", fullName: "Aaron Barnes", role: "agent" },
+    { id: 18, username: "monicapalmer388", firstName: "Monica", lastName: "Palmer", fullName: "Monica Palmer", role: "agent" }
   ];
   const isLoadingUsers = false;
   const usersError = null;
@@ -323,6 +324,7 @@ const TaskManagement = () => {
                             <SelectItem value="1">Admin</SelectItem>
                             <SelectItem value="9">Tremaine Taylor</SelectItem>
                             <SelectItem value="13">Aaron Barnes</SelectItem>
+                            <SelectItem value="18">Monica Palmer</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
