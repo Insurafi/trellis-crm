@@ -160,6 +160,7 @@ export default function Tasks() {
       },
       z.date().optional()
     ),
+    dueTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
   });
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -170,6 +171,7 @@ export default function Tasks() {
       priority: "medium",
       status: "pending",
       dueDate: undefined,
+      dueTime: undefined,
     },
   });
 
@@ -246,17 +248,18 @@ export default function Tasks() {
     }
   };
 
-  const getDueDate = (dueDate: string) => {
+  const getDueDate = (dueDate: string, dueTime?: string) => {
     if (!dueDate) return null;
     
     const date = new Date(dueDate);
     const today = new Date();
+    const timeDisplay = dueTime ? ` at ${dueTime}` : '';
     
     if (isToday(date)) {
       return (
         <div className="flex items-center text-yellow-600">
           <Clock className="mr-1 h-4 w-4" />
-          <span>Due today</span>
+          <span>Due today{timeDisplay}</span>
         </div>
       );
     }
@@ -265,7 +268,7 @@ export default function Tasks() {
       return (
         <div className="flex items-center text-red-600">
           <AlertCircle className="mr-1 h-4 w-4" />
-          <span>Overdue ({format(date, 'MMM dd')})</span>
+          <span>Overdue ({format(date, 'MMM dd')}{timeDisplay})</span>
         </div>
       );
     }
@@ -276,7 +279,7 @@ export default function Tasks() {
       return (
         <div className="flex items-center text-blue-600">
           <Calendar className="mr-1 h-4 w-4" />
-          <span>Due tomorrow</span>
+          <span>Due tomorrow{timeDisplay}</span>
         </div>
       );
     }
@@ -284,7 +287,7 @@ export default function Tasks() {
     return (
       <div className="flex items-center text-neutral-600">
         <Calendar className="mr-1 h-4 w-4" />
-        <span>Due {format(date, 'MMM dd')}</span>
+        <span>Due {format(date, 'MMM dd')}{timeDisplay}</span>
       </div>
     );
   };
@@ -426,23 +429,43 @@ export default function Tasks() {
                     />
                   </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="dueDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Due Date</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="date" 
-                            value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} 
-                            onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="dueDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Due Date</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="date" 
+                              value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} 
+                              onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="dueTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Due Time</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="time" 
+                              {...field}
+                              onChange={(e) => field.onChange(e.target.value)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   
                   <DialogFooter>
                     <Button 

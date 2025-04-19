@@ -105,6 +105,7 @@ export const tasks = pgTable("tasks", {
   clientId: integer("client_id").references(() => clients.id),
   assignedTo: integer("assigned_to").references(() => users.id),
   dueDate: timestamp("due_date"),
+  dueTime: text("due_time"), // Store time as string in format "HH:MM"
   priority: text("priority").default("medium"), // low, medium, high, urgent
   status: text("status").default("pending"), // pending, completed
   createdAt: timestamp("created_at").defaultNow(),
@@ -117,6 +118,7 @@ const baseTaskSchema = createInsertSchema(tasks).pick({
   clientId: true,
   assignedTo: true,
   dueDate: true,
+  dueTime: true,
   priority: true,
   status: true,
 });
@@ -132,6 +134,7 @@ export const insertTaskSchema = baseTaskSchema
       },
       z.date().optional()
     ),
+    dueTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
   });
 
 export type InsertTask = z.infer<typeof insertTaskSchema>;
