@@ -138,7 +138,7 @@ export default function Tasks() {
     if (currentTab === "overdue") {
       return matchesSearch && task.dueDate && isPast(new Date(task.dueDate)) && !isToday(new Date(task.dueDate)) && task.status !== "completed";
     }
-    if (currentTab === "completed") {
+    if (currentTab === "finished") {
       return matchesSearch && task.status === "completed";
     }
     return matchesSearch;
@@ -632,7 +632,7 @@ export default function Tasks() {
               <TabsTrigger value="today">Today</TabsTrigger>
               <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
               <TabsTrigger value="overdue">Overdue</TabsTrigger>
-              <TabsTrigger value="completed">Completed</TabsTrigger>
+              <TabsTrigger value="finished">Finished</TabsTrigger>
             </TabsList>
           </Tabs>
         </CardHeader>
