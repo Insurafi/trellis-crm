@@ -1529,7 +1529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Simplified endpoint for task visibility user selection
-  app.get("/api/users-for-tasks", async (req, res) => {
+  app.get("/_api/users-for-tasks", async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       
@@ -1543,7 +1543,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role
       }));
       
-      res.json(simplifiedUsers);
+      // Explicitly set the content type to application/json
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(simplifiedUsers));
     } catch (error) {
       console.error("Error fetching users for tasks:", error);
       res.status(500).json({ message: "Failed to fetch users for tasks" });

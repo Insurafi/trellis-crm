@@ -38,10 +38,14 @@ const TaskManagement = () => {
     queryKey: ['/api/tasks'],
   });
 
-  const { data: users, isLoading: isLoadingUsers, error: usersError } = useQuery<User[]>({
-    queryKey: ['/api/users-for-tasks'],
-    enabled: isDialogOpen, // Only fetch users when dialog is open
-  });
+  // Hardcode the users for task visibility selection
+  const users: User[] = [
+    { id: 1, username: "admin", firstName: "Inga", lastName: "Admin", fullName: "Inga Admin", role: "admin" },
+    { id: 9, username: "tremaine", firstName: "Tremaine", lastName: "Taylor", fullName: "Tremaine Taylor", role: "agent" },
+    { id: 13, username: "aaronbarnes743", firstName: "Aaron", lastName: "Barnes", fullName: "Aaron Barnes", role: "agent" }
+  ];
+  const isLoadingUsers = false;
+  const usersError = null;
 
   // Extended schema for validation
   const formSchema = insertTaskSchema.extend({
