@@ -7,6 +7,7 @@ import {
   insertDocumentSchema, 
   insertTaskSchema, 
   InsertTask,
+  Task,
   insertQuoteSchema,
   insertMarketingCampaignSchema,
   insertCalendarEventSchema,
@@ -32,8 +33,8 @@ import { setupSimpleRegister } from "./simple-register";
 
 // Helper function to handle calendar event updates
 async function handleCalendarEventUpdates(
-  updatedTask: any, 
-  originalTask: any, 
+  updatedTask: Task, 
+  originalTask: Task, 
   dateChanged: boolean, 
   timeChanged: boolean, 
   titleChanged: boolean, 
@@ -178,7 +179,7 @@ async function handleCalendarEventUpdates(
 }
 
 // Helper function to handle task assignee notification
-async function handleTaskAssigneeNotification(updatedTask: any, req: any) {
+async function handleTaskAssigneeNotification(updatedTask: Task, req: Request) {
   try {
     // Get the new assigned user details
     const assignedUser = await storage.getUser(updatedTask.assignedTo);
