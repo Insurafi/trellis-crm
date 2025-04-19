@@ -60,6 +60,8 @@ import {
 
 export default function Tasks() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTab, setCurrentTab] = useState("all");
   
@@ -174,6 +176,18 @@ export default function Tasks() {
       dueTime: undefined,
     },
   });
+  
+  const editForm = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      priority: "medium",
+      status: "pending",
+      dueDate: undefined,
+      dueTime: undefined,
+    },
+  });
 
   const createTaskMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
@@ -185,6 +199,8 @@ export default function Tasks() {
         ...values,
         assignedTo: user?.id || 1, // Use current user's ID if available
         // If dueDate exists, it's already a Date object thanks to our schema preprocessing
+        // Make sure dueTime is properly formatted
+        dueTime: values.dueTime || undefined,
       };
 
       return await apiRequest("POST", "/api/tasks", taskData);
@@ -229,8 +245,58 @@ export default function Tasks() {
     },
   });
 
+  const updateTaskMutation = useMutation({
+    mutationFn: async (values: z.infer<typeof formSchema> & { id: number }) => {
+      const { id, ...taskData } = values;
+      // When updating a task, ensure we format the date and time correctly
+      return await apiRequest("PATCH", `/api/tasks/${id}`, {
+        ...taskData,
+        dueTime: taskData.dueTime || undefined,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
+      toast({
+        title: "Task updated",
+        description: "Your task has been updated successfully.",
+      });
+      setIsEditDialogOpen(false);
+      setEditingTask(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error updating task",
+        description: error instanceof Error ? error.message : "Failed to update task",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     createTaskMutation.mutate(values);
+  };
+  
+  const onEditSubmit = (values: z.infer<typeof formSchema>) => {
+    if (!editingTask) return;
+    updateTaskMutation.mutate({
+      ...values,
+      id: editingTask.id,
+    });
+  };
+  
+  const openEditDialog = (task: Task) => {
+    setEditingTask(task);
+    editForm.reset({
+      title: task.title,
+      description: task.description || "",
+      priority: task.priority || "medium",
+      status: task.status || "pending",
+      clientId: task.clientId,
+      dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
+      dueTime: task.dueTime || undefined,
+    });
+    setIsEditDialogOpen(true);
   };
 
   const getPriorityBadge = (priority: string) => {
@@ -248,12 +314,13 @@ export default function Tasks() {
     }
   };
 
-  const getDueDate = (dueDate: string, dueTime?: string) => {
+  const getDueDate = (dueDate: string, dueTime?: string | null) => {
     if (!dueDate) return null;
+    const formattedDueTime = dueTime || undefined;
     
     const date = new Date(dueDate);
     const today = new Date();
-    const timeDisplay = dueTime ? ` at ${dueTime}` : '';
+    const timeDisplay = formattedDueTime ? ` at ${formattedDueTime}` : '';
     
     if (isToday(date)) {
       return (
@@ -559,7 +626,7 @@ export default function Tasks() {
                           <div className="mt-2 flex flex-wrap gap-2 text-xs text-neutral-500">
                             {task.dueDate && (
                               <div className="mr-4">
-                                {getDueDate(task.dueDate?.toString() || '', task.dueTime)}
+                                {getDueDate(task.dueDate?.toString() || '', task.dueTime || undefined)}
                               </div>
                             )}
                             
@@ -596,6 +663,196 @@ export default function Tasks() {
           )}
         </CardContent>
       </Card>
+      
+      {/* Edit Task Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Edit Task</DialogTitle>
+            <DialogDescription>
+              Update this task's details.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...editForm}>
+            <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
+              <FormField
+                control={editForm.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Follow up with client" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={editForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Provide more details about the task..." 
+                        value={field.value || ''} 
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                        name={field.name}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={editForm.control}
+                  name="clientId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Associated Client (Optional)</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        value={field.value?.toString() || ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select client" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {clients?.map(client => (
+                            <SelectItem key={client.id} value={client.id.toString()}>
+                              {client.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={editForm.control}
+                  name="priority"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Priority</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || 'medium'}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select priority" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="low">Low</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="high">High</SelectItem>
+                          <SelectItem value="urgent">Urgent</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={editForm.control}
+                  name="dueDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Due Date</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="date" 
+                          value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} 
+                          onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={editForm.control}
+                  name="dueTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Due Time</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="time" 
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={editForm.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || 'pending'}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  disabled={updateTaskMutation.isPending}
+                >
+                  {updateTaskMutation.isPending ? "Updating..." : "Update Task"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      
     </div>
   );
 }
