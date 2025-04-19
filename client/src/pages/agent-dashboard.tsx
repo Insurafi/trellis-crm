@@ -480,6 +480,10 @@ export default function AgentDashboard() {
             </Card>
           </div>
 
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+            <TaskManagement />
+            <CalendarCard events={todaysEvents} />
+          </div>
 
         </TabsContent>
 
