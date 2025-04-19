@@ -146,7 +146,18 @@ export default function Tasks() {
 
   // Sort tasks
   const sortedTasks = filteredTasks ? [...filteredTasks].sort((a, b) => {
-    // First by status (pending first)
+    // For finished tab, sort by completion date (most recent first)
+    if (currentTab === "finished") {
+      // If both have completedAt dates
+      if (a.completedAt && b.completedAt) {
+        return new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime();
+      }
+      // If only one has completedAt, put the one with date first
+      if (a.completedAt && !b.completedAt) return -1;
+      if (!a.completedAt && b.completedAt) return 1;
+    }
+    
+    // For other tabs: First by status (pending first)
     if (a.status === "pending" && b.status !== "pending") return -1;
     if (a.status !== "pending" && b.status === "pending") return 1;
     
@@ -637,6 +648,13 @@ export default function Tasks() {
           </Tabs>
         </CardHeader>
         <CardContent>
+          {/* Display info about task retention for the finished tab */}
+          {currentTab === "finished" && !isLoading && (
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700">
+              <p>Completed tasks are automatically deleted after 30 days. They will remain visible here until then.</p>
+            </div>
+          )}
+          
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3, 4].map((i) => (
@@ -728,7 +746,11 @@ export default function Tasks() {
                             {task.status === "completed" && (
                               <div className="flex items-center text-green-600">
                                 <CheckCircle className="mr-1 h-3 w-3" />
-                                <span>Completed</span>
+                                <span>
+                                  {task.completedAt 
+                                    ? `Completed on ${format(new Date(task.completedAt), 'MMM dd, yyyy')}`
+                                    : 'Completed'}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -742,7 +764,9 @@ export default function Tasks() {
                   {searchTerm 
                     ? "No tasks match your search criteria" 
                     : currentTab === "all" 
-                      ? "No tasks found. Create a new task to get started." 
+                      ? "No tasks found. Create a new task to get started."
+                      : currentTab === "finished"
+                      ? "No completed tasks found. Completed tasks are kept here for 30 days before being automatically deleted."
                       : `No ${currentTab} tasks found.`
                   }
                 </div>
