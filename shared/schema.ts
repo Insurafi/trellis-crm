@@ -111,6 +111,7 @@ export const tasks = pgTable("tasks", {
   status: text("status").default("pending"), // pending, completed
   createdAt: timestamp("created_at").defaultNow(),
   calendarEventId: integer("calendar_event_id"), // Reference to associated calendar event
+  visibleTo: integer("visible_to").array(), // Array of user IDs who can view this task
 });
 
 // Create a base schema for the database
@@ -125,6 +126,7 @@ const baseTaskSchema = createInsertSchema(tasks).pick({
   priority: true,
   status: true,
   calendarEventId: true,
+  visibleTo: true,
 });
 
 // Create an API-friendly schema that handles date conversion properly
@@ -141,6 +143,7 @@ export const insertTaskSchema = baseTaskSchema
     dueTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
     createdBy: z.number().optional(),
     calendarEventId: z.number().optional(),
+    visibleTo: z.array(z.number()).optional(),
   });
 
 export type InsertTask = z.infer<typeof insertTaskSchema>;
