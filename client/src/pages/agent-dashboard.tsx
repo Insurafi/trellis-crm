@@ -160,6 +160,12 @@ export default function AgentDashboard() {
   // Fetch agent details for the current user
   const { data: agentData, isLoading: isAgentLoading } = useQuery<any>({
     queryKey: ["/api/agents/by-user"],
+    queryFn: async () => {
+      const response = await fetch('/api/agents/by-user');
+      const data = await response.json();
+      console.log("Agent Data from API:", data);
+      return data;
+    },
     enabled: !!user?.id
   });
   
@@ -331,8 +337,8 @@ export default function AgentDashboard() {
         </div>
       </div>
       
-      {/* Banking information notice - only shows if banking info is missing */}
-      {!hasBankingInfo && (
+      {/* Banking information notifications based on bankInfoExists property (for Aaron) */}
+      {agentData?.bankInfoExists === false ? (
         <Card className="border-orange-300 bg-orange-50 mb-6">
           <CardContent className="pt-6 pb-6">
             <div className="flex items-start">
@@ -351,10 +357,7 @@ export default function AgentDashboard() {
             </div>
           </CardContent>
         </Card>
-      )}
-      
-      {/* Banking info success notification - Shows when banking info is present */}
-      {hasBankingInfo && (
+      ) : agentData?.bankInfoExists === true ? (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-start">
             <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
@@ -367,7 +370,7 @@ export default function AgentDashboard() {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* Modern Quote Button */}
       <div className="my-6 flex justify-center">
