@@ -109,6 +109,7 @@ export const tasks = pgTable("tasks", {
   dueTime: text("due_time"), // Store time as string in format "HH:MM"
   priority: text("priority").default("medium"), // low, medium, high, urgent
   status: text("status").default("pending"), // pending, completed
+  completedAt: timestamp("completed_at"), // When the task was marked as completed
   createdAt: timestamp("created_at").defaultNow(),
   calendarEventId: integer("calendar_event_id"), // Reference to associated calendar event
   visibleTo: integer("visible_to").array(), // Array of user IDs who can view this task
@@ -125,15 +126,23 @@ const baseTaskSchema = createInsertSchema(tasks).pick({
   dueTime: true,
   priority: true,
   status: true,
+  completedAt: true,
   calendarEventId: true,
   visibleTo: true,
 });
 
 // Create an API-friendly schema that handles date conversion properly
 export const insertTaskSchema = baseTaskSchema
-  .omit({ dueDate: true })
+  .omit({ dueDate: true, completedAt: true })
   .extend({
     dueDate: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
+        return arg;
+      },
+      z.date().optional()
+    ),
+    completedAt: z.preprocess(
       (arg) => {
         if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
         return arg;
