@@ -215,7 +215,9 @@ const baseCalendarEventSchema = createInsertSchema(calendarEvents).pick({
   endTime: true,
   clientId: true,
   createdBy: true,
+  userId: true,
   type: true,
+  taskId: true,
 });
 
 // Create an API-friendly schema that handles string dates properly
@@ -236,6 +238,8 @@ export const insertCalendarEventSchema = baseCalendarEventSchema
       },
       z.date()
     ),
+    userId: z.number().optional(),
+    taskId: z.number().optional(),
   });
 
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;
@@ -300,8 +304,14 @@ export const calendarEventsRelations = relations(calendarEvents, ({ one, many })
     fields: [calendarEvents.createdBy],
     references: [users.id],
   }),
-  // A calendar event might be linked to a task, but this is a backwards reference
-  // A more explicit link will be in the tasks schema with calendarEventId
+  assignee: one(users, {
+    fields: [calendarEvents.userId],
+    references: [users.id],
+  }),
+  task: one(tasks, {
+    fields: [calendarEvents.taskId],
+    references: [tasks.id],
+  }),
 }));
 
 // Pipeline Stages

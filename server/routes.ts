@@ -6,9 +6,11 @@ import {
   insertClientSchema, 
   insertDocumentSchema, 
   insertTaskSchema, 
+  InsertTask,
   insertQuoteSchema,
   insertMarketingCampaignSchema,
   insertCalendarEventSchema,
+  InsertCalendarEvent,
   insertPipelineStageSchema,
   insertPipelineOpportunitySchema,
   insertCommissionSchema,
@@ -538,8 +540,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const event = await storage.getCalendarEvent(updatedTask.calendarEventId);
           if (event) {
-            // Create calendar event updated data
-            const dueDate = new Date(updatedTask.dueDate);
+            // Create calendar event updated data - handle null dueDate
+            const dueDate = updatedTask.dueDate ? new Date(updatedTask.dueDate) : new Date();
             
             // Set times based on dueTime
             let startTime = new Date(dueDate);
@@ -556,18 +558,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
             
             // Update the calendar event
-            const calendarUpdateData = {
-              title: titleChanged ? `Task: ${updatedTask.title}` : undefined,
-              description: descriptionChanged ? (updatedTask.description || '') : undefined,
-              startTime: dateChanged || timeChanged ? startTime : undefined,
-              endTime: dateChanged || timeChanged ? endTime : undefined,
-              userId: assigneeChanged ? updatedTask.assignedTo : undefined
-            };
+            const calendarUpdateData: Partial<InsertCalendarEvent> = {};
             
-            // Remove any undefined values
-            Object.keys(calendarUpdateData).forEach(key => 
-              calendarUpdateData[key] === undefined && delete calendarUpdateData[key]
-            );
+            if (titleChanged) {
+              calendarUpdateData.title = `Task: ${updatedTask.title}`;
+            }
+            
+            if (descriptionChanged) {
+              calendarUpdateData.description = updatedTask.description || '';
+            }
+            
+            if (dateChanged || timeChanged) {
+              calendarUpdateData.startTime = startTime;
+              calendarUpdateData.endTime = endTime;
+            }
+            
+            if (assigneeChanged && updatedTask.assignedTo) {
+              calendarUpdateData.userId = updatedTask.assignedTo;
+            }
             
             if (Object.keys(calendarUpdateData).length > 0) {
               console.log("Updating calendar event:", JSON.stringify(calendarUpdateData));
@@ -603,7 +611,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
           
           // Create the calendar event
-          const calendarEvent = {
+          const calendarEvent: InsertCalendarEvent = {
             title: `Task: ${updatedTask.title}`,
             description: updatedTask.description || '',
             startTime: startTime,
@@ -611,7 +619,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             userId: updatedTask.assignedTo, // Set the assigned user as the event owner
             type: 'task', // Mark as task type
             clientId: updatedTask.clientId, // Link to client if specified
-            createdBy: updatedTask.createdBy || updatedTask.assignedTo, // Track who created it
+            createdBy: updatedTask.createdBy || updatedTask.assignedTo || 1, // Track who created it (default to admin if unknown)
             taskId: updatedTask.id, // Link back to the task
           };
           
@@ -620,7 +628,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Created calendar event ${newEvent.id} for task ${updatedTask.id}`);
           
           // Update task with the calendar event ID for reference
-          await storage.updateTask(updatedTask.id, { calendarEventId: newEvent.id });
+          const updateData: Partial<InsertTask> = {
+            calendarEventId: newEvent.id
+          };
+          await storage.updateTask(updatedTask.id, updateData);
           console.log(`Updated task ${updatedTask.id} with calendar event ID ${newEvent.id}`);
         } catch (calendarError) {
           console.error("Error creating calendar event for updated task:", calendarError);
@@ -628,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // If the assignee has changed, notify the new assignee
-      if (assigneeChanged) {
+      if (assigneeChanged && updatedTask.assignedTo) {
         try {
           // Get the new assigned user details
           const assignedUser = await storage.getUser(updatedTask.assignedTo);
@@ -640,15 +651,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (req.user?.id) {
               const updaterUser = await storage.getUser(req.user.id);
               if (updaterUser) {
-                updaterName = updaterUser.fullName || updaterUser.name || updaterUser.username;
+                updaterName = updaterUser.fullName || updaterUser.username;
               }
             }
             
-            // Prepare notification details
-            const dueDate = new Date(updatedTask.dueDate);
-            const dueDateTime = updatedTask.dueTime
-              ? `${dueDate.toLocaleDateString()} at ${updatedTask.dueTime}`
-              : dueDate.toLocaleDateString();
+            // Handle due date and time - account for null dueDate
+            let dueDateFormatted = "No due date";
+            let dueDateTime = "No due date";
+            
+            if (updatedTask.dueDate) {
+              const dueDate = new Date(updatedTask.dueDate);
+              dueDateFormatted = dueDate.toLocaleDateString();
+              dueDateTime = updatedTask.dueTime
+                ? `${dueDateFormatted} at ${updatedTask.dueTime}`
+                : dueDateFormatted;
+            }
               
             const notificationDetails = {
               to: assignedUser.email,
