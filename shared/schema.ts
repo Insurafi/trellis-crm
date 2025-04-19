@@ -216,7 +216,6 @@ export const calendarEvents = pgTable("calendar_events", {
   createdBy: integer("created_by").references(() => users.id),
   userId: integer("user_id").references(() => users.id), // The user this event belongs to (assignee)
   type: text("type").default("meeting"), // meeting, call, reminder, task
-  color: text("color"), // Optional color for the event (e.g. #9333ea for tasks)
   taskId: integer("task_id"), // Optional reference to a task (for calendar events that are tasks)
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -231,7 +230,6 @@ const baseCalendarEventSchema = createInsertSchema(calendarEvents).pick({
   createdBy: true,
   userId: true,
   type: true,
-  color: true,
   taskId: true,
 });
 
@@ -255,7 +253,6 @@ export const insertCalendarEventSchema = baseCalendarEventSchema
     ),
     userId: z.number().optional(),
     taskId: z.number().optional(),
-    color: z.string().optional(),
   });
 
 export type InsertCalendarEvent = z.infer<typeof insertCalendarEventSchema>;
