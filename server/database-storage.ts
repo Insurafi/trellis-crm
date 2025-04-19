@@ -333,7 +333,28 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getCalendarEventsByUser(userId: number): Promise<CalendarEvent[]> {
-    return await db.select().from(calendarEvents).where(eq(calendarEvents.userId, userId));
+    console.log(`[DATABASE] Fetching calendar events for user ${userId}`);
+    
+    // First log all calendar events to see what's in the database
+    const allEvents = await db.select().from(calendarEvents);
+    console.log(`[DATABASE] Total calendar events in database: ${allEvents.length}`);
+    
+    // Get user-specific events and log them
+    const userEvents = await db.select().from(calendarEvents).where(eq(calendarEvents.userId, userId));
+    console.log(`[DATABASE] Found ${userEvents.length} events for user ${userId}`);
+    
+    if (userEvents.length > 0) {
+      // Log first few events for debugging
+      console.log(`[DATABASE] Sample events for user ${userId}:`, 
+                  userEvents.slice(0, 3).map(e => ({ 
+                    id: e.id, 
+                    title: e.title,
+                    type: e.type,
+                    taskId: e.taskId
+                  })));
+    }
+    
+    return userEvents;
   }
   
   async getCalendarEvent(id: number): Promise<CalendarEvent | undefined> {

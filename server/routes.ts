@@ -1074,14 +1074,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
       const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
       
+      // Log the request parameters for debugging
+      console.log(`GET /api/calendar/events - clientId: ${clientId}, userId: ${userId}`);
+      
       let events;
       if (clientId && !isNaN(clientId)) {
+        console.log(`Fetching events for client ${clientId}`);
         events = await storage.getCalendarEventsByClient(clientId);
       } else if (userId && !isNaN(userId)) {
         // Get events for a specific user
+        console.log(`Fetching events for user ${userId}`);
         events = await storage.getCalendarEventsByUser(userId);
       } else {
+        console.log('Fetching all calendar events');
         events = await storage.getCalendarEvents();
+      }
+      
+      // Log the events returned
+      console.log(`Returning ${events.length} calendar events`);
+      console.log(`Task events: ${events.filter(e => e.type === 'task').length}`);
+      
+      // Log each task event for detailed debugging
+      const taskEvents = events.filter(e => e.type === 'task');
+      if (taskEvents.length > 0) {
+        console.log("Task events details:");
+        taskEvents.forEach(event => {
+          console.log(`  Task event ID: ${event.id}, Title: ${event.title}, taskId: ${event.taskId}`);
+        });
       }
       
       res.json(events);
