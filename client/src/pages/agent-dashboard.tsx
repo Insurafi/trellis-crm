@@ -179,6 +179,9 @@ export default function AgentDashboard() {
   // Check if agent ID is valid for data fetching (must be a positive integer)
   const hasValidAgentId = agentData && agentData.id !== undefined && agentData.id !== null && agentData.id > 0;
   
+  // Check if agent has banking information
+  const hasBankingInfo = !!(agentData?.bankName && agentData?.bankAccountNumber && agentData?.bankRoutingNumber);
+  
   // Use the agent ID only after it's been loaded and validated
   const agentId = hasValidAgentId ? agentData.id : null;
 
@@ -342,8 +345,8 @@ export default function AgentDashboard() {
         </Card>
       )}
       
-      {/* Banking info success notification - Hide for Aaron to ensure orange banner shows */}
-      {user?.id === 13 && agentData?.bankName && agentData?.bankAccountNumber && false && (
+      {/* Banking info success notification - Shows when banking info is present */}
+      {hasBankingInfo && (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-start">
             <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
