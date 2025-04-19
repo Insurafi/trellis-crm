@@ -153,7 +153,13 @@ export default function Tasks() {
 
   // Extended schema for validation
   const formSchema = insertTaskSchema.extend({
-    dueDate: z.string().optional(),
+    dueDate: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
+        return arg;
+      },
+      z.date().optional()
+    ),
   });
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -163,21 +169,20 @@ export default function Tasks() {
       description: "",
       priority: "medium",
       status: "pending",
+      dueDate: undefined,
     },
   });
 
   const createTaskMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      // Convert string date to Date object if exists
-      const dueDateTransformed = values.dueDate 
-        ? new Date(values.dueDate).toISOString() 
-        : undefined;
+      // Date is already properly validated and converted by our schema
+      // but we need to ensure it's in the right format for the API
       
       // When agent creates a task, assign it to themselves
       const taskData = {
         ...values,
         assignedTo: user?.id || 1, // Use current user's ID if available
-        dueDate: dueDateTransformed,
+        // If dueDate exists, it's already a Date object thanks to our schema preprocessing
       };
 
       return await apiRequest("POST", "/api/tasks", taskData);
@@ -241,7 +246,7 @@ export default function Tasks() {
     }
   };
 
-  const getDueDate = (dueDate: string | null) => {
+  const getDueDate = (dueDate: string) => {
     if (!dueDate) return null;
     
     const date = new Date(dueDate);
@@ -352,7 +357,11 @@ export default function Tasks() {
                         <FormControl>
                           <Textarea 
                             placeholder="Provide more details about the task..." 
-                            {...field} 
+                            value={field.value || ''} 
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            ref={field.ref}
+                            name={field.name}
                           />
                         </FormControl>
                         <FormMessage />
@@ -397,7 +406,7 @@ export default function Tasks() {
                           <FormLabel>Priority</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value || 'medium'}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -424,7 +433,11 @@ export default function Tasks() {
                       <FormItem>
                         <FormLabel>Due Date</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input 
+                            type="date" 
+                            value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''} 
+                            onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -510,7 +523,7 @@ export default function Tasks() {
                               {task.title}
                             </h3>
                             <div>
-                              {getPriorityBadge(task.priority)}
+                              {getPriorityBadge(task.priority || 'medium')}
                             </div>
                           </div>
                           
@@ -523,7 +536,7 @@ export default function Tasks() {
                           <div className="mt-2 flex flex-wrap gap-2 text-xs text-neutral-500">
                             {task.dueDate && (
                               <div className="mr-4">
-                                {getDueDate(task.dueDate.toString())}
+                                {getDueDate(task.dueDate?.toString() || '')}
                               </div>
                             )}
                             
