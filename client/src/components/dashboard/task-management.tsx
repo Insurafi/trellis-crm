@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Task, insertTaskSchema } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,8 +18,19 @@ import TaskCard from "../ui/task-card";
 import { z } from "zod";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Define a simple User interface
+interface User {
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  fullName?: string;
+  role?: string;
+}
+
 const TaskManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -26,11 +38,17 @@ const TaskManagement = () => {
     queryKey: ['/api/tasks'],
   });
 
+  const { data: users, isLoading: isLoadingUsers, error: usersError } = useQuery<User[]>({
+    queryKey: ['/api/users'],
+    enabled: isDialogOpen, // Only fetch users when dialog is open
+  });
+
   // Extended schema for validation
   const formSchema = insertTaskSchema.extend({
     dueDate: z.string().optional(),
     dueTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
     assignedTo: z.number().optional(),
+    visibleTo: z.array(z.number()).optional(),
   });
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,8 +61,16 @@ const TaskManagement = () => {
       dueDate: undefined,
       dueTime: undefined,
       assignedTo: undefined,
+      visibleTo: [],
     },
   });
+  
+  // Reset selectedUsers when dialog is closed
+  useEffect(() => {
+    if (!isDialogOpen) {
+      setSelectedUsers([]);
+    }
+  }, [isDialogOpen]);
 
   const createTaskMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
@@ -53,13 +79,20 @@ const TaskManagement = () => {
         ? new Date(values.dueDate).toISOString() 
         : undefined;
       
+      // Include the currently logged-in user in visibleTo if not already there
+      const currentUser = 1; // Admin ID
+      const visibleTo = selectedUsers.includes(currentUser) 
+        ? selectedUsers 
+        : [currentUser, ...selectedUsers];
+      
       // Create task with all provided fields
       const taskData = {
         ...values,
         dueDate: dueDateTransformed,
         assignedTo: values.assignedTo || 1, // Default to admin if not specified
         dueTime: values.dueTime || undefined,
-        createdBy: 1, // Current logged in user (admin)
+        createdBy: currentUser, // Current logged in user (admin)
+        visibleTo: visibleTo, // Include who can see the task
       };
 
       return await apiRequest("POST", "/api/tasks", taskData);
@@ -293,6 +326,56 @@ const TaskManagement = () => {
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="visibleTo"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Who can see</FormLabel>
+                      <div className="border p-4 rounded-md space-y-2 bg-neutral-50">
+                        {isLoadingUsers ? (
+                          <div className="flex items-center space-x-2">
+                            <Skeleton className="h-4 w-4" />
+                            <Skeleton className="h-4 w-32" />
+                          </div>
+                        ) : usersError ? (
+                          <div className="text-red-500 text-sm">Error loading users</div>
+                        ) : users && users.length > 0 ? (
+                          <>
+                            <div className="text-sm text-neutral-500 mb-2">
+                              Select who can see this task. If no one is selected, only you will see it.
+                            </div>
+                            {users.map((user) => (
+                              <div key={user.id} className="flex items-center space-x-2">
+                                <Checkbox
+                                  id={`user-${user.id}`}
+                                  checked={selectedUsers.includes(user.id)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedUsers([...selectedUsers, user.id]);
+                                    } else {
+                                      setSelectedUsers(selectedUsers.filter(id => id !== user.id));
+                                    }
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`user-${user.id}`}
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                  {user.fullName || `${user.firstName} ${user.lastName}`} {user.id === 1 && '(You)'}
+                                </label>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <div className="text-neutral-500 text-sm">No users found</div>
+                        )}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 
                 <div className="flex justify-end space-x-2 pt-2">
                   <Button 
