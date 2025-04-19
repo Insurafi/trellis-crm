@@ -7,7 +7,8 @@ import { promisify } from "util";
 import { User as SelectUser } from "@shared/schema";
 import { storage } from "./storage";
 import connectPg from "connect-pg-simple";
-import { pool } from "./db";
+import { pool, db } from "./db";
+import { sql } from "drizzle-orm";
 
 const PostgresSessionStore = connectPg(session);
 
@@ -173,7 +174,7 @@ export function setupAuth(app: Express) {
   app.post("/api/login", (req, res, next) => {
     console.log("Login attempt for username:", req.body.username);
     
-    passport.authenticate("local", (err: Error, user: SelectUser, info: { message: string }) => {
+    passport.authenticate("local", async (err: Error, user: SelectUser, info: { message: string }) => {
       if (err) {
         console.error("Login authentication error:", err);
         return next(err);
@@ -185,6 +186,17 @@ export function setupAuth(app: Express) {
       }
       
       console.log("Login successful for user:", user.id, user.username);
+      
+      // Update the user's online status in the database
+      try {
+        await db.execute(
+          sql`UPDATE users SET is_online = TRUE, last_active = NOW() WHERE id = ${user.id}`
+        );
+        console.log(`User ${user.username} (ID: ${user.id}) marked as online`);
+      } catch (updateError) {
+        console.error("Failed to update online status during login:", updateError);
+        // Continue login process even if status update fails
+      }
       
       req.login(user, (err) => {
         if (err) {
@@ -198,7 +210,20 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  app.post("/api/logout", (req, res, next) => {
+  app.post("/api/logout", async (req, res, next) => {
+    // Update user's online status to offline before logging out
+    try {
+      if (req.user && req.user.id) {
+        await db.execute(
+          sql`UPDATE users SET is_online = FALSE, last_active = NOW() WHERE id = ${req.user.id}`
+        );
+        console.log(`User ${req.user.username} (ID: ${req.user.id}) marked as offline during logout`);
+      }
+    } catch (updateError) {
+      console.error("Failed to update online status during logout:", updateError);
+      // Continue logout process even if status update fails
+    }
+    
     req.logout((err) => {
       if (err) return next(err);
       res.status(200).json({ success: true });
