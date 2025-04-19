@@ -332,6 +332,10 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(calendarEvents).where(eq(calendarEvents.clientId, clientId));
   }
   
+  async getCalendarEventsByUser(userId: number): Promise<CalendarEvent[]> {
+    return await db.select().from(calendarEvents).where(eq(calendarEvents.userId, userId));
+  }
+  
   async getCalendarEvent(id: number): Promise<CalendarEvent | undefined> {
     const [event] = await db.select().from(calendarEvents).where(eq(calendarEvents.id, id));
     return event;

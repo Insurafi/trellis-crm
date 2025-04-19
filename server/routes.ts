@@ -824,6 +824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
             
             // Continue with additional handling below
+            const assigneeChanged = taskData.assignedTo && originalTask.assignedTo !== updatedTask.assignedTo;
             if (assigneeChanged && updatedTask?.assignedTo) {
               await handleTaskAssigneeNotification(updatedTask, req);
             }
