@@ -1528,6 +1528,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Simplified endpoint for task visibility user selection
+  app.get("/api/users-for-tasks", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      
+      // Only return essential user information for security reasons
+      const simplifiedUsers = users.map(user => ({
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fullName: user.fullName || `${user.firstName} ${user.lastName}`,
+        role: user.role
+      }));
+      
+      res.json(simplifiedUsers);
+    } catch (error) {
+      console.error("Error fetching users for tasks:", error);
+      res.status(500).json({ message: "Failed to fetch users for tasks" });
+    }
+  });
+  
   // Get a single user by ID
   app.get("/api/users/:id", isAuthenticated, async (req, res) => {
     try {

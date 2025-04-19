@@ -39,7 +39,7 @@ const TaskManagement = () => {
   });
 
   const { data: users, isLoading: isLoadingUsers, error: usersError } = useQuery<User[]>({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users-for-tasks'],
     enabled: isDialogOpen, // Only fetch users when dialog is open
   });
 
