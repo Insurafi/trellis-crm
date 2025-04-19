@@ -241,9 +241,15 @@ export default function AgentDashboard() {
     enabled: hasValidAgentId,
   });
 
-  // Fetch calendar events
+  // Fetch calendar events for the current user
   const { data: calendarEvents = [], isLoading: isEventsLoading } = useQuery<any[]>({
     queryKey: ["/api/calendar/events"],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      // Get events for the current user
+      const response = await fetch(`/api/calendar/events?userId=${user.id}`);
+      return response.json();
+    },
     enabled: !!user?.id,
   });
 

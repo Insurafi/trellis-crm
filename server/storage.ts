@@ -111,6 +111,7 @@ export interface IStorage {
   // Calendar Events
   getCalendarEvents(): Promise<CalendarEvent[]>;
   getCalendarEventsByClient(clientId: number): Promise<CalendarEvent[]>;
+  getCalendarEventsByUser(userId: number): Promise<CalendarEvent[]>;
   getCalendarEvent(id: number): Promise<CalendarEvent | undefined>;
   createCalendarEvent(event: InsertCalendarEvent): Promise<CalendarEvent>;
   updateCalendarEvent(id: number, event: Partial<InsertCalendarEvent>): Promise<CalendarEvent | undefined>;

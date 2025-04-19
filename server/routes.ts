@@ -936,10 +936,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/calendar/events", async (req, res) => {
     try {
       const clientId = req.query.clientId ? parseInt(req.query.clientId as string) : undefined;
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
       
       let events;
       if (clientId && !isNaN(clientId)) {
         events = await storage.getCalendarEventsByClient(clientId);
+      } else if (userId && !isNaN(userId)) {
+        // Get events for a specific user
+        const allEvents = await storage.getCalendarEvents();
+        events = allEvents.filter(event => event.userId === userId);
       } else {
         events = await storage.getCalendarEvents();
       }
