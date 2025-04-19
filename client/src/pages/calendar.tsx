@@ -83,6 +83,18 @@ export default function Calendar() {
 
   const { data: events, isLoading: isLoadingEvents, error: eventsError } = useQuery<CalendarEvent[]>({
     queryKey: ['/api/calendar/events'],
+    onSuccess: (data) => {
+      console.log("Calendar events loaded:", data?.length || 0);
+      console.log("Task-related events:", data?.filter(e => e.type === 'task').length || 0);
+      
+      // Log the first few task events for debugging
+      const taskEvents = data?.filter(e => e.type === 'task') || [];
+      if (taskEvents.length > 0) {
+        console.log("Sample task events:", taskEvents.slice(0, 3));
+      } else {
+        console.log("No task events found in calendar data");
+      }
+    }
   });
 
   const { data: clients, isLoading: isLoadingClients, error: clientsError } = useQuery<Client[]>({
@@ -236,6 +248,8 @@ export default function Calendar() {
         return "bg-green-500";
       case "reminder":
         return "bg-red-500";
+      case "task":
+        return "bg-purple-500"; // Make tasks stand out with purple
       default:
         return "bg-neutral-500";
     }
@@ -352,6 +366,32 @@ export default function Calendar() {
           <p className="mt-1 text-sm text-neutral-600">Manage your schedule and appointments</p>
         </div>
         <div className="mt-4 md:mt-0 flex gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              // Get userId from the currently logged-in user
+              fetch('/api/user')
+                .then(res => res.json())
+                .then(user => {
+                  console.log("Current user:", user);
+                  if (user?.id) {
+                    // Fetch the user's calendar events
+                    fetch(`/api/calendar/events?userId=${user.id}`)
+                      .then(res => res.json())
+                      .then(events => {
+                        console.log(`Found ${events.length} calendar events for user ${user.id}`);
+                        console.log(`Task events: ${events.filter(e => e.type === 'task').length}`);
+                        toast({
+                          title: "Calendar Debug Info",
+                          description: `Found ${events.length} events (${events.filter(e => e.type === 'task').length} tasks)`
+                        });
+                      });
+                  }
+                });
+            }}
+          >
+            Check Tasks
+          </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
