@@ -23,6 +23,7 @@ import {
   MessageSquare,
   Landmark,
   AlertTriangle,
+  MapPin,
 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -596,6 +597,31 @@ export default function AgentDetail() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Address Information Section */}
+            <div className="pt-4 border-t">
+              <h3 className="text-base font-semibold flex items-center mb-3">
+                <MapPin className="h-4 w-4 mr-2 text-primary" />
+                Address Information
+              </h3>
+              {agent.address || agent.city || agent.state || agent.zipCode ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm">
+                  <p className="text-slate-700">{agent.address || 'No street address'}</p>
+                  <p className="text-slate-700 mt-1">
+                    {[
+                      agent.city || '',
+                      agent.state || '',
+                      agent.zipCode || ''
+                    ].filter(Boolean).join(', ')}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center text-sm text-muted-foreground bg-gray-100 px-3 py-2 rounded-md">
+                  <PlusCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+                  No address information provided
+                </div>
+              )}
             </div>
 
             <div className="pt-4 border-t">
