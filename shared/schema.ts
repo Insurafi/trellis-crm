@@ -110,7 +110,8 @@ export const tasks = pgTable("tasks", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertTaskSchema = createInsertSchema(tasks).pick({
+// Create a base schema for the database
+const baseTaskSchema = createInsertSchema(tasks).pick({
   title: true,
   description: true,
   clientId: true,
@@ -119,6 +120,19 @@ export const insertTaskSchema = createInsertSchema(tasks).pick({
   priority: true,
   status: true,
 });
+
+// Create an API-friendly schema that handles date conversion properly
+export const insertTaskSchema = baseTaskSchema
+  .omit({ dueDate: true })
+  .extend({
+    dueDate: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) return new Date(arg as any);
+        return arg;
+      },
+      z.date().optional()
+    ),
+  });
 
 export type InsertTask = z.infer<typeof insertTaskSchema>;
 export type Task = typeof tasks.$inferSelect;
