@@ -342,14 +342,45 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createCalendarEvent(event: InsertCalendarEvent): Promise<CalendarEvent> {
-    const [insertedEvent] = await db.insert(calendarEvents).values(event).returning();
+    // Strip out any fields that don't exist in the database
+    // Extract only the fields from the actual database schema to prevent errors
+    const validDbFields = {
+      title: event.title,
+      description: event.description,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      clientId: event.clientId,
+      createdBy: event.createdBy,
+      userId: event.userId,
+      type: event.type,
+      taskId: event.taskId,
+      // Explicitly exclude any fields that aren't in the database, like 'color'
+    };
+    
+    console.log("Creating calendar event with sanitized data:", JSON.stringify(validDbFields));
+    const [insertedEvent] = await db.insert(calendarEvents).values(validDbFields).returning();
     return insertedEvent;
   }
   
   async updateCalendarEvent(id: number, eventData: Partial<InsertCalendarEvent>): Promise<CalendarEvent | undefined> {
+    // Filter out any fields that don't exist in the database schema
+    const validDbFields: Record<string, any> = {};
+    // Only copy fields that exist in the database schema
+    if ('title' in eventData) validDbFields.title = eventData.title;
+    if ('description' in eventData) validDbFields.description = eventData.description;
+    if ('startTime' in eventData) validDbFields.startTime = eventData.startTime;
+    if ('endTime' in eventData) validDbFields.endTime = eventData.endTime;
+    if ('clientId' in eventData) validDbFields.clientId = eventData.clientId;
+    if ('createdBy' in eventData) validDbFields.createdBy = eventData.createdBy;
+    if ('userId' in eventData) validDbFields.userId = eventData.userId;
+    if ('type' in eventData) validDbFields.type = eventData.type;
+    if ('taskId' in eventData) validDbFields.taskId = eventData.taskId;
+    // Explicitly exclude any fields that aren't in the database, like 'color'
+    
+    console.log("Updating calendar event with sanitized data:", JSON.stringify(validDbFields));
     const [updatedEvent] = await db
       .update(calendarEvents)
-      .set(eventData)
+      .set(validDbFields)
       .where(eq(calendarEvents.id, id))
       .returning();
     return updatedEvent;
