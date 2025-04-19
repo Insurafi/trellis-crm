@@ -11,11 +11,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import {
-  Alert,
-  AlertTitle,
-  AlertDescription,
-} from "@/components/ui/alert";
+
 
 
 import {
@@ -1048,13 +1044,17 @@ export default function AgentDashboard() {
           </div>
           
           {agentPolicies.length === 0 && (
-            <Alert className="mb-6 border-amber-500 bg-amber-50 text-amber-800">
-              <AlertCircle className="h-4 w-4 text-amber-800" />
-              <AlertTitle>No Performance Data Available</AlertTitle>
-              <AlertDescription>
-                You haven't sold any policies yet. The metrics below will update automatically when you sell policies.
-              </AlertDescription>
-            </Alert>
+            <div className="mb-6 p-4 border border-amber-500 bg-amber-50 rounded-lg">
+              <div className="flex items-start">
+                <AlertCircle className="h-4 w-4 text-amber-800 mr-2 mt-1" />
+                <div>
+                  <h3 className="font-medium text-amber-800">No Performance Data Available</h3>
+                  <p className="text-amber-700">
+                    You haven't sold any policies yet. The metrics below will update automatically when you sell policies.
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
           
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
