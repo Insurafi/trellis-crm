@@ -15,7 +15,8 @@ import {
   insertPipelineOpportunitySchema,
   insertCommissionSchema,
   insertCommunicationTemplateSchema,
-  insertUserSchema
+  insertUserSchema,
+  tasks
 } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -553,14 +554,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Task not found" });
       }
       
-      // Special handling for dueDate field
+      // Special handling for dueDate field and task completion
       let taskData = req.body;
+      
+      // Handle due date conversion
       if (taskData.dueDate) {
         taskData = {
           ...taskData,
           dueDate: new Date(taskData.dueDate)
         };
       }
+      
+      // If task is being marked as completed, set completedAt timestamp
+      if (taskData.status === 'completed' && originalTask.status !== 'completed') {
+        taskData = {
+          ...taskData,
+          completedAt: new Date()
+        };
+      }
+      
+      // If task is being marked as pending, clear completedAt
+      if (taskData.status === 'pending' && originalTask.status === 'completed') {
+        taskData = {
+          ...taskData,
+          completedAt: null
+        };
+      }
+      
       console.log("Transformed task update data:", JSON.stringify(taskData));
 
       const updateData = insertTaskSchema.partial().parse(taskData);
@@ -1978,6 +1998,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Synchronize leads to clients before starting the server 
   await syncExistingLeadsToClients();
 
+  // Setup scheduled task cleanup
+  setupTaskCleanup();
+  
   const httpServer = createServer(app);
   return httpServer;
+}
+
+// Setup task cleanup job to run daily
+function setupTaskCleanup() {
+  console.log("Setting up scheduled task cleanup job");
+  
+  // Run task cleanup immediately on startup
+  cleanupCompletedTasks();
+  
+  // Then set interval to run every 24 hours (in milliseconds)
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000; 
+  setInterval(cleanupCompletedTasks, TWENTY_FOUR_HOURS);
+}
+
+// Function to delete tasks completed more than 30 days ago
+async function cleanupCompletedTasks() {
+  try {
+    console.log("Running scheduled task cleanup job");
+    
+    // Get all completed tasks
+    const allTasks = await storage.getTasks();
+    const completedTasks = allTasks.filter(task => 
+      task.status === 'completed' && task.completedAt
+    );
+    
+    if (completedTasks.length === 0) {
+      console.log("No completed tasks found to check for cleanup");
+      return;
+    }
+    
+    console.log(`Found ${completedTasks.length} completed tasks to check for cleanup`);
+    
+    // Calculate the date 30 days ago
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    // Find tasks completed more than 30 days ago
+    const tasksToDelete = completedTasks.filter(task => {
+      if (!task.completedAt) return false;
+      const completedAt = new Date(task.completedAt);
+      return completedAt < thirtyDaysAgo;
+    });
+    
+    if (tasksToDelete.length === 0) {
+      console.log("No tasks found that were completed more than 30 days ago");
+      return;
+    }
+    
+    console.log(`Found ${tasksToDelete.length} tasks completed more than 30 days ago to delete`);
+    
+    // Delete each task
+    for (const task of tasksToDelete) {
+      try {
+        console.log(`Deleting task ${task.id} (${task.title}) completed on ${task.completedAt}`);
+        await storage.deleteTask(task.id);
+      } catch (error) {
+        console.error(`Error deleting task ${task.id}:`, error);
+      }
+    }
+    
+    console.log(`Task cleanup completed. Deleted ${tasksToDelete.length} old tasks.`);
+  } catch (error) {
+    console.error("Error during task cleanup job:", error);
+  }
 }
