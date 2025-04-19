@@ -343,6 +343,7 @@ export default function Calendar() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedEvent(event);
+                    setIsDialogOpen(true); // Open the dialog
                     console.log("Selected event details:", event);
                   }}
                 >
