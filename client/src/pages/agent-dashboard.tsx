@@ -324,8 +324,21 @@ export default function AgentDashboard() {
         </div>
       </div>
       
-      {/* Banking information notifications based on bankInfoExists property (for Aaron) */}
-      {agentData?.bankInfoExists === false ? (
+      {/* Banking information notifications based on bankInfoExists property from server */}
+      {hasBankingInfo ? (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-start">
+            <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-green-800">Banking Information Complete</h3>
+              <p className="text-green-700">
+                Your banking information has been successfully saved. 
+                Your commission payments will be processed via direct deposit to your account.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
         <Card className="border-orange-300 bg-orange-50 mb-6">
           <CardContent className="pt-6 pb-6">
             <div className="flex items-start">
@@ -344,20 +357,7 @@ export default function AgentDashboard() {
             </div>
           </CardContent>
         </Card>
-      ) : agentData?.bankInfoExists === true ? (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-start">
-            <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-green-800">Banking Information Complete</h3>
-              <p className="text-green-700">
-                Your banking information has been successfully saved. 
-                Your commission payments will be processed via direct deposit to your account.
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      )}
 
       {/* Modern Quote Button */}
       <div className="my-6 flex justify-center">
