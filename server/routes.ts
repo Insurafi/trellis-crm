@@ -110,7 +110,7 @@ async function handleCalendarEventUpdates(
     // If task has no calendar event but now has assignee and date, create one
     else if (!updatedTask.calendarEventId && updatedTask.assignedTo && updatedTask.dueDate) {
       try {
-        console.log(`Creating new calendar event for task ${updatedTask.id}`);
+        console.log(`Creating new calendar event for task ${updatedTask.id} assigned to user ${updatedTask.assignedTo}`);
         
         // Create calendar event for the task
         // Use a fresh Date object to ensure we're working with a clean date
@@ -157,6 +157,7 @@ async function handleCalendarEventUpdates(
           clientId: updatedTask.clientId, // Link to client if specified
           createdBy: updatedTask.createdBy || updatedTask.assignedTo || 1, // Track who created it (default to admin if unknown)
           taskId: updatedTask.id, // Link back to the task
+          color: '#9333ea', // Add purple color for task events
         };
         
         console.log("Creating calendar event:", JSON.stringify(calendarEvent));

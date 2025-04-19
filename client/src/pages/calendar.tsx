@@ -273,7 +273,7 @@ export default function Calendar() {
       case "reminder":
         return "bg-red-500";
       case "task":
-        return "bg-purple-500"; // Make tasks stand out with purple
+        return "bg-purple-600"; // Make tasks stand out with bolder purple
       default:
         return "bg-neutral-500";
     }
@@ -343,9 +343,11 @@ export default function Calendar() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedEvent(event);
+                    console.log("Selected event details:", event);
                   }}
                 >
                   {format(parseISO(event.startTime.toString()), 'h:mm a')} - {event.title}
+                  {event.type === 'task' && <span className="ml-1">📋</span>}
                 </div>
               ))}
             </div>
