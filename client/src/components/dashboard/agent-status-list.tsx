@@ -34,15 +34,31 @@ export default function AgentStatusList() {
     queryKey: ["/api/agents"],
   });
 
-  // Use the real-time online status from the database
-  // The isOnline field is now properly tracked in the users table
+  // Fetch clients data to count new clients per agent
+  const { data: clients = [] } = useQuery<any[]>({
+    queryKey: ["/api/clients"],
+    enabled: !isLoading && agents.length > 0,
+  });
+
+  // Calculate new clients for each agent
+  // For this example, we'll define "new clients" as clients created in the last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   
-  // Use the actual online status data from the agent's linked user
+  // Use the actual online status data from the agent's linked user and add new client count
   const agentsWithStatus = agents.map(agent => {
-    // The server now provides accurate online status based on user activity
-    // No need to simulate anymore - using real data
+    // Count new clients for this agent
+    const newClientsCount = clients.filter(client => {
+      const clientCreatedDate = new Date(client.createdAt);
+      return (
+        client.assignedAgentId === agent.id && 
+        clientCreatedDate > thirtyDaysAgo
+      );
+    }).length;
+    
     return {
-      ...agent
+      ...agent,
+      newClientsCount
     };
   });
 
@@ -56,7 +72,7 @@ export default function AgentStatusList() {
     <Card>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-base font-semibold">Agent Status</CardTitle>
+          <CardTitle className="text-base font-semibold">Agent Status & Acquisition</CardTitle>
           <div className="flex space-x-2">
             <button 
               className={cn(
@@ -96,7 +112,7 @@ export default function AgentStatusList() {
           </div>
         </div>
         <CardDescription>
-          Monitor your team's availability in real-time
+          Monitor your team's availability and client acquisition
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
@@ -124,6 +140,12 @@ export default function AgentStatusList() {
                       <div className="font-medium">{agent.name}</div>
                       <div className="text-xs text-neutral-500 flex items-center gap-1">
                         <span>Agent</span>
+                        {agent.newClientsCount > 0 && (
+                          <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded-full flex items-center">
+                            <UserPlus className="h-3 w-3 mr-1" />
+                            {agent.newClientsCount} new client{agent.newClientsCount !== 1 ? 's' : ''}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
