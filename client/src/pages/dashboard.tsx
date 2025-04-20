@@ -174,7 +174,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Recent Clients</CardTitle>
-              <CardDescription>Your most recently active clients</CardDescription>
+              <CardDescription>Recent activity and agents with new clients</CardDescription>
             </CardHeader>
             <CardContent>
               <ClientList />

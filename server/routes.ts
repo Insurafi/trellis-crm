@@ -372,6 +372,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userRole = user?.role;
       const userId = user?.id;
       
+      let clients = [];
+      
       if (userRole === 'agent' && userId) {
         // Get agent record first
         console.log("Finding agent for user ID:", userId);
@@ -379,16 +381,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (agent) {
           console.log("Found agent with ID:", agent.id);
-          const agentClients = await storage.getClientsByAgent(agent.id);
-          return res.json(agentClients);
+          clients = await storage.getClientsByAgent(agent.id);
         } else {
           console.log("No agent record found for user, returning all clients");
+          clients = await storage.getClients();
         }
+      } else {
+        // For admin, team leaders or if agent record not found, show all clients
+        clients = await storage.getClients();
       }
       
-      // For admin, team leaders or if agent record not found, show all clients
-      const clients = await storage.getClients();
-      res.json(clients);
+      // Get all agents to include their information with clients
+      const agents = await storage.getAgents();
+      
+      // Get users for online status
+      const users = await storage.getAllUsers();
+      
+      // Sort clients by creation date, newest first
+      const sortedClients = [...clients].sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
+      
+      // Map clients with agent info
+      const clientsWithAgentInfo = sortedClients.map(client => {
+        // Find the agent assigned to this client
+        const agent = agents.find(a => a.id === client.assignedAgentId);
+        
+        // Find user associated with this agent to get online status
+        const agentUser = agent ? users.find(u => u.id === agent.userId) : null;
+        
+        // Calculate how recent this client is
+        const creationDate = new Date(client.createdAt || 0);
+        const now = new Date();
+        const daysDifference = Math.floor((now.getTime() - creationDate.getTime()) / (1000 * 60 * 60 * 24));
+        const isNewClient = daysDifference <= 7; // Consider clients added in the last 7 days as "new"
+        
+        return {
+          ...client,
+          agentName: agent?.fullName || null,
+          agentId: agent?.id || null,
+          isAgentOnline: agentUser?.isOnline || false,
+          isNewClient
+        };
+      });
+      
+      res.json(clientsWithAgentInfo);
     } catch (error) {
       console.error("Error fetching clients:", error);
       res.status(500).json({ message: "Failed to fetch clients" });
