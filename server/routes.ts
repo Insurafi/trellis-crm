@@ -2187,61 +2187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Test email endpoint
-  app.post("/api/test-email", isAuthenticated, async (req, res) => {
-    try {
-      // Using a properly formatted from field with name and email
-      const senderName = "Trellis CRM";
-      const senderEmail = "admin@trellis-crm.com";
-      const fromField = {
-        name: senderName,
-        email: senderEmail
-      };
-      
-      const { to, subject = "Test Email from Trellis CRM" } = req.body;
-      
-      if (!to) {
-        return res.status(400).json({ message: "Recipient email address (to) is required" });
-      }
-      
-      // This will log the email details to the console using our placeholder system
-      const success = await sendEmail({
-        to,
-        from: fromField as any,
-        subject,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-            <div style="text-align: center; margin-bottom: 20px;">
-              <h1 style="color: #4a6cf7;">Trellis CRM</h1>
-            </div>
-            
-            <p>Hello!</p>
-            
-            <p>This is a test email from the Trellis CRM system to verify that our email service is working correctly.</p>
-            
-            <p>If you received this email, it means the email service is working properly.</p>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #777; font-size: 12px;">
-              <p>This is an automated message from Trellis CRM. Please do not reply to this email.</p>
-            </div>
-          </div>
-        `
-      });
-      
-      // With our placeholder system, this should always succeed
-      return res.json({ 
-        success: true, 
-        message: `Email placeholder processed successfully for ${to}. Check server logs for details.`,
-        note: "This is a placeholder email service. In a production environment, you would need to configure a real email service provider."
-      });
-    } catch (error) {
-      console.error("Error in email placeholder service:", error);
-      res.status(500).json({ 
-        success: false, 
-        message: "Internal server error in email placeholder service." 
-      });
-    }
-  });
+
 
   // Synchronize leads to clients before starting the server 
   await syncExistingLeadsToClients();
