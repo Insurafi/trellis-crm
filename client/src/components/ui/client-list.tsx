@@ -134,7 +134,8 @@ const ClientList = () => {
                   )}
                 </div>
                 <div className="text-sm font-medium text-neutral-900 truncate mr-2">{client.name}</div>
-                {client.isNewClient && (
+                {/* Don't show "New" tag for clients assigned to Aaron Barnes (agent ID 4) */}
+                {client.isNewClient && client.agentId !== 4 && (
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
                     <Clock className="h-3 w-3 mr-1" />
                     New

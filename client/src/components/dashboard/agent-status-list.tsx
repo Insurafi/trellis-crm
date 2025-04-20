@@ -48,7 +48,15 @@ export default function AgentStatusList() {
   
   // Use the actual online status data from the agent's linked user and add new client count
   const agentsWithStatus = agents.map(agent => {
-    // Count new clients for this agent
+    // Special case for Aaron Barnes (agent ID 4) - don't show new clients for him
+    if (agent.id === 4) {
+      return {
+        ...agent,
+        newClientsCount: 0 // Zero out new clients count for Aaron
+      };
+    }
+    
+    // Count new clients for other agents
     const newClientsCount = clients.filter(client => {
       const clientCreatedDate = new Date(client.createdAt);
       return (
