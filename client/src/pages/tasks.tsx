@@ -293,9 +293,18 @@ export default function Tasks() {
   
   const deleteTaskMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest("DELETE", `/api/tasks/${id}`);
+      console.log("Deleting task with ID:", id);
+      try {
+        const response = await apiRequest("DELETE", `/api/tasks/${id}`);
+        console.log("Delete response:", response);
+        return response;
+      } catch (error) {
+        console.error("Error in delete mutation:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
+      console.log("Delete task mutation succeeded");
       queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
       toast({
@@ -304,6 +313,7 @@ export default function Tasks() {
       });
     },
     onError: (error) => {
+      console.error("Delete task mutation failed:", error);
       toast({
         title: "Error deleting task",
         description: error instanceof Error ? error.message : "Failed to delete task",
