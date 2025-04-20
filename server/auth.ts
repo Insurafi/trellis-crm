@@ -37,7 +37,7 @@ export async function hashPassword(password: string) {
   return `${buf.toString("hex")}.${salt}`;
 }
 
-async function comparePasswords(supplied: string, stored: string) {
+export async function comparePasswords(supplied: string, stored: string) {
   // First check if the password is stored in plain text (temporary for development)
   if (!stored.includes(".")) {
     return supplied === stored;

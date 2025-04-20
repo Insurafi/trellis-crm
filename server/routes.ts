@@ -27,8 +27,8 @@ import { sendEmail, processTemplate, replaceAgentName } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
 import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
-import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword } from "./auth";
-import { setupClientAuth, isAuthenticatedClient, comparePasswords } from "./client-auth";
+import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword, comparePasswords as authComparePasswords } from "./auth";
+import { setupClientAuth, isAuthenticatedClient } from "./client-auth";
 import { setupSimpleRegister } from "./simple-register";
 
 // Helper function to handle calendar event updates
@@ -316,7 +316,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify password using the imported function
-      const passwordValid = await comparePasswords(password, client.password);
+      const passwordValid = await authComparePasswords(password, client.password);
       if (!passwordValid) {
         console.log("Password invalid");
         return res.status(401).json({ message: "Invalid username or password" });
@@ -1893,7 +1893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // If not admin, verify current password
       if (req.user.role !== 'admin' && req.user.role !== 'Administrator' && req.user.id === id) {
         // Verify current password
-        const passwordValid = await comparePasswords(currentPassword, user.password);
+        const passwordValid = await authComparePasswords(currentPassword, user.password);
         if (!passwordValid) {
           return res.status(401).json({ message: "Current password is incorrect" });
         }
