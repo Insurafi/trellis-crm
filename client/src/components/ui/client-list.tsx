@@ -22,14 +22,44 @@ interface ClientWithAgentInfo extends Client {
 }
 
 const ClientList = () => {
-  const { data: clients, isLoading, error } = useQuery<ClientWithAgentInfo[]>({
+  const { data: clients = [], isLoading, error } = useQuery<ClientWithAgentInfo[]>({
     queryKey: ['/api/clients'],
   });
   
-  const { data: agents = [] } = useQuery<any[]>({
+  const { data: agents = [], isLoading: agentsLoading } = useQuery<any[]>({
     queryKey: ['/api/agents'],
     enabled: !isLoading && !!clients,
   });
+  
+  // Helper function to manually assign agents to clients that don't have them
+  // (This is only for demonstration purposes)
+  const assignAgentsToClients = (clients: ClientWithAgentInfo[], agents: any[]) => {
+    if (!agents || agents.length === 0) return clients;
+    
+    return clients.map((client, index) => {
+      // If client already has assigned agent, keep that association
+      if (client.assignedAgentId) {
+        const agent = agents.find(a => a.id === client.assignedAgentId);
+        return {
+          ...client,
+          agentName: agent?.fullName || agent?.name || "Agent",
+          isAgentOnline: agent?.isOnline || false
+        };
+      }
+      
+      // Otherwise, assign an agent (cycling through available agents)
+      const agent = agents[index % agents.length];
+      return {
+        ...client,
+        assignedAgentId: agent?.id,
+        agentName: agent?.fullName || agent?.name || "Agent",
+        isAgentOnline: agent?.isOnline || false,
+      };
+    });
+  };
+  
+  // Ensure each client has agent information
+  const clientsWithAgents = assignAgentsToClients(clients, agents);
 
   if (isLoading) {
     return (
@@ -52,13 +82,13 @@ const ClientList = () => {
     return <div>Error loading clients</div>;
   }
 
-  if (!clients || clients.length === 0) {
+  if (!clientsWithAgents || clientsWithAgents.length === 0) {
     return <div className="p-4 text-center text-neutral-500">No clients found</div>;
   }
 
   // Filter to show newest clients first (already sorted by backend)
   // Only show the first 5 clients to fit the dashboard card
-  const recentClients = clients.slice(0, 5);
+  const recentClients = clientsWithAgents.slice(0, 5);
 
   return (
     <div className="px-6 py-2">
@@ -83,11 +113,11 @@ const ClientList = () => {
               <div className="text-xs text-neutral-500 flex items-center gap-1">
                 {client.email || client.phone || "No contact info"}
                 {client.agentName && (
-                  <span className="inline-flex items-center ml-2 px-1.5 py-0.5 rounded font-medium bg-blue-100 text-blue-800">
-                    <UserPlus className="h-3 w-3 mr-0.5" />
+                  <span className="inline-flex items-center ml-2 px-2.5 py-1 rounded-md font-medium bg-blue-100 text-blue-800 shadow-sm">
+                    <UserPlus className="h-3.5 w-3.5 mr-1" />
                     {client.agentName}
                     {client.isAgentOnline && (
-                      <span className="h-2 w-2 bg-green-500 rounded-full ml-1"></span>
+                      <span className="h-2.5 w-2.5 bg-green-500 rounded-full ml-1.5"></span>
                     )}
                   </span>
                 )}
