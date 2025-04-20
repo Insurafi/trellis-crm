@@ -118,18 +118,8 @@ const ClientList = () => {
             />
             <div className="ml-3 min-w-0 flex-1">
               <div className="flex items-center">
-                <div className="text-sm font-medium text-neutral-900 truncate mr-2">{client.name}</div>
-                {client.isNewClient && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                    <Clock className="h-3 w-3 mr-1" />
-                    New
-                  </span>
-                )}
-              </div>
-              <div className="text-xs text-neutral-500 flex items-center gap-1">
-                {client.email || client.phone || "No contact info"}
-                {/* Agent badge with initials */}
-                <div className="relative ml-2">
+                {/* Agent badge with initials moved before client name */}
+                <div className="relative mr-2">
                   <span 
                     className="inline-flex items-center justify-center h-6 w-6 rounded-full font-semibold bg-blue-100 text-blue-800 shadow-sm"
                     title={client.agentName || "Assigned Agent"} 
@@ -141,6 +131,16 @@ const ClientList = () => {
                     <span className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-green-500 border-2 border-white rounded-full"></span>
                   )}
                 </div>
+                <div className="text-sm font-medium text-neutral-900 truncate mr-2">{client.name}</div>
+                {client.isNewClient && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                    <Clock className="h-3 w-3 mr-1" />
+                    New
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-neutral-500 flex items-center gap-1">
+                {client.email || client.phone || "No contact info"}
               </div>
             </div>
             <div className="flex items-center gap-2">
