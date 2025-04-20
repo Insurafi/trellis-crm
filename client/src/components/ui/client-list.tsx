@@ -16,6 +16,7 @@ import {
 // Enhanced client type with agent info
 interface ClientWithAgentInfo extends Client {
   agentName?: string | null;
+  agentInitials?: string | null;
   agentId?: number | null;
   isAgentOnline?: boolean;
   isNewClient?: boolean;
@@ -31,6 +32,17 @@ const ClientList = () => {
     enabled: !isLoading && !!clients,
   });
   
+  // Helper function to get agent initials from full name
+  const getAgentInitials = (fullName: string): string => {
+    if (!fullName) return "A";
+    
+    const names = fullName.split(' ');
+    if (names.length === 1) return names[0].charAt(0).toUpperCase();
+    
+    // Get first and last name initials
+    return (names[0].charAt(0) + (names[names.length - 1]?.charAt(0) || '')).toUpperCase();
+  };
+  
   // Helper function to manually assign agents to clients that don't have them
   // (This is only for demonstration purposes)
   const assignAgentsToClients = (clients: ClientWithAgentInfo[], agents: any[]) => {
@@ -40,19 +52,23 @@ const ClientList = () => {
       // If client already has assigned agent, keep that association
       if (client.assignedAgentId) {
         const agent = agents.find(a => a.id === client.assignedAgentId);
+        const fullName = agent?.fullName || agent?.name || "Agent";
         return {
           ...client,
-          agentName: agent?.fullName || agent?.name || "Agent",
+          agentName: fullName,
+          agentInitials: getAgentInitials(fullName),
           isAgentOnline: agent?.isOnline || false
         };
       }
       
       // Otherwise, assign an agent (cycling through available agents)
       const agent = agents[index % agents.length];
+      const fullName = agent?.fullName || agent?.name || "Agent";
       return {
         ...client,
         assignedAgentId: agent?.id,
-        agentName: agent?.fullName || agent?.name || "Agent",
+        agentName: fullName,
+        agentInitials: getAgentInitials(fullName),
         isAgentOnline: agent?.isOnline || false,
       };
     });
@@ -112,15 +128,19 @@ const ClientList = () => {
               </div>
               <div className="text-xs text-neutral-500 flex items-center gap-1">
                 {client.email || client.phone || "No contact info"}
-                {client.agentName && (
-                  <span className="inline-flex items-center ml-2 px-2.5 py-1 rounded-md font-medium bg-blue-100 text-blue-800 shadow-sm">
-                    <UserPlus className="h-3.5 w-3.5 mr-1" />
-                    {client.agentName}
-                    {client.isAgentOnline && (
-                      <span className="h-2.5 w-2.5 bg-green-500 rounded-full ml-1.5"></span>
-                    )}
+                {/* Agent badge with initials */}
+                <div className="relative ml-2">
+                  <span 
+                    className="inline-flex items-center justify-center h-6 w-6 rounded-full font-semibold bg-blue-100 text-blue-800 shadow-sm"
+                    title={client.agentName || "Assigned Agent"} 
+                  >
+                    {'agentInitials' in client && client.agentInitials ? client.agentInitials : 
+                     client.agentName ? client.agentName.charAt(0) : 'A'}
                   </span>
-                )}
+                  {client.isAgentOnline && (
+                    <span className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-green-500 border-2 border-white rounded-full"></span>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
