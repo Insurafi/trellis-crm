@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -480,8 +481,17 @@ const LeadsPage: React.FC = () => {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="555-123-4567" {...field} />
+                          <PhoneInput 
+                            placeholder="123-456-7890"
+                            value={field.value || ''}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            disabled={field.disabled}
+                          />
                         </FormControl>
+                        <FormDescription>
+                          Number will be automatically formatted with dashes
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -1335,8 +1345,17 @@ const LeadsPage: React.FC = () => {
                     <FormItem>
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <PhoneInput 
+                          placeholder="123-456-7890"
+                          value={field.value || ''}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                        />
                       </FormControl>
+                      <FormDescription>
+                        Number will be automatically formatted with dashes
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
