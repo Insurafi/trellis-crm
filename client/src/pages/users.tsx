@@ -39,11 +39,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, PlusCircle, UserPlus, Users } from "lucide-react";
+import { Loader2, PlusCircle, UserPlus, Users, Lock, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function UsersPage() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [formData, setFormData] = useState({
     username: "",
     firstName: "",
@@ -123,6 +138,74 @@ export default function UsersPage() {
 
   const handleSelectChange = (value: string) => {
     setFormData((prev) => ({ ...prev, role: value }));
+  };
+  
+  // Password change mutation
+  const changePasswordMutation = useMutation({
+    mutationFn: async (data: typeof passwordData) => {
+      if (!currentUser) throw new Error("No user selected");
+      if (data.newPassword !== data.confirmPassword) {
+        throw new Error("New passwords do not match");
+      }
+      
+      const res = await fetch(`/api/users/${currentUser.id}/change-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to change password");
+      }
+
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Password updated",
+        description: "The password has been changed successfully",
+      });
+      setIsPasswordDialogOpen(false);
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setCurrentUser(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    changePasswordMutation.mutate(passwordData);
+  };
+  
+  const openPasswordDialog = (user: User) => {
+    setCurrentUser(user);
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+    setIsPasswordDialogOpen(true);
   };
 
   return (
@@ -268,6 +351,7 @@ export default function UsersPage() {
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -293,6 +377,26 @@ export default function UsersPage() {
                         </span>
                       )}
                     </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            onClick={() => openPasswordDialog(user)}
+                            className="cursor-pointer"
+                          >
+                            <Lock className="mr-2 h-4 w-4" />
+                            <span>Change Password</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -315,6 +419,76 @@ export default function UsersPage() {
           </CardFooter>
         </Card>
       )}
+
+      {/* Password Change Dialog */}
+      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogDescription>
+              {currentUser && (
+                <>Change password for user: <strong>{currentUser.username}</strong></>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePasswordSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="currentPassword">Current Password</Label>
+                <Input
+                  id="currentPassword"
+                  name="currentPassword"
+                  type="password"
+                  value={passwordData.currentPassword}
+                  onChange={handlePasswordChange}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="newPassword">New Password</Label>
+                <Input
+                  id="newPassword"
+                  name="newPassword"
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={handlePasswordChange}
+                  required
+                  autoComplete="new-password"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={passwordData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  required
+                  autoComplete="new-password"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="submit"
+                disabled={changePasswordMutation.isPending}
+                className="w-full"
+              >
+                {changePasswordMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Update Password"
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
