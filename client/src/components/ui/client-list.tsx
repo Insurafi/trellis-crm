@@ -80,27 +80,18 @@ const ClientList = () => {
                   </span>
                 )}
               </div>
-              <div className="text-xs text-neutral-500">{client.email || client.phone || "No contact info"}</div>
-              {client.agentName && (
-                <div className="text-xs mt-1 flex items-center">
-                  <span className={`text-xs px-2 py-0.5 rounded flex items-center ${client.isNewClient ? 'bg-indigo-100 text-indigo-800' : 'bg-blue-100 text-blue-800'}`}>
-                    {client.isNewClient ? (
-                      <>
-                        <UserPlus className="h-3 w-3 mr-1" />
-                        <span>Added by: </span>
-                      </>
-                    ) : (
-                      <span>Assigned to: </span>
+              <div className="text-xs text-neutral-500 flex items-center gap-1">
+                {client.email || client.phone || "No contact info"}
+                {client.agentName && (
+                  <span className="inline-flex items-center ml-2 px-1.5 py-0.5 rounded font-medium bg-blue-100 text-blue-800">
+                    <UserPlus className="h-3 w-3 mr-0.5" />
+                    {client.agentName}
+                    {client.isAgentOnline && (
+                      <span className="h-2 w-2 bg-green-500 rounded-full ml-1"></span>
                     )}
-                    <span className="font-medium ml-1 flex items-center">
-                      {client.agentName}
-                      {client.isAgentOnline && (
-                        <span className="h-2 w-2 bg-green-500 rounded-full ml-1.5"></span>
-                      )}
-                    </span>
                   </span>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Button size="sm" variant="ghost" className="flex items-center h-8" asChild>
