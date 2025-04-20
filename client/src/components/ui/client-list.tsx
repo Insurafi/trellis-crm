@@ -25,11 +25,13 @@ interface ClientWithAgentInfo extends Client {
 const ClientList = () => {
   const { data: clients = [], isLoading, error } = useQuery<ClientWithAgentInfo[]>({
     queryKey: ['/api/clients'],
+    refetchInterval: 30000, // Refetch every 30 seconds for real-time agent status
   });
   
   const { data: agents = [], isLoading: agentsLoading } = useQuery<any[]>({
     queryKey: ['/api/agents'],
     enabled: !isLoading && !!clients,
+    refetchInterval: 30000, // Refetch every 30 seconds for real-time online status
   });
   
   // Helper function to get agent initials from full name

@@ -259,6 +259,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await db.execute(
         sql`UPDATE users SET is_online = ${isOnline}, last_active = NOW() WHERE id = ${userId}`
       );
+
+      console.log(`User ${userId} status updated to ${isOnline ? "online" : "offline"}`);
+      
+      // Broadcast status change by updating agent record if this user is associated with an agent
+      const agentUpdateResult = await db.execute(sql`
+        UPDATE agents
+        SET is_online = ${isOnline}
+        FROM users
+        WHERE agents.user_id = users.id
+        AND users.id = ${userId}
+      `);
       
       return res.json({ success: true, status: isOnline ? "online" : "offline" });
     } catch (error) {

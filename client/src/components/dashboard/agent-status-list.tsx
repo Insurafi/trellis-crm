@@ -29,9 +29,10 @@ export default function AgentStatusList() {
   const [view, setView] = useState<"online" | "offline" | "all">("all");
   // No longer need activity state
   
-  // Fetch agents data
+  // Fetch agents data with refetch interval for real-time online status
   const { data: agents = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/agents"],
+    refetchInterval: 30000, // Refetch every 30 seconds to keep online status fresh
   });
 
   // Fetch clients data to count new clients per agent
