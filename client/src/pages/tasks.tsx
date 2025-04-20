@@ -69,13 +69,17 @@ import {
   AlertCircle, 
   CheckCircle,
   Calendar,
-  User
+  User,
+  Trash2,
+  AlertTriangle
 } from "lucide-react";
 
 export default function Tasks() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTab, setCurrentTab] = useState("all");
   
@@ -360,6 +364,11 @@ export default function Tasks() {
       dueTime: task.dueTime || undefined,
     });
     setIsEditDialogOpen(true);
+  };
+  
+  const openDeleteDialog = (task: Task) => {
+    setTaskToDelete(task);
+    setIsDeleteDialogOpen(true);
   };
 
   const getPriorityBadge = (priority: string) => {
@@ -740,6 +749,20 @@ export default function Tasks() {
                                 </svg>
                                 Edit
                               </Button>
+                              {task.status === "completed" && currentTab === "finished" && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="h-8 px-2 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openDeleteDialog(task);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-1" />
+                                  Delete
+                                </Button>
+                              )}
                               {getPriorityBadge(task.priority || 'medium')}
                             </div>
                           </div>
@@ -983,6 +1006,59 @@ export default function Tasks() {
               </DialogFooter>
             </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Task Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center text-red-600">
+              <AlertTriangle className="h-5 w-5 mr-2" />
+              Delete Task
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to permanently delete this task? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {taskToDelete && (
+            <div className="py-4">
+              <h3 className="font-medium text-neutral-900">{taskToDelete.title}</h3>
+              {taskToDelete.description && (
+                <p className="mt-1 text-sm text-neutral-600">{taskToDelete.description}</p>
+              )}
+              
+              {taskToDelete.completedAt && (
+                <div className="mt-2 text-sm text-green-600 flex items-center">
+                  <CheckCircle className="h-4 w-4 mr-1" />
+                  <span>Completed on {format(new Date(taskToDelete.completedAt), 'MMM dd, yyyy')}</span>
+                </div>
+              )}
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (taskToDelete) {
+                  deleteTaskMutation.mutate(taskToDelete.id);
+                  setIsDeleteDialogOpen(false);
+                  setTaskToDelete(null);
+                }
+              }}
+              disabled={deleteTaskMutation.isPending}
+            >
+              {deleteTaskMutation.isPending ? "Deleting..." : "Delete Task"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       
