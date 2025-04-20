@@ -3,6 +3,7 @@ import TaskManagement from "@/components/dashboard/task-management";
 import CalendarCard from "@/components/ui/calendar-card";
 import AgentStatusList from "@/components/dashboard/agent-status-list";
 import ClientList from "@/components/ui/client-list";
+import AgentAcquisition from "@/components/dashboard/agent-acquisition";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, ExternalLink, UserPlus, Mail, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
@@ -192,6 +193,7 @@ export default function Dashboard() {
         {/* Right Column (1/3 width) */}
         <div className="space-y-6">
           <CalendarCard />
+          <AgentAcquisition />
           <AgentStatusList />
         </div>
       </div>
