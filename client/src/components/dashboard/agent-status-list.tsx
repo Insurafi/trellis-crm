@@ -72,7 +72,7 @@ export default function AgentStatusList() {
     <Card>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-base font-semibold">Agent Status & Acquisition</CardTitle>
+          <CardTitle className="text-base font-semibold">Agent Status</CardTitle>
           <div className="flex space-x-2">
             <button 
               className={cn(
@@ -112,7 +112,7 @@ export default function AgentStatusList() {
           </div>
         </div>
         <CardDescription>
-          Monitor your team's availability and client acquisition
+          Monitor your team's availability status
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
