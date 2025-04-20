@@ -1869,6 +1869,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Change password for a user
+  app.post("/api/users/:id/change-password", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current password and new password are required" });
+      }
+      
+      // Only allow users to change their own password or admins to change anyone's
+      if (req.user.id !== id && req.user.role !== 'admin' && req.user.role !== 'Administrator') {
+        return res.status(403).json({ message: "Not authorized to change this user's password" });
+      }
+      
+      // Get the user
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // If not admin, verify current password
+      if (req.user.role !== 'admin' && req.user.role !== 'Administrator' && req.user.id === id) {
+        // Verify current password
+        const passwordValid = await comparePasswords(currentPassword, user.password);
+        if (!passwordValid) {
+          return res.status(401).json({ message: "Current password is incorrect" });
+        }
+      }
+      
+      // Hash the new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update the user's password
+      const updatedUser = await storage.updateUser(id, { password: hashedPassword });
+      
+      if (!updatedUser) {
+        return res.status(500).json({ message: "Failed to update password" });
+      }
+      
+      res.json({ success: true, message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
   // AGENT-SPECIFIC API ROUTES
   
   // Get agent for a specific user
