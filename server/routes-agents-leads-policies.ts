@@ -23,20 +23,36 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Agents
   app.get("/api/agents", async (req, res) => {
     try {
+      // Add log for debugging
+      console.log("Fetching agents with real-time online status...");
+      
       const agents = await storage.getAgents();
       
-      // Get all users to check their online status
+      // ALWAYS get fresh user data to ensure real-time online status
       const users = await storage.getAllUsers();
+      
+      // Log user online statuses for debugging
+      console.log("Current user online statuses:", users
+        .filter(u => u.isOnline)
+        .map(u => `User ID ${u.id} (${u.username}): ONLINE`)
+      );
       
       // Map agent data with online status information from their linked user
       const agentsWithOnlineStatus = agents.map(agent => {
         // Find the associated user for this agent
         const user = users.find(u => u.id === agent.userId);
         
+        const isOnline = user?.isOnline || false;
+        
+        // Log each agent's status for debugging
+        if (isOnline) {
+          console.log(`Agent ID ${agent.id} (linked to User ID ${agent.userId}) is ONLINE`);
+        }
+        
         // Add isOnline flag based on the user's online status
         return {
           ...agent,
-          isOnline: user?.isOnline || false
+          isOnline
         };
       });
       

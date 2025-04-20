@@ -262,14 +262,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`User ${userId} status updated to ${isOnline ? "online" : "offline"}`);
       
-      // Broadcast status change by updating agent record if this user is associated with an agent
-      const agentUpdateResult = await db.execute(sql`
-        UPDATE agents
-        SET is_online = ${isOnline}
-        FROM users
-        WHERE agents.user_id = users.id
-        AND users.id = ${userId}
-      `);
+      // Don't need to update agent status separately, we'll join with users when fetching agents
+      // Log the online status change for debugging
+      if (isOnline) {
+        console.log(`User ${userId} is now ONLINE`);
+      } else {
+        console.log(`User ${userId} is now OFFLINE`);
+      }
       
       return res.json({ success: true, status: isOnline ? "online" : "offline" });
     } catch (error) {
