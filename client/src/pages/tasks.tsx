@@ -286,6 +286,27 @@ export default function Tasks() {
       });
     },
   });
+  
+  const deleteTaskMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await apiRequest("DELETE", `/api/tasks/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
+      toast({
+        title: "Task deleted",
+        description: "The task has been permanently deleted.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting task",
+        description: error instanceof Error ? error.message : "Failed to delete task",
+        variant: "destructive",
+      });
+    },
+  });
 
   const updateTaskMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema> & { id: number }) => {
