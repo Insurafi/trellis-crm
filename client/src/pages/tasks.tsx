@@ -749,7 +749,7 @@ export default function Tasks() {
                                 </svg>
                                 Edit
                               </Button>
-                              {task.status === "completed" && currentTab === "finished" && (
+                              {task.status === "completed" && (
                                 <Button 
                                   variant="ghost" 
                                   size="sm"
