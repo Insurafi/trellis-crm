@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -365,13 +366,14 @@ export default function ClientDetail() {
                       </div>
                       <div className="space-y-2">
                         <label htmlFor="phone" className="text-sm font-medium">Phone</label>
-                        <Input
+                        <PhoneInput
                           id="phone"
                           name="phone"
                           value={formData.phone || ""}
-                          onChange={handleInputChange}
-                          placeholder="Phone number"
+                          onChange={(value) => setFormData(prev => ({ ...prev, phone: value }))}
+                          placeholder="123-456-7890"
                         />
+                        <p className="text-xs text-neutral-500">Number will be automatically formatted with dashes</p>
                       </div>
                       <div className="space-y-2">
                         <label htmlFor="company" className="text-sm font-medium">Company</label>
