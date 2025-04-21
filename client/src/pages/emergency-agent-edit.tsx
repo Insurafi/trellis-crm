@@ -274,7 +274,7 @@ export default function EmergencyAgentEdit() {
               <div>
                 <Label htmlFor="accountType">Account Type</Label>
                 <Select 
-                  value={bankAccountType} 
+                  value={bankAccountType || ""} 
                   onValueChange={setBankAccountType}
                 >
                   <SelectTrigger id="accountType">
