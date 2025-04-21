@@ -14,6 +14,8 @@ async function testMonicaLogin() {
         username: 'monicapalmer388',
         password: 'agent123',
       }),
+      // Tell node-fetch to include cookies in subsequent requests
+      credentials: 'include'
     });
     
     if (!loginResponse.ok) {
@@ -27,6 +29,12 @@ async function testMonicaLogin() {
     
     // Get cookies from response
     const cookies = loginResponse.headers.get('set-cookie');
+    
+    if (!cookies) {
+      console.log("No cookies returned from login. This is unusual but we'll try to continue.");
+    } else {
+      console.log("Cookies received:", cookies);
+    }
     
     return { userData, cookies };
   } catch (error) {

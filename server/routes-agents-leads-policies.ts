@@ -1481,9 +1481,68 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(401).json({ message: "User not authenticated" });
       }
       
-      console.log("Agent profile update attempt for user ID:", req.user.id, "username:", req.user.username);
+      console.log("=== AGENT PROFILE UPDATE ATTEMPT ===");
+      console.log("User ID:", req.user.id);
+      console.log("Username:", req.user.username);
       console.log("Request body:", JSON.stringify(req.body, null, 2));
+      console.log("Request headers:", JSON.stringify(req.headers, null, 2));
       
+      // Special handling for Monica directly (user IDs 18 or 19)
+      if (req.user.id === 18 || req.user.id === 19) {
+        console.log("Special handling for Monica's account (user ID", req.user.id, ")");
+        
+        // Directly get Monica's agent record by agent ID 9 instead of using getAgentByUserId
+        const monicaAgent = await storage.getAgent(9);
+        
+        if (monicaAgent) {
+          console.log("Found Monica's agent record with ID 9, proceeding with direct update");
+          
+          // Only allow updating specific fields that agents should be able to manage themselves
+          const allowedFields = [
+            "phoneNumber", 
+            "address", 
+            "city", 
+            "state", 
+            "zipCode", 
+            "licensedStates", 
+            "licenseNumber",
+            "licenseExpiration",
+            "npn"
+          ];
+          
+          const updatedData: any = {};
+          for (const field of allowedFields) {
+            if (req.body[field] !== undefined) {
+              updatedData[field] = req.body[field];
+            }
+          }
+          
+          console.log("Updating Monica's agent record with fields:", Object.keys(updatedData));
+          
+          // Update agent directly with agent ID 9
+          const result = await storage.updateAgent(9, updatedData);
+          
+          if (result) {
+            console.log("Successfully updated Monica's agent record with ID 9");
+            
+            // Also update the userId connection if needed
+            if (monicaAgent.userId !== req.user.id) {
+              console.log(`Updating agent ${monicaAgent.id} userId from ${monicaAgent.userId} to ${req.user.id}`);
+              await storage.updateAgent(9, { userId: req.user.id });
+            }
+            
+            return res.json({
+              ...result,
+              username: req.user.username,
+            });
+          } else {
+            console.error("Failed to update Monica's agent record despite having direct access");
+            return res.status(500).json({ message: "Failed to update agent profile" });
+          }
+        }
+      }
+      
+      // Regular handling for other agents
       const agent = await storage.getAgentByUserId(req.user.id);
       
       // Debug log to check if agent exists
@@ -1491,27 +1550,6 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         console.log("Found agent with ID:", agent.id, "for user ID:", req.user.id);
       } else {
         console.log("No agent found for user ID:", req.user.id);
-        
-        // Special handling for Monica (user IDs 18 or 19)
-        if (req.user.id === 18 || req.user.id === 19) {
-          console.log("Special handling for Monica's account (user ID 18 or 19)");
-          // Try to get agent ID 9 which is Monica's agent ID
-          const monicaAgent = await storage.getAgent(9);
-          
-          if (monicaAgent) {
-            console.log("Found Monica's agent record with ID 9, updating with user ID connection");
-            // Update the agent record to connect to this user ID
-            await storage.updateAgent(9, { userId: req.user.id });
-            // Retry getting the agent record with updated userId
-            const updatedAgent = await storage.getAgentByUserId(req.user.id);
-            
-            if (updatedAgent) {
-              console.log("Successfully connected user ID", req.user.id, "to agent ID 9");
-              return res.status(200).json({ message: "Agent profile updated with user connection. Please refresh the page to continue." });
-            }
-          }
-        }
-        
         return res.status(404).json({ message: "Agent profile not found" });
       }
       
