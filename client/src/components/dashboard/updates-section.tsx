@@ -54,7 +54,7 @@ const SAMPLE_UPDATES = [
     type: "resources",
     date: "2025-04-21T15:45:00Z",
     link: "/resources/books",
-    linkText: "View Reading List"
+    linkText: "View Books & Websites"
   },
   {
     id: 3,

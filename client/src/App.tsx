@@ -24,6 +24,7 @@ import AuthPage from "@/pages/auth-page";
 import HomeRedirect from "@/components/home-redirect";
 import Training from "@/pages/training";
 import Analytics from "@/pages/analytics";
+import Resources from "@/pages/resources";
 import SimpleClientLogin from "@/pages/simple-client-login";
 import DirectClientLogin from "@/pages/direct-client-login";
 import FinalClientTest from "@/pages/final-client-test";
@@ -122,6 +123,16 @@ const AgentPerformancePage = () => {
   );
 };
 
+// Resources Books Page component
+const ResourcesBooksPage = () => {
+  const ResourcesBooks = lazy(() => import("@/pages/resources/books"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <ResourcesBooks />
+    </Suspense>
+  );
+};
+
 // Create a ClientDetailPage component to handle lazy loading
 const ClientDetailPage = () => {
   return (
@@ -158,6 +169,8 @@ function Router() {
       <ProtectedRoute path="/agent-profile" component={AgentProfilePage} />
       <ProtectedRoute path="/training" component={Training} />
       <ProtectedRoute path="/analytics" component={Analytics} />
+      <ProtectedRoute path="/resources" component={Resources} />
+      <ProtectedRoute path="/resources/books" component={ResourcesBooksPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/client-login" component={SimpleClientLogin} />
       <Route path="/client-api-test" component={DirectClientLogin} />
