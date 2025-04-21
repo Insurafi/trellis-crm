@@ -106,17 +106,33 @@ const LeadsPage: React.FC = () => {
   // Add lead mutation
   const addLeadMutation = useMutation({
     mutationFn: async (newLead: LeadFormValues) => {
-      const response = await apiRequest("POST", "/api/leads", newLead);
-      if (!response.ok) {
-        // Try to extract the error message from the response
-        try {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to add lead');
-        } catch (parseError) {
-          throw new Error(`Failed to add lead: ${response.statusText}`);
+      // Add enhanced debugging for lead creation
+      console.log("Starting lead creation with data:", newLead);
+      
+      try {
+        const response = await apiRequest("POST", "/api/leads", newLead);
+        console.log("Lead creation API response status:", response.status, response.statusText);
+        
+        if (!response.ok) {
+          // Try to extract the error message from the response
+          try {
+            const errorData = await response.json();
+            console.error("Lead creation error details:", errorData);
+            throw new Error(errorData.message || 'Failed to add lead');
+          } catch (parseError) {
+            console.error("Failed to parse error response:", parseError);
+            throw new Error(`Failed to add lead: ${response.statusText}`);
+          }
         }
+        
+        // Debug successful response
+        const responseData = await response.clone().json();
+        console.log("Lead created successfully:", responseData);
+        return response;
+      } catch (error) {
+        console.error("Lead creation exception:", error);
+        throw error;
       }
-      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
@@ -128,9 +144,18 @@ const LeadsPage: React.FC = () => {
     },
     onError: (error: Error) => {
       console.error("Lead add error:", error);
+      
+      // Improved error message that shows the actual error
+      let errorMessage = "Failed to add lead";
+      if (error instanceof Error) {
+        errorMessage = error.message || errorMessage;
+        // Log full error details for debugging
+        console.error("Full error details:", JSON.stringify(error, null, 2));
+      }
+      
       toast({
-        title: "Error",
-        description: error.message || "Failed to add lead",
+        title: "Error Adding Lead",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -333,8 +358,27 @@ const LeadsPage: React.FC = () => {
     }
   }, [selectedLead, editForm, isEditDialogOpen]);
 
-  // Handle add form submission
+  // Handle add form submission with improved error handling
   const onAddSubmit = (data: LeadFormValues) => {
+    // Validate required fields that might cause backend issues
+    if (!data.email || !data.phoneNumber || !data.state) {
+      const missingFields = [];
+      if (!data.email) missingFields.push("Email");
+      if (!data.phoneNumber) missingFields.push("Phone Number");
+      if (!data.state) missingFields.push("State");
+      
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in the following required fields: ${missingFields.join(", ")}`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Log the data being submitted for debugging
+    console.log("Submitting lead data:", data);
+    
+    // Proceed with the mutation
     addLeadMutation.mutate(data);
   };
 
