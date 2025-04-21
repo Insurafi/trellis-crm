@@ -78,7 +78,11 @@ async function testProfileUpdate(cookies) {
       npn: "9876543"
     };
     
-    const updateResponse = await fetch('http://localhost:5000/api/agents/profile', {
+    console.log("Using direct agent ID update endpoint for Monica (ID 9)");
+    console.log("Update data:", JSON.stringify(updateData));
+    console.log("Cookies:", cookies);
+    
+    const updateResponse = await fetch('http://localhost:5000/api/agents/9', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
