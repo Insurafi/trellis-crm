@@ -8,6 +8,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link } from "wouter";
 
+// Function to calculate age from date of birth
+function calculateAge(dateOfBirth: string): number {
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  
+  return age;
+}
+
 import {
   Card,
   CardContent,
@@ -514,7 +528,7 @@ export default function Clients() {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-6 text-neutral-500">
+                      <TableCell colSpan={7} className="text-center py-6 text-neutral-500">
                         {searchTerm ? "No clients match your search criteria" : "No clients found"}
                       </TableCell>
                     </TableRow>
