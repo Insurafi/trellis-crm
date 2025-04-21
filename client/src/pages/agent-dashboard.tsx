@@ -1181,7 +1181,8 @@ export default function AgentDashboard() {
                           <FormItem>
                             <FormLabel>Account Type</FormLabel>
                             <Select 
-                              onValueChange={field.onChange} 
+                              onValueChange={field.onChange}
+                              value={field.value || ""}
                               defaultValue={field.value}
                             >
                               <FormControl>
