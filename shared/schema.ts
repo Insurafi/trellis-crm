@@ -45,6 +45,10 @@ export const clients = pgTable("clients", {
   phone: text("phone"),
   sex: text("sex"), // 'M' or 'F'
   address: text("address"),
+  city: text("city"), // Added city field
+  state: text("state"), // Added state field
+  zipCode: text("zip_code"), // Added zipCode field
+  dateOfBirth: date("date_of_birth"), // Added date of birth field
   status: text("status").default("active"),
   avatarUrl: text("avatar_url"),
   notes: text("notes"),
@@ -66,8 +70,14 @@ export const insertClientSchema = createInsertSchema(clients).pick({
   phone: true,
   sex: true, // Added sex field
   address: true,
+  city: true, // Added city field
+  state: true, // Added state field
+  zipCode: true, // Added zipCode field
+  dateOfBirth: true, // Added date of birth field
   status: true,
   avatarUrl: true,
+  insuranceType: true, // Added insurance type field
+  insuranceInfo: true, // Added insurance info field
   notes: true,
   username: true,
   password: true,
