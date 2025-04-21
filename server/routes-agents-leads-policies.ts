@@ -519,6 +519,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
   // Define specific path endpoints BEFORE the parameter-based ones
   // This ensures /api/agents/profile doesn't get captured by /api/agents/:id
+  console.log("=== DEFINING /api/agents/profile ENDPOINT ===");
   app.patch("/api/agents/profile", isAuthenticated, async (req: Request, res: Response) => {
     try {
       if (!req.user || !req.user.id) {
@@ -646,6 +647,11 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
 
   app.patch("/api/agents/:id", isAuthenticated, async (req, res) => {
     try {
+      console.log("=== AGENT ID ENDPOINT CALLED ===");
+      console.log("Params:", req.params);
+      console.log("URL:", req.url);
+      console.log("Original URL:", req.originalUrl);
+      
       // Check if this is actually a "profile" route that's being misrouted
       if (req.params.id === "profile") {
         console.log("DETECTED MISROUTED /api/agents/profile REQUEST - REDIRECTING");
@@ -656,7 +662,10 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       }
       
       const id = parseInt(req.params.id);
+      console.log("Parsed ID:", id, "Is NaN:", isNaN(id));
+      
       if (isNaN(id)) {
+        console.log("Invalid agent ID detected, rejecting with 400");
         return res.status(400).json({ message: "Invalid agent ID" });
       }
       
