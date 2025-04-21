@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Plus, Info, Calendar, Bell, ExternalLink, ChevronRight } from "lucide-react";
+import { Plus, Info, Calendar, Bell, ExternalLink, ChevronRight, BookOpen } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { format } from "date-fns";
 
@@ -49,13 +49,22 @@ const SAMPLE_UPDATES = [
   },
   {
     id: 2,
+    title: "Essential Insurance Books & Websites Added",
+    message: "Check out our curated collection of must-read insurance books and industry websites. Featured titles include 'The Digital Life Insurance Agent' by Jeff Root, 'Questions and Answers on Life Insurance' by Tony Steuer, and 'Knock Out the Competition' by Michael Bonilla, plus reliable industry websites like LIMRA, Insurance News Net, and ThinkAdvisor.",
+    type: "resources",
+    date: "2025-04-21T15:45:00Z",
+    link: "/resources/books",
+    linkText: "View Reading List"
+  },
+  {
+    id: 3,
     title: "Dashboard Enhancement: Updates Section Added",
     message: "A new Updates section has been added to all dashboards to keep you informed about the latest system changes, training materials, and marketing resources.",
     type: "system",
     date: "2025-04-21T11:30:00Z"
   },
   {
-    id: 3,
+    id: 4,
     title: "New Marketing Materials for Living Expenses Products",
     message: "New marketing templates, presentation slides, and client-facing materials for both Term and Whole Life with Living Expenses products are now available in the Resources section.",
     type: "marketing",
@@ -71,6 +80,7 @@ const updateIcons: Record<string, React.ReactNode> = {
   system: <Info className="h-10 w-10 p-2 rounded-full bg-purple-100 text-purple-600" />,
   marketing: <Bell className="h-10 w-10 p-2 rounded-full bg-green-100 text-green-600" />,
   announcement: <Bell className="h-10 w-10 p-2 rounded-full bg-amber-100 text-amber-600" />,
+  resources: <BookOpen className="h-10 w-10 p-2 rounded-full bg-cyan-100 text-cyan-600" />,
   default: <Info className="h-10 w-10 p-2 rounded-full bg-gray-100 text-gray-600" />
 };
 
@@ -293,6 +303,7 @@ const UpdatesSection = () => {
                             <option value="training">Training</option>
                             <option value="system">System Update</option>
                             <option value="marketing">Marketing</option>
+                            <option value="resources">Books & Resources</option>
                           </select>
                         </FormControl>
                         <FormMessage />
