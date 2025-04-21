@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import { storage } from "./storage";
 import { insertAgentSchema, insertLeadSchema, insertPolicySchema } from "@shared/schema";
 import { z } from "zod";
@@ -10,6 +10,8 @@ import { syncLeadToClient } from "./lead-client-sync";
 import { syncPolicyToClient, associatePolicyWithClient } from "./policy-client-sync";
 
 export function registerAgentLeadsPolicyRoutes(app: Express) {
+  // Define a router specifically for agent routes to control order with more precision
+  const agentRouter = express.Router();
   // Error handling middleware for validation errors
   const handleValidationError = (error: unknown, res: Response) => {
     if (error instanceof ZodError) {
@@ -517,10 +519,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  // Define specific path endpoints BEFORE the parameter-based ones
-  // This ensures /api/agents/profile doesn't get captured by /api/agents/:id
+  // Define the profile endpoint on the router first
   console.log("=== DEFINING /api/agents/profile ENDPOINT ===");
-  app.patch("/api/agents/profile", isAuthenticated, async (req: Request, res: Response) => {
+  agentRouter.patch("/profile", isAuthenticated, async (req: Request, res: Response) => {
     try {
       if (!req.user || !req.user.id) {
         return res.status(401).json({ message: "User not authenticated" });
@@ -645,7 +646,8 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/agents/:id", isAuthenticated, async (req, res) => {
+  // Now define the generic ID-based handler
+  agentRouter.patch("/:id", isAuthenticated, async (req, res) => {
     try {
       console.log("=== AGENT ID ENDPOINT CALLED ===");
       console.log("Params:", req.params);
@@ -1660,4 +1662,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   // This agent profile endpoint has been moved above the ID-based endpoint at the beginning of the routes
   // DO NOT remove this comment as it helps document the change that was made
   /* Original endpoint was here, but moved to line ~522 to fix route ordering */
+  
+  // Register agent-specific router with clear ordering rules
+  // Mount the router AFTER defining all the routes on it
+  console.log("=== MOUNTING AGENT ROUTER WITH CORRECT ROUTE ORDERING ===");
+  app.use("/api/agents", agentRouter);
 }
