@@ -31,6 +31,8 @@ import {
   Briefcase,
   Building2,
   Check, 
+  ChevronRight,
+  FileText,
   HelpCircle, 
   Info, 
   Landmark,
@@ -3602,6 +3604,57 @@ export default function TrainingPage() {
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Resources Hub Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BookOpen className="mr-2 h-5 w-5 text-cyan-600" />
+                Resources Hub
+              </CardTitle>
+              <CardDescription>
+                Additional learning materials to enhance your insurance knowledge
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-cyan-50 rounded-lg p-4 border border-cyan-200 transition-colors hover:bg-cyan-100">
+                  <h3 className="text-lg font-medium flex items-center text-cyan-800">
+                    <BookOpen className="mr-2 h-4 w-4 text-cyan-600" />
+                    Books & Websites
+                  </h3>
+                  <p className="text-sm text-cyan-700 mt-1">
+                    Recommended reading and industry websites for insurance professionals.
+                  </p>
+                  <Button variant="link" asChild className="p-0 h-auto mt-2 text-cyan-600">
+                    <a href="/resources/books">View Reading List</a>
+                  </Button>
+                </div>
+
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200 transition-colors hover:bg-green-100">
+                  <h3 className="text-lg font-medium flex items-center text-green-800">
+                    <FileText className="mr-2 h-4 w-4 text-green-600" />
+                    Marketing Templates
+                  </h3>
+                  <p className="text-sm text-green-700 mt-1">
+                    Ready-to-use templates for client emails, social media, and presentations.
+                  </p>
+                  <Button variant="link" asChild className="p-0 h-auto mt-2 text-green-600">
+                    <a href="/resources">Explore Templates</a>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <Button variant="outline" asChild className="w-full">
+                  <a href="/resources">
+                    View All Resources
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
