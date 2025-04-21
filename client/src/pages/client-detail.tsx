@@ -38,6 +38,24 @@ import {
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
+// Helper function to calculate age from birthdate
+const calculateAge = (dateOfBirth: any) => {
+  if (!dateOfBirth) return "Unknown";
+  
+  const birthDate = new Date(dateOfBirth);
+  const today = new Date();
+  
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  
+  // If not yet had birthday this year, subtract one year
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  
+  return age;
+};
+
 export default function ClientDetail() {
   const { id } = useParams();
   const clientId = parseInt(id);
@@ -68,12 +86,21 @@ export default function ClientDetail() {
     state: "",
     zipCode: "",
     avatarUrl: "",
-    notes: ""
+    notes: "",
+    sex: "",
+    dateOfBirth: ""
   });
 
   // Update form when client data is loaded
   useEffect(() => {
     if (client) {
+      // Format date of birth for form input (YYYY-MM-DD)
+      let formattedDateOfBirth = "";
+      if (client.dateOfBirth) {
+        const date = new Date(client.dateOfBirth);
+        formattedDateOfBirth = date.toISOString().split('T')[0];
+      }
+      
       setFormData({
         name: client.name || "",
         email: client.email || "",
@@ -84,7 +111,9 @@ export default function ClientDetail() {
         state: client.state || "",
         zipCode: client.zipCode || "",
         avatarUrl: client.avatarUrl || "",
-        notes: client.notes || ""
+        notes: client.notes || "",
+        sex: client.sex || "",
+        dateOfBirth: formattedDateOfBirth
       });
     }
   }, [client]);
@@ -284,6 +313,34 @@ export default function ClientDetail() {
                     <p className="text-sm">{client.company || "Not provided"}</p>
                   </div>
                 </div>
+
+                {/* Sex/Gender Field */}
+                <div className="flex items-start">
+                  <User className="h-5 w-5 mr-3 text-gray-500 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Gender</p>
+                    <p className="text-sm">{client.sex || "Not provided"}</p>
+                  </div>
+                </div>
+                
+                {/* Date of Birth Field with Age Calculation */}
+                <div className="flex items-start">
+                  <CalendarClock className="h-5 w-5 mr-3 text-gray-500 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Date of Birth</p>
+                    <p className="text-sm">
+                      {client.dateOfBirth ? (
+                        <>
+                          {new Date(client.dateOfBirth).toLocaleDateString()} 
+                          {" "}
+                          (Age: {calculateAge(client.dateOfBirth)})
+                        </>
+                      ) : (
+                        "Not provided"
+                      )}
+                    </p>
+                  </div>
+                </div>
                 
                 <div className="flex items-start">
                   <MapPin className="h-5 w-5 mr-3 text-gray-500 mt-0.5" />
@@ -383,6 +440,32 @@ export default function ClientDetail() {
                           value={formData.company || ""}
                           onChange={handleInputChange}
                           placeholder="Company name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="sex" className="text-sm font-medium">Gender</label>
+                        <select
+                          id="sex"
+                          name="sex"
+                          value={formData.sex || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border rounded-md"
+                        >
+                          <option value="">Select gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                          <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</label>
+                        <Input
+                          id="dateOfBirth"
+                          name="dateOfBirth"
+                          type="date"
+                          value={formData.dateOfBirth || ""}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="space-y-2">
