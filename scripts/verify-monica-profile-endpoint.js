@@ -52,6 +52,7 @@ async function testProfileWithProfileEndpoint(loginData) {
   }
   
   console.log("\nTesting profile update using /api/agents/profile endpoint...");
+  console.log("Cookies:", loginData.cookies);
   
   try {
     // Create unique test values
@@ -63,7 +64,27 @@ async function testProfileWithProfileEndpoint(loginData) {
     
     console.log("Sending update with data:", updateData);
     
+    // First, test if we can get our own agent data to confirm auth is working
+    console.log("\nTrying to get agent data to verify authentication is working...");
+    const agentDataResponse = await fetch(`${BASE_URL}/api/agent-data/9`, {
+      method: 'GET',
+      headers: {
+        'Cookie': loginData.cookies
+      }
+    });
+    
+    if (agentDataResponse.ok) {
+      const agentData = await agentDataResponse.json();
+      console.log("✅ Successfully retrieved agent data:", agentData);
+    } else {
+      console.error("❌ Could not retrieve agent data, auth might not be working correctly");
+      console.error(`Status: ${agentDataResponse.status}`);
+      const errorText = await agentDataResponse.text();
+      console.error(errorText);
+    }
+    
     // Make the PATCH request to the profile endpoint
+    console.log("\nSending PATCH request to /api/agents/profile...");
     const profileResponse = await fetch(`${BASE_URL}/api/agents/profile`, {
       method: 'PATCH',
       headers: {
@@ -73,11 +94,40 @@ async function testProfileWithProfileEndpoint(loginData) {
       body: JSON.stringify(updateData),
     });
     
+    // Log request details for debugging
+    console.log("Request URL:", `${BASE_URL}/api/agents/profile`);
+    console.log("Request method:", 'PATCH');
+    console.log("Request headers:", {
+      'Content-Type': 'application/json',
+      'Cookie': loginData.cookies
+    });
+    
     // Check the response
     if (!profileResponse.ok) {
       const errorText = await profileResponse.text();
       console.error(`❌ Profile update failed with status ${profileResponse.status}`);
       console.error(errorText);
+      
+      // Try a direct update to agent ID 9 as a fallback
+      console.log("\nAttempting fallback: direct update to /api/agents/9...");
+      const directUpdateResponse = await fetch(`${BASE_URL}/api/agents/9`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': loginData.cookies
+        },
+        body: JSON.stringify(updateData),
+      });
+      
+      if (directUpdateResponse.ok) {
+        const directResult = await directUpdateResponse.json();
+        console.log("✅ Direct update to /api/agents/9 succeeded:", directResult);
+        console.log("This suggests the issue is with routing, not authentication or permissions");
+      } else {
+        const directError = await directUpdateResponse.text();
+        console.error("❌ Direct update also failed:", directError);
+      }
+      
       return false;
     }
     
