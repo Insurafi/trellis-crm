@@ -3636,13 +3636,13 @@ export default function TrainingPage() {
                 <div className="bg-green-50 rounded-lg p-4 border border-green-200 transition-colors hover:bg-green-100">
                   <h3 className="text-lg font-medium flex items-center text-green-800">
                     <FileText className="mr-2 h-4 w-4 text-green-600" />
-                    Marketing Templates
+                    Training Materials
                   </h3>
                   <p className="text-sm text-green-700 mt-1">
-                    Ready-to-use templates for client emails, social media, and presentations.
+                    Access additional training materials, sales tools, and marketing templates.
                   </p>
                   <Button variant="link" asChild className="p-0 h-auto mt-2 text-green-600">
-                    <a href="/resources">Explore Templates</a>
+                    <a href="/resources">View Resources</a>
                   </Button>
                 </div>
               </div>
