@@ -21,6 +21,13 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   ChevronLeft,
   Loader2,
   Save,
@@ -34,7 +41,8 @@ import {
   Mail,
   MapPin,
   Building,
-  AlertCircle
+  AlertCircle,
+  UserCog,
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -75,6 +83,12 @@ export default function ClientDetail() {
     enabled: !isNaN(clientId)
   });
 
+  // Fetch agents for dropdown
+  const { data: agents = [] } = useQuery({
+    queryKey: ['/api/agents'],
+    enabled: !isNaN(clientId)
+  });
+
   // Form state
   const [formData, setFormData] = useState({
     name: "",
@@ -88,7 +102,8 @@ export default function ClientDetail() {
     avatarUrl: "",
     notes: "",
     sex: "",
-    dateOfBirth: ""
+    dateOfBirth: "",
+    assignedAgentId: null as number | null
   });
 
   // Update form when client data is loaded
@@ -113,7 +128,8 @@ export default function ClientDetail() {
         avatarUrl: client.avatarUrl || "",
         notes: client.notes || "",
         sex: client.sex || "",
-        dateOfBirth: formattedDateOfBirth
+        dateOfBirth: formattedDateOfBirth,
+        assignedAgentId: client.assignedAgentId || null
       });
     }
   }, [client]);
@@ -167,6 +183,14 @@ export default function ClientDetail() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  // Handle agent selection
+  const handleAgentChange = (value: string) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      assignedAgentId: value === "none" ? null : parseInt(value) 
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -509,6 +533,31 @@ export default function ClientDetail() {
                         />
                       </div>
                     </div>
+                    
+                    {/* Agent Assignment Dropdown */}
+                    <div className="space-y-2">
+                      <label htmlFor="assignedAgentId" className="text-sm font-medium flex items-center">
+                        <UserCog className="h-4 w-4 mr-2" />
+                        Assigned Agent
+                      </label>
+                      <Select
+                        value={formData.assignedAgentId ? formData.assignedAgentId.toString() : "none"}
+                        onValueChange={handleAgentChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select an agent" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">None</SelectItem>
+                          {agents.map((agent: any) => (
+                            <SelectItem key={agent.id} value={agent.id.toString()}>
+                              Agent #{agent.id} {agent.fullName || agent.userId ? `(${agent.fullName || 'User ' + agent.userId})` : ''}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
                     <div className="space-y-2">
                       <label htmlFor="avatarUrl" className="text-sm font-medium">Avatar URL</label>
                       <Input
