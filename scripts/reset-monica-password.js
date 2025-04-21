@@ -1,7 +1,9 @@
 // Script to reset Monica's password
-const { Pool } = require('pg');
-const crypto = require('crypto');
-const util = require('util');
+import pg from 'pg';
+import crypto from 'crypto';
+import util from 'util';
+
+const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
@@ -41,9 +43,9 @@ async function resetMonicaPassword() {
     );
     
     console.log('User accounts:');
-    users.rows.forEach(user => {
+    for (const user of users.rows) {
       console.log(`ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, Role: ${user.role}, Active: ${user.active}`);
-    });
+    }
     
     console.log('Password reset complete. New password: agent123');
     
