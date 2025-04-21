@@ -1569,11 +1569,36 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       let updatedAgent = {...agent};
       if (Object.keys(updatedData).length > 0) {
         try {
+          console.log(`Updating agent ${agent.id} with data:`, updatedData);
+          
+          // Specific fix for Monica Palmer (agent ID 9)
+          const isMonicaAgent = agent.id === 9;
+          if (isMonicaAgent) {
+            console.log("Special handling for Monica's agent record (ID 9)");
+            try {
+              // First, ensure the agent record is connected to the current user ID
+              if (agent.userId !== req.user.id) {
+                console.log(`Updating agent ${agent.id} userId from ${agent.userId} to ${req.user.id}`);
+                await storage.updateAgent(agent.id, { userId: req.user.id });
+                // Reload the agent to get updated record
+                const refreshedAgent = await storage.getAgent(agent.id);
+                if (refreshedAgent) {
+                  updatedAgent = refreshedAgent;
+                }
+              }
+            } catch (userIdError) {
+              console.error("Error updating agent userId:", userIdError);
+              // Continue with the update even if this fails
+            }
+          }
+          
           const result = await storage.updateAgent(agent.id, updatedData);
           
           if (result) {
             updatedAgent = result;
+            console.log(`Successfully updated agent ${agent.id} with fields:`, Object.keys(updatedData));
           } else {
+            console.error(`Failed to update agent ${agent.id}. No result returned.`);
             return res.status(500).json({ message: "Failed to update agent profile" });
           }
         } catch (error) {

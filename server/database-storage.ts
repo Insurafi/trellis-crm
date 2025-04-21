@@ -883,7 +883,7 @@ export class DatabaseStorage implements IStorage {
       // Get the user to verify it's Monica
       const [user] = await db.select().from(users).where(eq(users.id, userId));
       
-      if (user && user.first_name === 'Monica' && user.last_name === 'Palmer') {
+      if (user && user.firstName === 'Monica' && user.lastName === 'Palmer') {
         console.log("Confirmed user is Monica Palmer, looking up agent ID 9");
         // Get Monica's agent record by ID 9
         const [monicaAgent] = await db.select().from(agents).where(eq(agents.id, 9));
