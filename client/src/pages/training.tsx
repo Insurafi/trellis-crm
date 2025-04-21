@@ -583,6 +583,170 @@ export default function TrainingPage() {
       ]
     },
     {
+      id: "wholeLiving",
+      title: "Whole Life with Living Expenses",
+      description: "Learn about whole life insurance with living benefits that provide financial support during your lifetime.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">What is Whole Life with Living Expenses?</h3>
+            <p className="mt-2 text-muted-foreground">
+              Whole Life with Living Expenses combines traditional whole life insurance with living benefits riders 
+              that allow policyholders to access a portion of their death benefit while still alive if they 
+              experience qualifying critical, chronic, or terminal illnesses. This product provides both lifetime 
+              protection with cash value growth and financial support for severe health conditions.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Key Features
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Permanent Coverage:</span> Lifetime protection with fixed premiums and guaranteed death benefit.</li>
+              <li><span className="font-medium">Cash Value Growth:</span> Tax-advantaged cash value accumulation that can be borrowed against.</li>
+              <li><span className="font-medium">Living Benefits:</span> Early access to a portion of the death benefit for qualifying health conditions.</li>
+              <li><span className="font-medium">Critical Illness:</span> Benefits for conditions like heart attack, stroke, cancer, etc.</li>
+              <li><span className="font-medium">Chronic Illness:</span> Coverage for conditions requiring assistance with activities of daily living.</li>
+              <li><span className="font-medium">Terminal Illness:</span> Accelerated benefits when life expectancy is typically less than 12-24 months.</li>
+              <li><span className="font-medium">Premium Structure:</span> Higher premiums than standard whole life due to added living benefits.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="ideal-clients">
+              <AccordionTrigger className="px-4">Ideal Clients for Whole Life with Living Expenses</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Middle-aged and older clients seeking permanent insurance with added protection</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Individuals with family history of serious illnesses who want financial protection</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Business owners who want added protection for key person or buy-sell agreements</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Clients seeking estate planning solutions with additional living benefits</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="sales-tips">
+              <AccordionTrigger className="px-4">Sales Tips</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Emphasize the policy's dual benefits: permanent protection AND access to funds if needed for health emergencies</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Compare to standard whole life, highlighting the additional living benefits as an insurance policy against debilitating illnesses</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Focus on how it combines traditional benefits (cash value, permanent coverage) with modern living benefits protection</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Use real examples of clients who have benefited from living benefits riders</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="objection-handling">
+              <AccordionTrigger className="px-4">Common Objections & Responses</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Objection: "It's too expensive."</p>
+                    <p className="text-muted-foreground ml-6">Response: "The additional cost provides valuable protection for both your family's future and your own financial security if you experience a serious illness. Consider what would happen financially if you suffered a critical illness without this coverage."</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Objection: "I already have health insurance."</p>
+                    <p className="text-muted-foreground ml-6">Response: "Health insurance covers medical expenses but typically doesn't replace lost income or help with mortgage payments, everyday expenses, or potential debt that can accumulate during a health crisis. These living benefits provide cash that you can use for any purpose."</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Objection: "Why not just buy a separate critical illness policy?"</p>
+                    <p className="text-muted-foreground ml-6">Response: "A separate policy would mean another premium payment and might have more restrictions. This integrated approach ensures you have permanent life insurance that will pay a death benefit no matter what, while also providing living benefits if you need them. If you never use the living benefits, your beneficiaries still receive the full death benefit."</p>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Important to remember</AlertTitle>
+            <AlertDescription>
+              Accessing living benefits will reduce the death benefit and cash value available to beneficiaries. 
+              The qualification criteria for accessing benefits vary by carrier and policy. Always carefully review 
+              the specific terms with clients to ensure they understand when and how benefits can be accessed.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What distinguishes Whole Life with Living Expenses from standard Whole Life insurance?",
+          options: [
+            "Higher guaranteed cash value growth rates",
+            "The ability to access a portion of the death benefit for qualifying health conditions while still alive",
+            "Lower premium costs than standard whole life",
+            "Elimination of the medical exam requirement"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which of the following is typically NOT a qualifying condition for accessing living benefits?",
+          options: [
+            "Terminal illness with life expectancy under 12 months",
+            "Heart attack requiring hospitalization",
+            "Minor outpatient procedures and routine medical care",
+            "Chronic illness requiring assistance with daily living activities"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What happens to the death benefit when a policyholder accesses living benefits?",
+          options: [
+            "It remains unchanged regardless of benefits used",
+            "It is reduced by the amount of living benefits accessed",
+            "It automatically converts to an annuity payment",
+            "It is completely eliminated"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which client would be the MOST suitable candidate for Whole Life with Living Expenses?",
+          options: [
+            "A 25-year-old seeking the lowest-cost term insurance option",
+            "A 45-year-old business owner with family history of heart disease",
+            "A 70-year-old primarily concerned with final expense coverage",
+            "A young family looking for temporary coverage until children are grown"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "How does the premium structure for Whole Life with Living Expenses compare to standard Whole Life?",
+          options: [
+            "Substantially lower premiums",
+            "Identical premium structure",
+            "Higher premiums due to the additional living benefits",
+            "Variable premiums that fluctuate with policy performance"
+          ],
+          correctAnswer: 2
+        }
+      ]
+    },
+    {
       id: "iul",
       title: "Indexed Universal Life (IUL)",
       description: "Explore the flexible features of IUL policies, market indexes, and ideal client scenarios.",
