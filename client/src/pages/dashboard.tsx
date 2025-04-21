@@ -1,5 +1,6 @@
 import DashboardMetrics from "@/components/ui/dashboard-metrics";
 import TaskManagement from "@/components/dashboard/task-management";
+import UpdatesSection from "@/components/dashboard/updates-section";
 import CalendarCard from "@/components/ui/calendar-card";
 import AgentStatusList from "@/components/dashboard/agent-status-list";
 import ClientList from "@/components/ui/client-list";
@@ -83,6 +84,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
+          <UpdatesSection />
           <TaskManagement />
           
           {/* Client List Card */}

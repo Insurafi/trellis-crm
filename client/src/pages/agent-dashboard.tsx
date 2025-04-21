@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import TaskManagement from "@/components/dashboard/task-management";
+import UpdatesSection from "@/components/dashboard/updates-section";
 import CalendarCard from "@/components/ui/calendar-card";
 import {
   Card,
@@ -486,6 +487,10 @@ export default function AgentDashboard() {
             </Card>
           </div>
 
+          <div className="grid gap-4 mb-4">
+            <UpdatesSection />
+          </div>
+          
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
             <TaskManagement />
             <CalendarCard events={todaysEvents} />
