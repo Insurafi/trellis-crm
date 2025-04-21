@@ -30,18 +30,26 @@ export async function syncExistingLeadsToClients(): Promise<void> {
       }
       
       try {
-        // Create a client record for this lead
+        // Create a client record for this lead with ALL address fields
         const clientData = {
-          name: `${lead.firstName} ${lead.lastName}`,
+          name: `${lead.firstName} ${lead.lastName}`.toUpperCase(), // Ensure consistent naming format
           email: lead.email || `lead${lead.id}@placeholder.com`, // Ensure email is not null
           phone: lead.phoneNumber,
+          // Include all address fields
           address: lead.address,
+          city: lead.city, // Add city field
+          state: lead.state, // Add state field
+          zipCode: lead.zipCode, // Add zip code field
           sex: lead.sex,
+          dateOfBirth: lead.dateOfBirth, // Include date of birth
           status: "active",
           notes: lead.notes,
           // Link to the lead and assigned agent
           assignedAgentId: lead.assignedAgentId,
-          leadId: lead.id
+          leadId: lead.id,
+          // Add additional fields for insurance information
+          insuranceType: lead.insuranceTypeInterest,
+          insuranceInfo: lead.existingCoverage
         };
         
         const newClient = await storage.createClient(clientData);

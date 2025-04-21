@@ -1114,16 +1114,24 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       
       // Also create a client record from the lead data
       const clientData = {
-        name: `${newLead.firstName} ${newLead.lastName}`,
+        name: `${newLead.firstName} ${newLead.lastName}`.toUpperCase(), // Ensure consistent naming format
         email: newLead.email || `lead${newLead.id}@placeholder.com`, // Ensure email is not null
         phone: newLead.phoneNumber,
+        // Include all address fields
         address: newLead.address,
+        city: newLead.city, // Add city field
+        state: newLead.state, // Add state field
+        zipCode: newLead.zipCode, // Add zip code field
         sex: newLead.sex,
+        dateOfBirth: newLead.dateOfBirth, // Include date of birth
         status: "active",
         notes: newLead.notes,
         // Link to the lead and assigned agent
         assignedAgentId: newLead.assignedAgentId,
-        leadId: newLead.id
+        leadId: newLead.id,
+        // Add additional fields for insurance information
+        insuranceType: newLead.insuranceTypeInterest,
+        insuranceInfo: newLead.existingCoverage
       };
       
       // Create the client record
