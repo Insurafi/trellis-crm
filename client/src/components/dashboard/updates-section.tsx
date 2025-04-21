@@ -40,28 +40,28 @@ import { format } from "date-fns";
 const SAMPLE_UPDATES = [
   {
     id: 1,
-    title: "New Training Module: Term with Living Expenses",
-    message: "A new training module about Term with Living Expenses has been added to the Training section.",
+    title: "NEW TRAINING: Term & Whole Life with Living Expenses",
+    message: "Two new comprehensive training modules have been added for Term with Living Expenses and Whole Life with Living Expenses. These modules include detailed content on key features, ideal client profiles, sales tips, objection handling, and quiz questions to test your knowledge.",
     type: "training",
     date: "2025-04-21T10:00:00Z",
     link: "/training",
-    linkText: "Go to Training"
+    linkText: "Access Training Modules"
   },
   {
     id: 2,
-    title: "System Update: Dashboard Improvements",
-    message: "Dashboard has been updated with new features for better task management and client tracking.",
+    title: "Dashboard Enhancement: Updates Section Added",
+    message: "A new Updates section has been added to all dashboards to keep you informed about the latest system changes, training materials, and marketing resources.",
     type: "system",
-    date: "2025-04-20T15:30:00Z"
+    date: "2025-04-21T11:30:00Z"
   },
   {
     id: 3,
-    title: "New Marketing Materials",
-    message: "New marketing templates for Term with Living Expenses are now available in the Resources section.",
+    title: "New Marketing Materials for Living Expenses Products",
+    message: "New marketing templates, presentation slides, and client-facing materials for both Term and Whole Life with Living Expenses products are now available in the Resources section.",
     type: "marketing",
-    date: "2025-04-19T09:45:00Z",
+    date: "2025-04-20T14:45:00Z",
     link: "/resources",
-    linkText: "View Resources"
+    linkText: "View Marketing Resources"
   }
 ];
 
