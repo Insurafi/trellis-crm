@@ -1,5 +1,5 @@
 // Verify that Monica can log in and update her profile
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 async function testMonicaLogin() {
   try {
@@ -17,7 +17,7 @@ async function testMonicaLogin() {
     for (const account of accounts) {
       try {
         console.log(`Attempting to log in with username: ${account.username}`);
-        const loginResponse = await fetch('http://localhost:5000/api/login', {
+        const loginResponse = await fetch('https://trellis-inga4.replit.app/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(account)
@@ -60,7 +60,7 @@ async function testProfileAccess(loginData) {
     console.log(`Testing agent profile access for user ID ${loginData.userId}...`);
     
     // Try to get agent by user (which would be used from the agent profile page)
-    const agentResponse = await fetch('http://localhost:5000/api/agents/by-user', {
+    const agentResponse = await fetch('https://trellis-inga4.replit.app/api/agents/by-user', {
       headers: {
         'Cookie': loginData.cookies
       }
@@ -103,7 +103,7 @@ async function testProfileUpdate(loginData, agent) {
       npn: "9876-" + Date.now().toString().slice(-4)
     };
     
-    const profileResponse = await fetch('http://localhost:5000/api/agents/profile', {
+    const profileResponse = await fetch('https://trellis-inga4.replit.app/api/agents/profile', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ async function testProfileUpdate(loginData, agent) {
       
       // If profile endpoint fails, try direct agent ID endpoint as backup
       console.log("ATTEMPT 2: Using direct /api/agents/:id endpoint...");
-      const directResponse = await fetch(`http://localhost:5000/api/agents/${agent.id}`, {
+      const directResponse = await fetch(`https://trellis-inga4.replit.app/api/agents/${agent.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ async function testProfileUpdate(loginData, agent) {
     
     if (profileSuccess) {
       // Verify the update by fetching the profile again
-      const verifyResponse = await fetch('http://localhost:5000/api/agents/by-user', {
+      const verifyResponse = await fetch('https://trellis-inga4.replit.app/api/agents/by-user', {
         headers: {
           'Cookie': loginData.cookies
         }
