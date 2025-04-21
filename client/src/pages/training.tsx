@@ -240,6 +240,163 @@ export default function TrainingPage() {
       ]
     },
     {
+      id: "termLiving",
+      title: "Term with Living Expenses",
+      description: "Learn about term life insurance with living expenses benefits that provide coverage during your lifetime.",
+      content: (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">What is Term with Living Expenses?</h3>
+            <p className="mt-2 text-muted-foreground">
+              Term with Living Expenses combines traditional term life insurance with living benefits that can be 
+              accessed during the insured's lifetime in case of qualifying critical, chronic, or terminal illnesses. 
+              This hybrid product offers both death benefit protection and financial support for severe health conditions.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Key Features
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Term Protection:</span> Provides death benefit protection for a specific period (10-30 years).</li>
+              <li><span className="font-medium">Living Benefits:</span> Allows early access to a portion of the death benefit for qualifying conditions.</li>
+              <li><span className="font-medium">Critical Illness:</span> Provides benefits for conditions like heart attack, stroke, cancer, etc.</li>
+              <li><span className="font-medium">Chronic Illness:</span> Covers conditions requiring assistance with activities of daily living.</li>
+              <li><span className="font-medium">Terminal Illness:</span> Accelerates benefits when life expectancy is typically less than 12-24 months.</li>
+              <li><span className="font-medium">Higher Premium:</span> Costs more than standard term but less than most permanent policies.</li>
+            </ul>
+          </div>
+          
+          <Accordion type="single" collapsible className="border rounded-md">
+            <AccordionItem value="ideal-clients">
+              <AccordionTrigger className="px-4">Ideal Clients for Term with Living Expenses</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Middle-aged clients concerned about both family protection and health risks</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Self-employed individuals without disability insurance</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Individuals with family history of serious illnesses</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Clients wanting more comprehensive coverage than basic term insurance</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="sales-tips">
+              <AccordionTrigger className="px-4">Sales Tips</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Focus on the "living benefits" as additional protection against financial hardship</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Compare the cost difference with standard term insurance for the added benefits</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Explain how it can fill gaps in existing health or disability coverage</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ThumbsUp className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <span>Use personal stories of clients who have benefited from living benefits</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="objection-handling">
+              <AccordionTrigger className="px-4">Common Objections & Responses</AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Objection: "It's too expensive compared to regular term."</p>
+                    <p className="text-muted-foreground ml-6">Response: "The additional cost provides critical protection during your lifetime, not just after death. If you suffered a major illness, these benefits could provide financial support when you need it most, helping to preserve your savings and retirement funds."</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Objection: "I already have health insurance."</p>
+                    <p className="text-muted-foreground ml-6">Response: "Health insurance typically covers medical expenses, but not lost income, additional care costs, or lifestyle modifications needed after a serious illness. These living benefits provide cash you can use for any purpose during a difficult time."</p>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Important to remember</AlertTitle>
+            <AlertDescription>
+              The requirements for accessing living benefits vary by carrier and policy. Always review the specific terms and conditions 
+              with clients, explaining the qualification criteria and any impacts on the death benefit if living benefits are used.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What is the primary benefit of Term with Living Expenses compared to standard term insurance?",
+          options: [
+            "It builds cash value over time",
+            "It can provide benefits during the insured's lifetime for qualifying illnesses",
+            "It automatically converts to permanent insurance",
+            "It has lower premiums than standard term insurance"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which of the following is typically NOT covered by the living benefits component?",
+          options: [
+            "Terminal illness with life expectancy of 12 months",
+            "Heart attack requiring hospitalization",
+            "Minor outpatient procedures and routine care",
+            "Chronic conditions requiring assistance with daily activities"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "What typically happens to the death benefit if living benefits are accessed?",
+          options: [
+            "It increases to compensate for the living benefits used",
+            "It remains unchanged regardless of living benefits used",
+            "It is reduced by the amount of living benefits accessed",
+            "It is automatically converted to a whole life policy"
+          ],
+          correctAnswer: 2
+        },
+        {
+          question: "Which client would likely be MOST suitable for Term with Living Expenses?",
+          options: [
+            "A 75-year-old retiree focused on legacy planning",
+            "A 45-year-old self-employed individual with no disability insurance",
+            "A 22-year-old just starting their career with minimal savings",
+            "A business owner with comprehensive executive benefits package"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is a key consideration when explaining Term with Living Expenses to clients?",
+          options: [
+            "It always provides better returns than investment accounts",
+            "It provides more comprehensive coverage than traditional health insurance",
+            "The specific qualification criteria for accessing living benefits",
+            "That it can completely replace the need for disability insurance"
+          ],
+          correctAnswer: 2
+        }
+      ]
+    },
+    {
       id: "whole",
       title: "Whole Life Insurance",
       description: "Master whole life insurance concepts, cash value accumulation, and client matching.",
