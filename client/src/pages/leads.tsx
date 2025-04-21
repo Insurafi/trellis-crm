@@ -1068,6 +1068,7 @@ const LeadsPage: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
+                    <TableHead>Gender</TableHead>
                     <TableHead>Date of Birth (Age)</TableHead>
                     <TableHead>State</TableHead>
                     <TableHead>Lead Source</TableHead>
@@ -1083,10 +1084,19 @@ const LeadsPage: React.FC = () => {
                           {lead.firstName} {lead.lastName}
                         </TableCell>
                         <TableCell>
-                          {new Date(lead.dateOfBirth).toLocaleDateString()} 
-                          <span className="text-muted-foreground ml-2">
-                            ({calculateAge(lead.dateOfBirth)} yrs)
-                          </span>
+                          {lead.sex ? (lead.sex === 'M' || lead.sex === 'm' ? 'Male' : 'Female') : 'Not specified'}
+                        </TableCell>
+                        <TableCell>
+                          {lead.dateOfBirth ? (
+                            <>
+                              {new Date(lead.dateOfBirth).toLocaleDateString()} 
+                              <span className="text-muted-foreground ml-2">
+                                ({calculateAge(lead.dateOfBirth)} yrs)
+                              </span>
+                            </>
+                          ) : (
+                            'Not provided'
+                          )}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center">
@@ -1199,7 +1209,11 @@ const LeadsPage: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Date of Birth</p>
-                      <p className="text-sm">{new Date(selectedLead.dateOfBirth).toLocaleDateString()} (Age: {calculateAge(selectedLead.dateOfBirth)})</p>
+                      <p className="text-sm">
+                        {selectedLead.dateOfBirth ? 
+                          `${new Date(selectedLead.dateOfBirth).toLocaleDateString()} (Age: ${calculateAge(selectedLead.dateOfBirth)})` : 
+                          'Not provided'}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Email</p>

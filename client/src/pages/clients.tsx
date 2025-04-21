@@ -424,6 +424,8 @@ export default function Clients() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
+                    <TableHead>Gender</TableHead>
+                    <TableHead>Age</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Status</TableHead>
@@ -442,6 +444,14 @@ export default function Clients() {
                             </Avatar>
                             {client.name}
                           </div>
+                        </TableCell>
+                        <TableCell>{client.sex || "Not specified"}</TableCell>
+                        <TableCell>
+                          {client.dateOfBirth ? (
+                            calculateAge(client.dateOfBirth) + " yrs"
+                          ) : (
+                            "Not specified"
+                          )}
                         </TableCell>
                         <TableCell>{client.email}</TableCell>
                         <TableCell>{client.phone || "—"}</TableCell>
