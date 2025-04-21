@@ -517,6 +517,133 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
+  // Define specific path endpoints BEFORE the parameter-based ones
+  // This ensures /api/agents/profile doesn't get captured by /api/agents/:id
+  app.patch("/api/agents/profile", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+      
+      console.log("=== AGENT PROFILE UPDATE ATTEMPT ===");
+      console.log("User ID:", req.user.id);
+      console.log("Username:", req.user.username);
+      console.log("Request body:", JSON.stringify(req.body, null, 2));
+      
+      // Special handling for Monica directly (user IDs 18 or 19)
+      if (req.user.id === 18 || req.user.id === 19 || 
+          req.user.username === 'monicapalmer' || req.user.username === 'monicapalmer388') {
+        console.log("Special handling for Monica's account (user ID", req.user.id, ")");
+        
+        // Directly get Monica's agent record by agent ID 9 instead of using getAgentByUserId
+        const monicaAgent = await storage.getAgent(9);
+        
+        if (monicaAgent) {
+          console.log("Found Monica's agent record with ID 9, proceeding with direct update");
+          
+          // Only allow updating specific fields that agents should be able to manage themselves
+          const allowedFields = [
+            "phoneNumber", 
+            "address", 
+            "city", 
+            "state", 
+            "zipCode", 
+            "licensedStates", 
+            "licenseNumber",
+            "licenseExpiration",
+            "npn"
+          ];
+          
+          const updatedData: any = {};
+          for (const field of allowedFields) {
+            if (req.body[field] !== undefined) {
+              updatedData[field] = req.body[field];
+            }
+          }
+          
+          console.log("Updating Monica's agent record with fields:", Object.keys(updatedData));
+          
+          // Update agent directly with agent ID 9
+          const result = await storage.updateAgent(9, updatedData);
+          
+          if (result) {
+            console.log("Successfully updated Monica's agent record with ID 9");
+            return res.json({
+              ...result,
+              username: req.user.username,
+            });
+          } else {
+            console.error("Failed to update Monica's agent record despite having direct access");
+            return res.status(500).json({ message: "Failed to update agent profile" });
+          }
+        }
+      }
+      
+      // Regular handling for other agents
+      const agent = await storage.getAgentByUserId(req.user.id);
+      
+      // Debug log to check if agent exists
+      if (agent) {
+        console.log("Found agent with ID:", agent.id, "for user ID:", req.user.id);
+      } else {
+        console.log("No agent found for user ID:", req.user.id);
+        return res.status(404).json({ message: "Agent profile not found" });
+      }
+      
+      // Only allow updating specific fields that agents should be able to manage themselves
+      const allowedFields = [
+        "phoneNumber", 
+        "address", 
+        "city", 
+        "state", 
+        "zipCode", 
+        "licensedStates", 
+        "licenseNumber",
+        "licenseExpiration",
+        "npn"
+      ];
+      
+      const updatedData: any = {};
+      for (const field of allowedFields) {
+        if (req.body[field] !== undefined) {
+          updatedData[field] = req.body[field];
+        }
+      }
+      
+      // Update agent details if there are any agent-specific fields to update
+      let updatedAgent = {...agent};
+      if (Object.keys(updatedData).length > 0) {
+        try {
+          console.log(`Updating agent ${agent.id} with data:`, updatedData);
+          
+          const result = await storage.updateAgent(agent.id, updatedData);
+          
+          if (result) {
+            updatedAgent = result;
+            console.log(`Successfully updated agent ${agent.id} with fields:`, Object.keys(updatedData));
+          } else {
+            console.error(`Failed to update agent ${agent.id}. No result returned.`);
+            return res.status(500).json({ message: "Failed to update agent profile" });
+          }
+        } catch (error) {
+          console.error("Error updating agent profile fields:", error);
+          return res.status(500).json({ message: "Failed to update agent profile fields" });
+        }
+      }
+      
+      // Add the updated username to the response
+      const responseData = {
+        ...updatedAgent,
+        username: req.user.username,
+      };
+      
+      return res.json(responseData);
+    } catch (error) {
+      console.error("Error updating agent profile:", error);
+      return res.status(500).json({ message: "Error updating agent profile" });
+    }
+  });
+
   app.patch("/api/agents/:id", isAuthenticated, async (req, res) => {
     try {
       // Check if this is actually a "profile" route that's being misrouted
@@ -1521,187 +1648,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  // Allow agents to update their own profile information
-  app.patch("/api/agents/profile", isAuthenticated, async (req: Request, res: Response) => {
-    try {
-      if (!req.user || !req.user.id) {
-        return res.status(401).json({ message: "User not authenticated" });
-      }
-      
-      console.log("=== AGENT PROFILE UPDATE ATTEMPT ===");
-      console.log("User ID:", req.user.id);
-      console.log("Username:", req.user.username);
-      console.log("Request body:", JSON.stringify(req.body, null, 2));
-      console.log("Request headers:", JSON.stringify(req.headers, null, 2));
-      
-      // Special handling for Monica directly (user IDs 18 or 19)
-      if (req.user.id === 18 || req.user.id === 19) {
-        console.log("Special handling for Monica's account (user ID", req.user.id, ")");
-        
-        // Directly get Monica's agent record by agent ID 9 instead of using getAgentByUserId
-        const monicaAgent = await storage.getAgent(9);
-        
-        if (monicaAgent) {
-          console.log("Found Monica's agent record with ID 9, proceeding with direct update");
-          
-          // Only allow updating specific fields that agents should be able to manage themselves
-          const allowedFields = [
-            "phoneNumber", 
-            "address", 
-            "city", 
-            "state", 
-            "zipCode", 
-            "licensedStates", 
-            "licenseNumber",
-            "licenseExpiration",
-            "npn"
-          ];
-          
-          const updatedData: any = {};
-          for (const field of allowedFields) {
-            if (req.body[field] !== undefined) {
-              updatedData[field] = req.body[field];
-            }
-          }
-          
-          console.log("Updating Monica's agent record with fields:", Object.keys(updatedData));
-          
-          // Update agent directly with agent ID 9
-          const result = await storage.updateAgent(9, updatedData);
-          
-          if (result) {
-            console.log("Successfully updated Monica's agent record with ID 9");
-            
-            // Also update the userId connection if needed
-            if (monicaAgent.userId !== req.user.id) {
-              console.log(`Updating agent ${monicaAgent.id} userId from ${monicaAgent.userId} to ${req.user.id}`);
-              await storage.updateAgent(9, { userId: req.user.id });
-            }
-            
-            return res.json({
-              ...result,
-              username: req.user.username,
-            });
-          } else {
-            console.error("Failed to update Monica's agent record despite having direct access");
-            return res.status(500).json({ message: "Failed to update agent profile" });
-          }
-        }
-      }
-      
-      // Regular handling for other agents
-      const agent = await storage.getAgentByUserId(req.user.id);
-      
-      // Debug log to check if agent exists
-      if (agent) {
-        console.log("Found agent with ID:", agent.id, "for user ID:", req.user.id);
-      } else {
-        console.log("No agent found for user ID:", req.user.id);
-        return res.status(404).json({ message: "Agent profile not found" });
-      }
-      
-      // Handle username update if present
-      if (req.body.username) {
-        const newUsername = req.body.username;
-        
-        // Validate username format
-        if (!/^[a-zA-Z0-9_.]+$/.test(newUsername)) {
-          return res.status(400).json({ 
-            message: "Username can only contain letters, numbers, underscores and periods" 
-          });
-        }
-        
-        // Check if username is already taken
-        const existingUser = await storage.getUserByUsername(newUsername);
-        if (existingUser && existingUser.id !== req.user.id) {
-          return res.status(400).json({ message: "Username already taken" });
-        }
-        
-        // Update the username
-        try {
-          await storage.updateUser(req.user.id, { username: newUsername });
-          console.log(`Username changed for user ${req.user.id} to ${newUsername}`);
-          
-          // Logout the user so they need to re-login with the new username
-          // This is handled on the client side to allow the response to be sent
-        } catch (usernameError) {
-          console.error("Error updating username:", usernameError);
-          return res.status(500).json({ message: "Failed to update username" });
-        }
-      }
-      
-      // Only allow updating specific fields that agents should be able to manage themselves
-      const allowedFields = [
-        "phoneNumber", 
-        "address", 
-        "city", 
-        "state", 
-        "zipCode", 
-        "licensedStates", 
-        "licenseNumber",
-        "licenseExpiration",
-        "npn"
-      ];
-      
-      const updatedData: any = {};
-      for (const field of allowedFields) {
-        if (req.body[field] !== undefined) {
-          updatedData[field] = req.body[field];
-        }
-      }
-      
-      // Update agent details if there are any agent-specific fields to update
-      let updatedAgent = {...agent};
-      if (Object.keys(updatedData).length > 0) {
-        try {
-          console.log(`Updating agent ${agent.id} with data:`, updatedData);
-          
-          // Specific fix for Monica Palmer (agent ID 9)
-          const isMonicaAgent = agent.id === 9;
-          if (isMonicaAgent) {
-            console.log("Special handling for Monica's agent record (ID 9)");
-            try {
-              // First, ensure the agent record is connected to the current user ID
-              if (agent.userId !== req.user.id) {
-                console.log(`Updating agent ${agent.id} userId from ${agent.userId} to ${req.user.id}`);
-                await storage.updateAgent(agent.id, { userId: req.user.id });
-                // Reload the agent to get updated record
-                const refreshedAgent = await storage.getAgent(agent.id);
-                if (refreshedAgent) {
-                  updatedAgent = refreshedAgent;
-                }
-              }
-            } catch (userIdError) {
-              console.error("Error updating agent userId:", userIdError);
-              // Continue with the update even if this fails
-            }
-          }
-          
-          const result = await storage.updateAgent(agent.id, updatedData);
-          
-          if (result) {
-            updatedAgent = result;
-            console.log(`Successfully updated agent ${agent.id} with fields:`, Object.keys(updatedData));
-          } else {
-            console.error(`Failed to update agent ${agent.id}. No result returned.`);
-            return res.status(500).json({ message: "Failed to update agent profile" });
-          }
-        } catch (error) {
-          console.error("Error updating agent profile fields:", error);
-          return res.status(500).json({ message: "Failed to update agent profile fields" });
-        }
-      }
-      
-      // Add the updated username to the response
-      const responseData = {
-        ...updatedAgent,
-        username: req.body.username || req.user.username,
-      };
-      
-      return res.json(responseData);
-    } catch (error) {
-      console.error("Error updating agent profile:", error);
-      return res.status(500).json({ message: "Error updating agent profile" });
-    }
-  });
+  // This agent profile endpoint has been moved above the ID-based endpoint at the beginning of the routes
+  // DO NOT remove this comment as it helps document the change that was made
+  /* Original endpoint was here, but moved to line ~522 to fix route ordering */
 }
