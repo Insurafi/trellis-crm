@@ -1194,6 +1194,10 @@ const LeadsPage: React.FC = () => {
                       <p className="text-sm">{selectedLead.firstName} {selectedLead.lastName}</p>
                     </div>
                     <div>
+                      <p className="text-sm font-medium text-muted-foreground">Gender</p>
+                      <p className="text-sm">{selectedLead.sex || "Not specified"}</p>
+                    </div>
+                    <div>
                       <p className="text-sm font-medium text-muted-foreground">Date of Birth</p>
                       <p className="text-sm">{new Date(selectedLead.dateOfBirth).toLocaleDateString()} (Age: {calculateAge(selectedLead.dateOfBirth)})</p>
                     </div>
