@@ -308,7 +308,14 @@ export default function ClientDetail() {
                 <h2 className="text-xl font-semibold">{client.name}</h2>
                 {client.assignedAgentId && (
                   <div className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">
-                    Assigned to: Agent #{client.assignedAgentId}
+                    {(() => {
+                      const agent = agents.find((a: any) => a.id === client.assignedAgentId);
+                      return `Assigned to: ${agent ? 
+                        (agent.fullName || 
+                         (agent.firstName && agent.lastName ? `${agent.firstName} ${agent.lastName}` : 
+                          `Agent ${agent.id}`)) 
+                        : `Agent ${client.assignedAgentId}`}`;
+                    })()}
                   </div>
                 )}
               </div>
@@ -551,7 +558,9 @@ export default function ClientDetail() {
                           <SelectItem value="none">None</SelectItem>
                           {agents.map((agent: any) => (
                             <SelectItem key={agent.id} value={agent.id.toString()}>
-                              Agent #{agent.id} {agent.fullName || agent.userId ? `(${agent.fullName || 'User ' + agent.userId})` : ''}
+                              {agent.fullName || 
+                               (agent.firstName && agent.lastName ? `${agent.firstName} ${agent.lastName}` : 
+                                `Agent ${agent.id}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
