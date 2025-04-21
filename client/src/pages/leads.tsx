@@ -1014,19 +1014,35 @@ const LeadsPage: React.FC = () => {
                 />
                 
                 <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsAddDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={addLeadMutation.isPending}
-                  >
-                    {addLeadMutation.isPending ? "Saving..." : "Save Lead"}
-                  </Button>
+                  <div className="w-full flex flex-col space-y-2">
+                    {/* Add error indicators at the form level */}
+                    {Object.keys(addForm.formState.errors).length > 0 && (
+                      <div className="text-sm text-red-500 p-2 bg-red-50 rounded mb-2">
+                        <p><strong>Please fix the following errors:</strong></p>
+                        <ul className="list-disc pl-5">
+                          {Object.entries(addForm.formState.errors).map(([field, error]) => (
+                            <li key={field}>{error?.message?.toString() || `Invalid ${field}`}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsAddDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={addLeadMutation.isPending}
+                      >
+                        {addLeadMutation.isPending ? "Saving..." : "Save Lead"}
+                      </Button>
+                    </div>
+                  </div>
                 </DialogFooter>
               </form>
             </Form>
