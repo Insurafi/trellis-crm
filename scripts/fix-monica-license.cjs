@@ -14,8 +14,8 @@ async function directDatabaseUpdate() {
     const result = await pool.query(`
       UPDATE agents 
       SET 
-        "licenseNumber" = 'IL-123456', 
-        "npn" = '9876543'
+        license_number = 'IL-123456', 
+        npn = '9876543'
       WHERE id = 9
       RETURNING *
     `);
