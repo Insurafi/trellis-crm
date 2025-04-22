@@ -1228,13 +1228,37 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
   // Leads
   app.get("/api/leads", isAuthenticated, async (req, res) => {
     try {
+      const userId = req.user?.id;
+      const userRole = req.user?.role;
       const agentId = req.query.agentId ? parseInt(req.query.agentId as string) : undefined;
       
+      // Log request details for debugging
+      console.log(`User ${userId} (role: ${userRole}) requesting leads`);
+      
       let leads;
-      if (agentId && !isNaN(agentId)) {
-        leads = await storage.getLeadsByAgent(agentId);
-      } else {
-        leads = await storage.getLeads();
+      
+      // If admin or team leader, show all leads or filter by agentId if provided
+      if (userRole === 'admin' || userRole === 'Administrator' || userRole === 'team_leader' || userRole === 'Team Leader') {
+        console.log(`Access granted: User ${userId} with role ${userRole} has permission to view all leads`);
+        
+        if (agentId && !isNaN(agentId)) {
+          leads = await storage.getLeadsByAgent(agentId);
+        } else {
+          leads = await storage.getLeads();
+        }
+      } 
+      // Regular agents can only see their own leads
+      else {
+        // Find the agent record for this user
+        const agent = userId ? await storage.getAgentByUserId(userId) : null;
+        
+        if (!agent) {
+          console.log(`Access restricted: User ${userId} has no agent record, returning empty list`);
+          return res.json([]);
+        }
+        
+        console.log(`Access restricted: User ${userId} can only view leads assigned to agent ID ${agent.id}`);
+        leads = await storage.getLeadsByAgent(agent.id);
       }
       
       res.json(leads);
@@ -1267,7 +1291,7 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
     }
   });
 
-  app.get("/api/leads/:id", async (req, res) => {
+  app.get("/api/leads/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -1279,6 +1303,34 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
         return res.status(404).json({ message: "Lead not found" });
       }
 
+      // Get the user information from the request
+      const userId = req.user?.id;
+      const userRole = req.user?.role;
+
+      // Log request details for debugging
+      console.log(`User ${userId} (role: ${userRole}) requesting lead ${id}`);
+      
+      // Admin and team leaders can view any lead
+      if (userRole === 'admin' || userRole === 'Administrator' || userRole === 'team_leader' || userRole === 'Team Leader') {
+        console.log(`Access granted: User ${userId} with role ${userRole} has permission to view lead ${id}`);
+        return res.json(lead);
+      } 
+      
+      // Regular agents can only view leads assigned to them
+      // Find the agent record for this user
+      const agent = userId ? await storage.getAgentByUserId(userId) : null;
+      
+      if (!agent) {
+        console.log(`Access denied: User ${userId} has no agent record`);
+        return res.status(403).json({ message: "Access denied: You don't have permission to view this lead" });
+      }
+      
+      if (lead.assignedAgentId !== agent.id) {
+        console.log(`Access denied: Lead ${id} is assigned to agent ${lead.assignedAgentId}, not to agent ${agent.id}`);
+        return res.status(403).json({ message: "Access denied: You don't have permission to view this lead" });
+      }
+      
+      console.log(`Access granted: User ${userId} (agent ${agent.id}) is authorized to view lead ${id}`);
       res.json(lead);
     } catch (error) {
       console.error("Error fetching lead:", error);

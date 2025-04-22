@@ -1195,7 +1195,6 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            src="https://www.youtube-nocookie.com/embed/NbLmJ2UhXJE" 
             title="Mortgage Protection Insurance Explained"
             youtubeId="NbLmJ2UhXJE"
           />
