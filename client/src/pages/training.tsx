@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -43,6 +43,32 @@ import {
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+// Video Player Component
+interface VideoPlayerProps {
+  src: string;
+  title: string;
+}
+
+const VideoPlayer = ({ src, title }: VideoPlayerProps) => {
+  return (
+    <div className="mb-6">
+      <h3 className="text-lg font-medium mb-2 flex items-center">
+        <BookOpen className="mr-2 h-4 w-4 text-blue-500" />
+        {title}
+      </h3>
+      <div className="rounded-md overflow-hidden border shadow-sm bg-black">
+        <iframe 
+          src={src} 
+          title={title}
+          className="w-full aspect-video"
+          allowFullScreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+      </div>
+    </div>
+  );
+};
+
 interface QuizQuestion {
   question: string;
   options: string[];
@@ -72,6 +98,11 @@ export default function TrainingPage() {
       description: "Learn the basics of term life insurance, its benefits, and how to explain it to clients.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube.com/embed/L8JC_JJTxM0" 
+            title="Term Life Insurance Explained"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Term Life Insurance?</h3>
             <p className="mt-2 text-muted-foreground">
@@ -248,6 +279,11 @@ export default function TrainingPage() {
       description: "Learn about term life insurance with living expenses benefits that provide coverage during your lifetime.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube.com/embed/zpxUzxZ5Vl0" 
+            title="Term Life Insurance with Living Benefits"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Term with Living Expenses?</h3>
             <p className="mt-2 text-muted-foreground">
@@ -405,6 +441,11 @@ export default function TrainingPage() {
       description: "Master whole life insurance concepts, cash value accumulation, and client matching.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube.com/embed/zWnDkFrMuoo" 
+            title="Understanding Whole Life Insurance"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Whole Life Insurance?</h3>
             <p className="mt-2 text-muted-foreground">
@@ -591,6 +632,11 @@ export default function TrainingPage() {
       description: "Learn about whole life insurance with living benefits that provide financial support during your lifetime.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube.com/embed/R11nsaEqi08" 
+            title="Whole Life Insurance with Living Benefits"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Whole Life with Living Expenses?</h3>
             <p className="mt-2 text-muted-foreground">
