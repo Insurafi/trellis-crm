@@ -68,11 +68,12 @@ const ResourceCard = ({ resource }: { resource: typeof resourceCategories[0] }) 
         <CardDescription>{resource.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex items-end justify-center pb-6">
-        <Button asChild>
-          <Link href={resource.link} className="inline-flex items-center">
-            View Resources
-            <ChevronRight className="ml-2 h-4 w-4" />
-          </Link>
+        <Button
+          onClick={() => window.location.href = resource.link}
+          className="inline-flex items-center"
+        >
+          View Resources
+          <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </CardContent>
     </Card>
@@ -84,17 +85,19 @@ export default function Resources() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
-          <Button variant="ghost" asChild>
-            <Link href="/dashboard">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Link>
+          <Button 
+            variant="ghost"
+            onClick={() => window.location.href = "/dashboard"}
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Dashboard
           </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/training">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to Training
-            </Link>
+          <Button 
+            variant="ghost"
+            onClick={() => window.location.href = "/training"}
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Training
           </Button>
         </div>
         <h1 className="text-3xl font-bold">Resources Hub</h1>

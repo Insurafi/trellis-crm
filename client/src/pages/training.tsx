@@ -3629,8 +3629,12 @@ export default function TrainingPage() {
                   <p className="text-sm text-cyan-700 mt-1">
                     Recommended reading and industry websites for insurance professionals.
                   </p>
-                  <Button variant="link" asChild className="p-0 h-auto mt-2 text-cyan-600">
-                    <Link href="/resources/books">View Reading List</Link>
+                  <Button 
+                    variant="link" 
+                    className="p-0 h-auto mt-2 text-cyan-600"
+                    onClick={() => window.location.href = "/resources/books"}
+                  >
+                    View Reading List
                   </Button>
                 </div>
 
@@ -3642,18 +3646,24 @@ export default function TrainingPage() {
                   <p className="text-sm text-green-700 mt-1">
                     Access additional training materials, sales tools, and marketing templates.
                   </p>
-                  <Button variant="link" asChild className="p-0 h-auto mt-2 text-green-600">
-                    <Link href="/resources">View Resources</Link>
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto mt-2 text-green-600"
+                    onClick={() => window.location.href = "/resources"}
+                  >
+                    View Resources
                   </Button>
                 </div>
               </div>
 
               <div className="mt-4">
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/resources">
-                    View All Resources
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => window.location.href = "/resources"}
+                >
+                  View All Resources
+                  <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </CardContent>

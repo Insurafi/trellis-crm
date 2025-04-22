@@ -176,17 +176,19 @@ export default function ResourcesBooks() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
-          <Button variant="ghost" asChild>
-            <Link href="/resources">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to Resources
-            </Link>
+          <Button 
+            variant="ghost"
+            onClick={() => window.location.href = "/resources"}
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Resources
           </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/training">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to Training
-            </Link>
+          <Button 
+            variant="ghost"
+            onClick={() => window.location.href = "/training"}
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Training
           </Button>
         </div>
         <h1 className="text-3xl font-bold">Insurance Resources</h1>
