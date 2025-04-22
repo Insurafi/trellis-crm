@@ -3632,7 +3632,10 @@ export default function TrainingPage() {
                   <Button 
                     variant="link" 
                     className="p-0 h-auto mt-2 text-cyan-600"
-                    onClick={() => window.location.href = "/resources/books"}
+                    onClick={() => {
+                      console.log("Navigating to books page");
+                      window.location.href = "/resources/books";
+                    }}
                   >
                     View Reading List
                   </Button>
@@ -3649,7 +3652,10 @@ export default function TrainingPage() {
                   <Button
                     variant="link"
                     className="p-0 h-auto mt-2 text-green-600"
-                    onClick={() => window.location.href = "/resources"}
+                    onClick={() => {
+                      console.log("Navigating to resources hub");
+                      window.location.href = "/resources";
+                    }}
                   >
                     View Resources
                   </Button>
@@ -3660,7 +3666,10 @@ export default function TrainingPage() {
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  onClick={() => window.location.href = "/resources"}
+                  onClick={() => {
+                    console.log("Navigating to all resources");
+                    window.location.href = "/resources";
+                  }}
                 >
                   View All Resources
                   <ChevronRight className="ml-2 h-4 w-4" />
