@@ -3629,16 +3629,14 @@ export default function TrainingPage() {
                   <p className="text-sm text-cyan-700 mt-1">
                     Recommended reading and industry websites for insurance professionals.
                   </p>
-                  <Button 
-                    variant="link" 
-                    className="p-0 h-auto mt-2 text-cyan-600"
-                    onClick={() => {
-                      console.log("Navigating to books page");
-                      window.location.href = "/resources/books";
-                    }}
-                  >
-                    View Reading List
-                  </Button>
+                  <a href="/resources/books" className="inline-flex items-center">
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto mt-2 text-cyan-600"
+                    >
+                      View Reading List
+                    </Button>
+                  </a>
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-4 border border-green-200 transition-colors hover:bg-green-100">
@@ -3649,31 +3647,27 @@ export default function TrainingPage() {
                   <p className="text-sm text-green-700 mt-1">
                     Access additional training materials, sales tools, and marketing templates.
                   </p>
-                  <Button
-                    variant="link"
-                    className="p-0 h-auto mt-2 text-green-600"
-                    onClick={() => {
-                      console.log("Navigating to resources hub");
-                      window.location.href = "/resources";
-                    }}
-                  >
-                    View Resources
-                  </Button>
+                  <a href="/resources" className="inline-flex items-center">
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto mt-2 text-green-600"
+                    >
+                      View Resources
+                    </Button>
+                  </a>
                 </div>
               </div>
 
               <div className="mt-4">
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => {
-                    console.log("Navigating to all resources");
-                    window.location.href = "/resources";
-                  }}
-                >
-                  View All Resources
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
+                <a href="/resources" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    View All Resources
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
               </div>
             </CardContent>
           </Card>

@@ -68,13 +68,15 @@ const ResourceCard = ({ resource }: { resource: typeof resourceCategories[0] }) 
         <CardDescription>{resource.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex items-end justify-center pb-6">
-        <Button
-          onClick={() => window.location.href = resource.link}
+        <a 
+          href={resource.link}
           className="inline-flex items-center"
         >
-          View Resources
-          <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
+          <Button className="inline-flex items-center">
+            View Resources
+            <ChevronRight className="ml-2 h-4 w-4" />
+          </Button>
+        </a>
       </CardContent>
     </Card>
   );
