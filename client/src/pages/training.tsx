@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import {
   Card,
@@ -3629,7 +3630,7 @@ export default function TrainingPage() {
                     Recommended reading and industry websites for insurance professionals.
                   </p>
                   <Button variant="link" asChild className="p-0 h-auto mt-2 text-cyan-600">
-                    <a href="/resources/books">View Reading List</a>
+                    <Link href="/resources/books">View Reading List</Link>
                   </Button>
                 </div>
 
@@ -3642,17 +3643,17 @@ export default function TrainingPage() {
                     Access additional training materials, sales tools, and marketing templates.
                   </p>
                   <Button variant="link" asChild className="p-0 h-auto mt-2 text-green-600">
-                    <a href="/resources">View Resources</a>
+                    <Link href="/resources">View Resources</Link>
                   </Button>
                 </div>
               </div>
 
               <div className="mt-4">
                 <Button variant="outline" asChild className="w-full">
-                  <a href="/resources">
+                  <Link href="/resources">
                     View All Resources
                     <ChevronRight className="ml-2 h-4 w-4" />
-                  </a>
+                  </Link>
                 </Button>
               </div>
             </CardContent>
