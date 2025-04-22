@@ -47,25 +47,31 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 interface VideoPlayerProps {
   src: string;
   title: string;
+  youtubeId: string;
 }
 
-const VideoPlayer = ({ src, title }: VideoPlayerProps) => {
+const VideoPlayer = ({ src, title, youtubeId }: VideoPlayerProps) => {
   return (
     <div className="mb-6">
       <h3 className="text-lg font-medium mb-2 flex items-center">
         <BookOpen className="mr-2 h-4 w-4 text-blue-500" />
         {title}
       </h3>
-      <div className="rounded-md overflow-hidden border shadow-sm bg-black">
-        <iframe 
-          src={src} 
-          title={title}
-          className="w-full aspect-video"
-          frameBorder="0"
-          loading="lazy"
-          allowFullScreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        ></iframe>
+      <div className="rounded-md overflow-hidden border shadow-sm bg-gradient-to-r from-slate-800 to-slate-700 relative aspect-video cursor-pointer">
+        <a 
+          href={`https://youtube.com/watch?v=${youtubeId}`} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="absolute inset-0 flex items-center justify-center flex-col"
+        >
+          <div className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <p className="text-white font-medium drop-shadow-md">{title}</p>
+          <p className="text-slate-200 text-sm mt-2">Click to watch on YouTube</p>
+        </a>
       </div>
     </div>
   );
@@ -103,6 +109,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/L8JC_JJTxM0" 
             title="Term Life Insurance Explained"
+            youtubeId="L8JC_JJTxM0"
           />
           
           <div>
@@ -284,6 +291,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/zpxUzxZ5Vl0" 
             title="Term Life Insurance with Living Benefits"
+            youtubeId="zpxUzxZ5Vl0"
           />
           
           <div>
@@ -446,6 +454,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/zWnDkFrMuoo" 
             title="Understanding Whole Life Insurance"
+            youtubeId="zWnDkFrMuoo"
           />
           
           <div>
@@ -637,6 +646,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/R11nsaEqi08" 
             title="Whole Life Insurance with Living Benefits"
+            youtubeId="R11nsaEqi08"
           />
           
           <div>
@@ -806,6 +816,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/W1xmqLPF1AU" 
             title="Indexed Universal Life Insurance Explained"
+            youtubeId="W1xmqLPF1AU"
           />
           
           <div>
@@ -999,6 +1010,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/jvHewRJh-mI" 
             title="Variable Universal Life Insurance Explained"
+            youtubeId="jvHewRJh-mI"
           />
           
           <div>
@@ -1197,6 +1209,7 @@ export default function TrainingPage() {
           <VideoPlayer 
             src="https://www.youtube-nocookie.com/embed/NbLmJ2UhXJE" 
             title="Mortgage Protection Insurance Explained"
+            youtubeId="NbLmJ2UhXJE"
           />
           
           <div>
