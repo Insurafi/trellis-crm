@@ -3632,6 +3632,10 @@ export default function TrainingPage() {
                   <a 
                     href="/resources/books" 
                     className="mt-2 inline-flex items-center text-cyan-600 underline hover:text-cyan-700"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.replace('/resources/books');
+                    }}
                   >
                     View Reading List
                   </a>
@@ -3648,6 +3652,10 @@ export default function TrainingPage() {
                   <a 
                     href="/resources" 
                     className="mt-2 inline-flex items-center text-green-600 underline hover:text-green-700"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.replace('/resources');
+                    }}
                   >
                     View Resources
                   </a>
@@ -3658,6 +3666,10 @@ export default function TrainingPage() {
                 <a 
                   href="/resources" 
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.replace('/resources');
+                  }}
                 >
                   View All Resources
                   <ChevronRight className="ml-2 h-4 w-4" />
