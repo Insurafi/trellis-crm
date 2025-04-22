@@ -377,28 +377,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Clients
   app.get("/api/clients", isAuthenticated, async (req, res) => {
     try {
-      // If user is an agent, only show clients they've interacted with through policies
+      // Get information from the authenticated user
       const user = req.user;
       const userRole = user?.role;
       const userId = user?.id;
       
+      // Log request details for debugging
+      console.log(`User ${userId} (${user?.username}) with role ${userRole} requesting clients`);
+      
       let clients = [];
       
-      if (userRole === 'agent' && userId) {
+      // Apply appropriate filtering based on user role
+      if (userRole === 'admin' || userRole === 'Administrator' || userRole === 'team_leader' || userRole === 'Team Leader') {
+        // Admins and team leaders can see all clients
+        console.log(`Access granted: User ${userId} with role ${userRole} has permission to view all clients`);
+        clients = await storage.getClients();
+      } 
+      else if (userRole === 'agent' && userId) {
+        // Regular agents can only see clients assigned to them
+        console.log(`Access restricted: User ${userId} is a regular agent and can only view assigned clients`);
+        
         // Get agent record first
         console.log("Finding agent for user ID:", userId);
         const agent = await storage.getAgentByUserId(userId);
         
         if (agent) {
-          console.log("Found agent with ID:", agent.id);
+          console.log(`Found agent with ID: ${agent.id} for user ${userId}`);
           clients = await storage.getClientsByAgent(agent.id);
+          console.log(`Fetched ${clients.length} clients assigned to agent ${agent.id}`);
         } else {
-          console.log("No agent record found for user, returning all clients");
-          clients = await storage.getClients();
+          // If no agent record found, return empty array instead of all clients
+          console.log(`No agent record found for user ${userId}, returning empty array`);
+          clients = []; // Return empty array - more secure than returning all clients
         }
       } else {
-        // For admin, team leaders or if agent record not found, show all clients
-        clients = await storage.getClients();
+        // Other roles get no clients
+        console.log(`Access restricted: User ${userId} with role ${userRole} is not authorized to view clients`);
+        clients = [];
       }
       
       // Get all agents to include their information with clients
@@ -472,7 +487,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Client not found" });
       }
 
-      res.json(client);
+      // Get information from the authenticated user
+      const user = req.user;
+      const userRole = user?.role;
+      const userId = user?.id;
+      
+      // Log request details for debugging
+      console.log(`User ${userId} (${user?.username}) with role ${userRole} requesting client ${id}`);
+      
+      // Admin and team leaders can access any client
+      if (userRole === 'admin' || userRole === 'Administrator' || userRole === 'team_leader' || userRole === 'Team Leader') {
+        console.log(`Access granted: User ${userId} with role ${userRole} has permission to view client ${id}`);
+        return res.json(client);
+      }
+      
+      // For agents, verify they have access to this client
+      if (userRole === 'agent' && userId) {
+        // Get agent record for this user
+        const agent = await storage.getAgentByUserId(userId);
+        
+        if (!agent) {
+          console.log(`Access denied: User ${userId} has no agent record`);
+          return res.status(403).json({ message: "Access denied: You don't have permission to view this client" });
+        }
+        
+        // Check if client is assigned to this agent
+        if (client.assignedAgentId !== agent.id) {
+          console.log(`Access denied: Client ${id} is assigned to agent ${client.assignedAgentId}, not to agent ${agent.id}`);
+          return res.status(403).json({ message: "Access denied: You don't have permission to view this client" });
+        }
+        
+        console.log(`Access granted: User ${userId} (agent ${agent.id}) is authorized to view client ${id}`);
+        return res.json(client);
+      }
+      
+      // Default case - deny access
+      console.log(`Access denied: User ${userId} with role ${userRole} is not authorized to view client ${id}`);
+      return res.status(403).json({ message: "Access denied: You don't have permission to view this client" });
     } catch (error) {
       console.error("Error fetching client:", error);
       res.status(500).json({ message: "Failed to fetch client" });
