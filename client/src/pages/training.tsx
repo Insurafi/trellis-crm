@@ -61,6 +61,8 @@ const VideoPlayer = ({ src, title }: VideoPlayerProps) => {
           src={src} 
           title={title}
           className="w-full aspect-video"
+          frameBorder="0"
+          loading="lazy"
           allowFullScreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         ></iframe>
@@ -99,7 +101,7 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            src="https://www.youtube.com/embed/L8JC_JJTxM0" 
+            src="https://www.youtube-nocookie.com/embed/L8JC_JJTxM0" 
             title="Term Life Insurance Explained"
           />
           
@@ -280,7 +282,7 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            src="https://www.youtube.com/embed/zpxUzxZ5Vl0" 
+            src="https://www.youtube-nocookie.com/embed/zpxUzxZ5Vl0" 
             title="Term Life Insurance with Living Benefits"
           />
           
@@ -442,7 +444,7 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            src="https://www.youtube.com/embed/zWnDkFrMuoo" 
+            src="https://www.youtube-nocookie.com/embed/zWnDkFrMuoo" 
             title="Understanding Whole Life Insurance"
           />
           
@@ -633,7 +635,7 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            src="https://www.youtube.com/embed/R11nsaEqi08" 
+            src="https://www.youtube-nocookie.com/embed/R11nsaEqi08" 
             title="Whole Life Insurance with Living Benefits"
           />
           
@@ -801,6 +803,11 @@ export default function TrainingPage() {
       description: "Explore the flexible features of IUL policies, market indexes, and ideal client scenarios.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube-nocookie.com/embed/W1xmqLPF1AU" 
+            title="Indexed Universal Life Insurance Explained"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Indexed Universal Life Insurance (IUL)?</h3>
             <p className="mt-2 text-muted-foreground">
@@ -989,6 +996,11 @@ export default function TrainingPage() {
       description: "Learn about VUL products, sub-account investments, and high-net-worth client strategies.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube-nocookie.com/embed/jvHewRJh-mI" 
+            title="Variable Universal Life Insurance Explained"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Variable Universal Life Insurance (VUL)?</h3>
             <p className="mt-2 text-muted-foreground">
@@ -1182,6 +1194,11 @@ export default function TrainingPage() {
       description: "Learn how to position mortgage protection insurance to protect families' homes and financial security.",
       content: (
         <div className="space-y-6">
+          <VideoPlayer 
+            src="https://www.youtube-nocookie.com/embed/NbLmJ2UhXJE" 
+            title="Mortgage Protection Insurance Explained"
+          />
+          
           <div>
             <h3 className="text-lg font-medium">What is Mortgage Protection Insurance?</h3>
             <p className="mt-2 text-muted-foreground">
