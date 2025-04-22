@@ -32,28 +32,28 @@ const resourceCategories = [
     title: "Marketing Templates",
     description: "Ready-to-use templates for client emails, social media, and presentations.",
     icon: <FileText className="h-12 w-12 p-3 rounded-full bg-green-100 text-green-600 mb-4" />,
-    link: "/resources/marketing"
+    link: "/resources" // Temporary link until marketing templates are implemented
   },
   {
     id: 3,
     title: "Training Videos",
     description: "Educational videos on insurance products, sales techniques, and more.",
     icon: <Video className="h-12 w-12 p-3 rounded-full bg-blue-100 text-blue-600 mb-4" />,
-    link: "/resources/videos"
+    link: "/resources" // Temporary link until this section is implemented
   },
   {
     id: 4,
     title: "Presentation Materials",
     description: "Slide decks and visual aids for client meetings and presentations.",
     icon: <Presentation className="h-12 w-12 p-3 rounded-full bg-purple-100 text-purple-600 mb-4" />,
-    link: "/resources/presentations"
+    link: "/resources" // Temporary link until this section is implemented
   },
   {
     id: 5,
     title: "Downloadable Forms",
     description: "Insurance applications, disclosure forms, and client questionnaires.",
     icon: <Download className="h-12 w-12 p-3 rounded-full bg-amber-100 text-amber-600 mb-4" />,
-    link: "/resources/forms"
+    link: "/resources" // Temporary link until this section is implemented
   }
 ];
 
@@ -83,12 +83,20 @@ export default function Resources() {
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <div className="mb-8">
-        <Button variant="ghost" className="mb-4" asChild>
-          <Link href="/">
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Button variant="ghost" asChild>
+            <Link href="/dashboard">
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Back to Dashboard
+            </Link>
+          </Button>
+          <Button variant="ghost" asChild>
+            <Link href="/training">
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Back to Training
+            </Link>
+          </Button>
+        </div>
         <h1 className="text-3xl font-bold">Resources Hub</h1>
         <p className="text-muted-foreground mt-2">
           Access training materials, marketing templates, and reference guides to boost your insurance career.
