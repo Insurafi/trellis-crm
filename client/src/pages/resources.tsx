@@ -87,20 +87,14 @@ export default function Resources() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
-          <Button 
-            variant="ghost"
-            onClick={() => window.location.href = "/dashboard"}
-          >
+          <a href="/dashboard" className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
-          </Button>
-          <Button 
-            variant="ghost"
-            onClick={() => window.location.href = "/training"}
-          >
+          </a>
+          <a href="/training" className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Training
-          </Button>
+          </a>
         </div>
         <h1 className="text-3xl font-bold">Resources Hub</h1>
         <p className="text-muted-foreground mt-2">

@@ -3629,13 +3629,11 @@ export default function TrainingPage() {
                   <p className="text-sm text-cyan-700 mt-1">
                     Recommended reading and industry websites for insurance professionals.
                   </p>
-                  <a href="/resources/books" className="inline-flex items-center">
-                    <Button 
-                      variant="link" 
-                      className="p-0 h-auto mt-2 text-cyan-600"
-                    >
-                      View Reading List
-                    </Button>
+                  <a 
+                    href="/resources/books" 
+                    className="mt-2 inline-flex items-center text-cyan-600 underline hover:text-cyan-700"
+                  >
+                    View Reading List
                   </a>
                 </div>
 
@@ -3647,26 +3645,22 @@ export default function TrainingPage() {
                   <p className="text-sm text-green-700 mt-1">
                     Access additional training materials, sales tools, and marketing templates.
                   </p>
-                  <a href="/resources" className="inline-flex items-center">
-                    <Button
-                      variant="link"
-                      className="p-0 h-auto mt-2 text-green-600"
-                    >
-                      View Resources
-                    </Button>
+                  <a 
+                    href="/resources" 
+                    className="mt-2 inline-flex items-center text-green-600 underline hover:text-green-700"
+                  >
+                    View Resources
                   </a>
                 </div>
               </div>
 
               <div className="mt-4">
-                <a href="/resources" className="w-full">
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
-                  >
-                    View All Resources
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
+                <a 
+                  href="/resources" 
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full"
+                >
+                  View All Resources
+                  <ChevronRight className="ml-2 h-4 w-4" />
                 </a>
               </div>
             </CardContent>
