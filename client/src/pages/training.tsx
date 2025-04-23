@@ -1221,10 +1221,34 @@ export default function TrainingPage() {
       description: "Learn how to position mortgage protection insurance to protect families' homes and financial security.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
+          <div className="border rounded-lg overflow-hidden mb-6">
+            <div className="bg-amber-50 p-4">
+              <h3 className="text-lg font-medium text-amber-800 mb-2">Mortgage Protection Essentials</h3>
+              <p className="text-sm text-amber-700 mb-4">
+                Mortgage protection insurance offers families financial security by ensuring their home remains protected even after the loss of a primary wage earner.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-3 rounded-md border border-amber-200">
+                  <h4 className="font-medium text-amber-900 flex items-center">
+                    <Building2 className="h-4 w-4 mr-2 text-amber-500" />
+                    Home Security
+                  </h4>
+                  <p className="text-sm mt-1">
+                    Pays off mortgage balance to prevent foreclosure and provide housing security
+                  </p>
+                </div>
+                <div className="bg-white p-3 rounded-md border border-amber-200">
+                  <h4 className="font-medium text-amber-900 flex items-center">
+                    <Landmark className="h-4 w-4 mr-2 text-amber-500" />
+                    Financial Peace of Mind
+                  </h4>
+                  <p className="text-sm mt-1">
+                    Allows families to maintain their standard of living during difficult transitions
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Mortgage Protection Insurance?</h3>
