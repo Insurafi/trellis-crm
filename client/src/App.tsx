@@ -129,10 +129,20 @@ const AgentPerformancePage = () => {
 
 // Resources Books Page component
 const ResourcesBooksPage = () => {
-  const ResourcesBooks = lazy(() => import("@/pages/resources/books-fixed"));
+  const ResourcesBooks = lazy(() => import("@/pages/resources/books"));
   return (
     <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
       <ResourcesBooks />
+    </Suspense>
+  );
+};
+
+// Resources Articles Page component
+const ResourcesArticlesPage = () => {
+  const ResourcesArticles = lazy(() => import("@/pages/resources/articles"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <ResourcesArticles />
     </Suspense>
   );
 };
@@ -178,6 +188,7 @@ function Router() {
       <ProtectedRoute path="/analytics" component={Analytics} />
       <ProtectedRoute path="/resources" component={Resources} />
       <ProtectedRoute path="/resources/books" component={ResourcesBooksPage} />
+      <ProtectedRoute path="/resources/articles" component={ResourcesArticlesPage} />
       <ProtectedRoute path="/resources/videos" component={ResourcesVideos} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/client-login" component={SimpleClientLogin} />

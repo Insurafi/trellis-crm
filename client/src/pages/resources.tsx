@@ -22,10 +22,10 @@ import {
 const resourceCategories = [
   {
     id: 1,
-    title: "Books & Websites",
-    description: "Recommended reading and industry websites for insurance professionals.",
+    title: "Articles & Websites",
+    description: "Recommended articles and industry websites for insurance professionals.",
     icon: <BookOpen className="h-12 w-12 p-3 rounded-full bg-cyan-100 text-cyan-600 mb-4" />,
-    link: "/resources/books"
+    link: "/resources/articles"
   },
   {
     id: 2,
