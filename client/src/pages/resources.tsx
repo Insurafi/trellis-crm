@@ -32,7 +32,7 @@ const resourceCategories = [
     title: "Marketing Templates",
     description: "Ready-to-use templates for client emails, social media, and presentations.",
     icon: <FileText className="h-12 w-12 p-3 rounded-full bg-green-100 text-green-600 mb-4" />,
-    link: "/resources" // Temporary link until marketing templates are implemented
+    link: "/marketing"
   },
   {
     id: 3,

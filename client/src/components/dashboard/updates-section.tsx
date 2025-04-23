@@ -82,10 +82,10 @@ const SAMPLE_UPDATES = [
   {
     id: 5,
     title: "New Marketing Materials for Living Expenses Products",
-    message: "New marketing templates, presentation slides, and client-facing materials for both Term and Whole Life with Living Expenses products are now available in the Resources section.",
+    message: "New marketing templates, presentation slides, and client-facing materials for both Term and Whole Life with Living Expenses products are now available in the Marketing section.",
     type: "marketing",
     date: "2025-04-20T14:45:00Z",
-    link: "/resources",
+    link: "/marketing",
     linkText: "View Marketing Resources"
   }
 ];
