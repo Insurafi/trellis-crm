@@ -800,10 +800,26 @@ export default function TrainingPage() {
       description: "Explore the flexible features of IUL policies, market indexes, and ideal client scenarios.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
+          <div className="border rounded-lg overflow-hidden">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
+                src="https://www.youtube.com/embed/aOd0aAGvT38" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Indexed Universal Life (IUL) Insurance"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">Indexed Universal Life (IUL) Insurance</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Learn about Indexed Universal Life policies, how they work, and the best strategies for presenting them to clients.
+              </p>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Indexed Universal Life Insurance (IUL)?</h3>
@@ -3580,26 +3596,7 @@ export default function TrainingPage() {
                   </div>
                 </div>
                 
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video relative" style={{height: "315px"}}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/aOd0aAGvT38" 
-                      width="100%" 
-                      height="100%" 
-                      style={{position: "absolute", top: 0, left: 0}}
-                      frameBorder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen 
-                      title="Indexed Universal Life (IUL) Insurance"
-                    ></iframe>
-                  </div>
-                  <div className="bg-muted p-3">
-                    <h3 className="font-medium">Indexed Universal Life (IUL) Insurance</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Learn about Indexed Universal Life policies, how they work, and the best strategies for presenting them to clients.
-                    </p>
-                  </div>
-                </div>
+
                 
                 <div className="border rounded-lg overflow-hidden">
                   <div className="aspect-video relative" style={{height: "315px"}}>
