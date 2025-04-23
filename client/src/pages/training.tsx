@@ -3499,7 +3499,7 @@ export default function TrainingPage() {
                                 </div>
                               </div>
                             </div>
-                            <div className="mt-8 text-right">
+                            <div className="mt-8 flex justify-center">
                               <Button variant={isCompleted ? "outline" : "default"} size="sm">
                                 {isCompleted ? 'Review' : 'Continue'}
                               </Button>
@@ -3536,7 +3536,7 @@ export default function TrainingPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-8 text-right">
+                      <div className="mt-8 flex justify-center">
                         <Button variant="default" size="sm">
                           Continue
                         </Button>
@@ -3556,7 +3556,7 @@ export default function TrainingPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-8 text-right">
+                      <div className="mt-8 flex justify-center">
                         <Button variant="default" size="sm">
                           Start
                         </Button>
