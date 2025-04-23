@@ -103,6 +103,10 @@ const websites = [
 ];
 
 const BookCard = ({ book }: { book: typeof books[0] }) => {
+  const handleClick = () => {
+    window.open(book.link, '_blank');
+  };
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -134,21 +138,23 @@ const BookCard = ({ book }: { book: typeof books[0] }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <a 
-          href={book.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
+        <div
+          onClick={handleClick}
+          className="w-full cursor-pointer flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
           <span>View on Amazon</span>
           <ExternalLink className="h-4 w-4" />
-        </a>
+        </div>
       </CardFooter>
     </Card>
   );
 };
 
 const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
+  const handleClick = () => {
+    window.open(website.link, '_blank');
+  };
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -163,15 +169,13 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-muted-foreground text-sm">{website.description}</p>
       </CardContent>
       <CardFooter>
-        <a 
-          href={website.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
+        <div
+          onClick={handleClick}
+          className="w-full cursor-pointer flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
           <span>Visit Website</span>
           <ExternalLink className="h-4 w-4" />
-        </a>
+        </div>
       </CardFooter>
     </Card>
   );
