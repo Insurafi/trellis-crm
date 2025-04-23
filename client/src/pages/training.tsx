@@ -33,6 +33,7 @@ import {
   Building2,
   Check, 
   ChevronRight,
+  Clock,
   ExternalLink,
   FileText,
   HelpCircle, 
@@ -1527,6 +1528,91 @@ export default function TrainingPage() {
             "The policy remains in force but may no longer match the new mortgage balance",
             "The policy is automatically cancelled",
             "The homeowner receives a partial refund of premiums"
+          ],
+          correctAnswer: 1
+        }
+      ]
+    },
+    {
+      id: "annuity",
+      title: "Annuities",
+      description: "Learn about different types of annuities and how they provide guaranteed income in retirement.",
+      content: (
+        <div className="space-y-6">
+          <div className="w-full bg-slate-100 border-2 border-slate-200 rounded-md p-8 text-center">
+            <div className="mx-auto mb-4 bg-white rounded-full w-16 h-16 flex items-center justify-center">
+              <Clock className="h-8 w-8 text-blue-500" />
+            </div>
+            <h3 className="text-xl font-medium text-slate-900 mb-2">Annuity Training Content Coming Soon</h3>
+            <p className="text-slate-600 max-w-md mx-auto">
+              We're developing comprehensive annuity training materials covering fixed, variable, and indexed annuities, as well as immediate and deferred options.
+            </p>
+            <div className="mt-6">
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 mr-2 mb-2">Fixed Annuities</Badge>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 mr-2 mb-2">Variable Annuities</Badge>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 mr-2 mb-2">Indexed Annuities</Badge>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 mr-2 mb-2">Income Riders</Badge>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-medium">What are Annuities?</h3>
+            <p className="mt-2 text-muted-foreground">
+              Annuities are insurance contracts that provide a guaranteed income stream, either immediately or in the future. They are primarily used as part of a retirement strategy to provide steady income during retirement years. Annuities can be structured in various ways to meet different client needs and objectives.
+            </p>
+          </div>
+          
+          <div className="bg-muted p-4 rounded-md">
+            <h4 className="font-medium flex items-center">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              Basic Annuity Types
+            </h4>
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+              <li><span className="font-medium">Fixed Annuities:</span> Provide guaranteed interest rates and predictable income payments.</li>
+              <li><span className="font-medium">Variable Annuities:</span> Offer investment options with income that varies based on market performance.</li>
+              <li><span className="font-medium">Indexed Annuities:</span> Provide returns linked to market indexes with downside protection.</li>
+              <li><span className="font-medium">Immediate Annuities:</span> Begin paying income shortly after purchase.</li>
+              <li><span className="font-medium">Deferred Annuities:</span> Accumulate value over time before income payments begin.</li>
+            </ul>
+          </div>
+          
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Important to remember</AlertTitle>
+            <AlertDescription>
+              Annuities are complex financial products that require thorough understanding before presenting to clients. When our training materials are released, they'll include detailed information on suitability requirements, surrender charges, and specific scenarios where different annuity types are most appropriate.
+            </AlertDescription>
+          </Alert>
+        </div>
+      ),
+      quiz: [
+        {
+          question: "What is the primary purpose of an annuity?",
+          options: [
+            "To provide a death benefit to beneficiaries",
+            "To offer guaranteed income, often for retirement",
+            "To maximize short-term investment returns",
+            "To minimize estate taxes"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "Which type of annuity offers investment options with returns that vary based on market performance?",
+          options: [
+            "Fixed annuity",
+            "Variable annuity",
+            "Immediate annuity",
+            "Single premium annuity"
+          ],
+          correctAnswer: 1
+        },
+        {
+          question: "What is a surrender charge in an annuity contract?",
+          options: [
+            "A fee for changing beneficiaries",
+            "A penalty for withdrawing money early",
+            "A charge for adding riders to the contract",
+            "A fee for annuitizing the contract"
           ],
           correctAnswer: 1
         }
