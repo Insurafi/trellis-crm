@@ -403,6 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (agent) {
           console.log(`Found agent with ID: ${agent.id} for user ${userId}`);
+          // IMPORTANT: Only fetch clients specifically assigned to this agent
           clients = await storage.getClientsByAgent(agent.id);
           console.log(`Fetched ${clients.length} clients assigned to agent ${agent.id}`);
         } else {
@@ -467,8 +468,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
       
-      const clients = await storage.getClientsByAgent(agentId);
-      res.json(clients);
+      // Get information from the authenticated user
+      const user = req.user;
+      const userRole = user?.role;
+      const userId = user?.id;
+      
+      // Log request details for debugging
+      console.log(`User ${userId} (${user?.username}) with role ${userRole} requesting clients for agent ${agentId}`);
+      
+      // Admin and team leaders can access any clients
+      if (userRole === 'admin' || userRole === 'Administrator' || userRole === 'team_leader' || userRole === 'Team Leader') {
+        console.log(`Access granted: User ${userId} with role ${userRole} has permission to view clients for agent ${agentId}`);
+        const clients = await storage.getClientsByAgent(agentId);
+        return res.json(clients);
+      }
+      
+      // For agents, verify they are requesting their own clients
+      if (userRole === 'agent' && userId) {
+        // Get agent record for this user
+        const agent = await storage.getAgentByUserId(userId);
+        
+        if (!agent) {
+          console.log(`Access denied: User ${userId} has no agent record`);
+          return res.status(403).json({ message: "Access denied: You don't have permission to view these clients" });
+        }
+        
+        // Check if they're requesting their own clients
+        if (agent.id !== agentId) {
+          console.log(`Access denied: Agent ${agent.id} is requesting clients for agent ${agentId}`);
+          return res.status(403).json({ message: "Access denied: You can only view your own clients" });
+        }
+        
+        console.log(`Access granted: Agent ${agent.id} is requesting their own clients`);
+        const clients = await storage.getClientsByAgent(agentId);
+        return res.json(clients);
+      }
+      
+      // Default case - deny access
+      console.log(`Access denied: User ${userId} with role ${userRole} is not authorized to view these clients`);
+      return res.status(403).json({ message: "Access denied: You don't have permission to view these clients" });
     } catch (error) {
       console.error("Error fetching clients by agent:", error);
       res.status(500).json({ message: "Failed to fetch clients by agent" });
