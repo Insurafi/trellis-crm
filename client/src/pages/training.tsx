@@ -102,7 +102,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Term Life Insurance Explained"
-            youtubeId="L8JC_JJTxM0"
+            youtubeId="OzQnP9Z0q_o"
           />
           
           <div>
@@ -283,7 +283,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Term Life Insurance with Living Benefits"
-            youtubeId="zpxUzxZ5Vl0"
+            youtubeId="lF2O9g5FdUg"
           />
           
           <div>
@@ -445,7 +445,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Understanding Whole Life Insurance"
-            youtubeId="zWnDkFrMuoo"
+            youtubeId="kGGhnAPKAvM"
           />
           
           <div>
@@ -636,7 +636,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Whole Life Insurance with Living Benefits"
-            youtubeId="R11nsaEqi08"
+            youtubeId="yv7mKSfZdS8"
           />
           
           <div>
@@ -805,7 +805,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Indexed Universal Life Insurance Explained"
-            youtubeId="W1xmqLPF1AU"
+            youtubeId="oi-JARnzGVY"
           />
           
           <div>
@@ -998,7 +998,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Variable Universal Life Insurance Explained"
-            youtubeId="jvHewRJh-mI"
+            youtubeId="oi-JARnzGVY"
           />
           
           <div>
@@ -1196,7 +1196,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Mortgage Protection Insurance Explained"
-            youtubeId="NbLmJ2UhXJE"
+            youtubeId="OzQnP9Z0q_o"
           />
           
           <div>
