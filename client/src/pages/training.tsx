@@ -47,30 +47,22 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Video Player Component
 interface VideoPlayerProps {
-  youtubeId: string;
   title: string;
 }
 
-// Create a simple link out to YouTube
-function VideoPlayer({ youtubeId, title }: { youtubeId: string, title: string }) {
+// Video player placeholder component
+function VideoPlayer({ title }: VideoPlayerProps) {
   return (
     <div className="mb-6">
       <h3 className="text-lg font-medium mb-3">
-        Training Video: {title}
+        Training Module: {title}
       </h3>
-      <a 
-        href={`https://www.youtube.com/watch?v=${youtubeId}`} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="flex items-center justify-center w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium"
-      >
-        <svg className="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 4-8 4z"></path>
-        </svg>
-        Watch Training Video on YouTube
-      </a>
-      <div className="mt-2 text-xs text-gray-500 text-center">
-        Video ID: {youtubeId} • Opens in a new tab
+      <div className="w-full bg-slate-100 border-2 border-slate-200 rounded-md p-6 text-center">
+        <Video className="h-16 w-16 mx-auto mb-3 text-slate-400" />
+        <p className="text-slate-600 font-medium">Video-based training content will be available soon</p>
+        <p className="text-sm text-slate-500 mt-2">
+          Our team is currently preparing high-quality training videos for this module.
+        </p>
       </div>
     </div>
   );
@@ -107,7 +99,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
@@ -288,7 +280,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
@@ -450,7 +442,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
@@ -641,7 +633,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
@@ -810,7 +802,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
@@ -1003,7 +995,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
@@ -1201,7 +1193,7 @@ export default function TrainingPage() {
         <div className="space-y-6">
           <VideoPlayer 
             title="Selling Life Insurance: The Importance of Process in Sales"
-            youtubeId="5wa87ydMXE4"
+            
           />
           
           <div>
