@@ -3583,29 +3583,7 @@ export default function TrainingPage() {
         
         {/* Main content */}
         <div className="col-span-12 md:col-span-9">
-          {/* Training Videos Section */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Video className="mr-2 h-5 w-5 text-primary" />
-                Training Videos
-              </CardTitle>
-              <CardDescription>
-                Watch expert video tutorials on selling insurance products
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <Alert className="mb-6">
-                  <Info className="h-4 w-4" />
-                  <AlertTitle>Training videos moved</AlertTitle>
-                  <AlertDescription>
-                    All training videos are now available in the <a href="/resources/videos" className="text-primary underline hover:text-primary/80">Resources → Training Videos</a> section.
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </CardContent>
-          </Card>
+
           
           <Card className="mb-6">
             <CardHeader>
