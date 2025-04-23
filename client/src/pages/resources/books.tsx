@@ -134,11 +134,9 @@ const BookCard = ({ book }: { book: typeof books[0] }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" asChild>
-          <a href={book.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center">
-            View on Amazon
-            <ExternalLink className="ml-2 h-4 w-4" />
-          </a>
+        <Button variant="outline" className="w-full" onClick={() => window.open(book.link, '_blank')}>
+          View on Amazon
+          <ExternalLink className="ml-2 h-4 w-4" />
         </Button>
       </CardFooter>
     </Card>
@@ -160,11 +158,9 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-muted-foreground text-sm">{website.description}</p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" asChild>
-          <a href={website.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center">
-            Visit Website
-            <ExternalLink className="ml-2 h-4 w-4" />
-          </a>
+        <Button variant="outline" className="w-full" onClick={() => window.open(website.link, '_blank')}>
+          Visit Website
+          <ExternalLink className="ml-2 h-4 w-4" />
         </Button>
       </CardFooter>
     </Card>
@@ -176,14 +172,14 @@ export default function ResourcesBooks() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
-          <a href="/resources" className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground">
+          <Link href="/resources" className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Resources
-          </a>
-          <a href="/training" className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground">
+          </Link>
+          <Link href="/training" className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Training
-          </a>
+          </Link>
         </div>
         <h1 className="text-3xl font-bold">Insurance Resources</h1>
         <p className="text-muted-foreground mt-2">
