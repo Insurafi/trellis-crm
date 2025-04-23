@@ -73,51 +73,19 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getClientsByAgent(agentId: number): Promise<Client[]> {
-    // Get clients directly assigned to this agent
+    // STRICT PERMISSION MODEL: ONLY return clients directly assigned to this agent
+    // This ensures agents can only see clients explicitly assigned to them
+    console.log(`Fetching clients strictly assigned to agent ID ${agentId}`);
     const assignedClients = await db
       .select()
       .from(clients)
       .where(eq(clients.assignedAgentId, agentId));
-      
-    // Get all policies associated with this agent to find client IDs
-    const agentPolicies = await db
-      .select({
-        clientId: policies.clientId
-      })
-      .from(policies)
-      .where(eq(policies.agentId, agentId))
-      .groupBy(policies.clientId);
     
-    // Extract unique client IDs from policies
-    const policyClientIds = agentPolicies
-      .filter(policy => policy.clientId !== null)
-      .map(policy => policy.clientId as number);
-      
-    // If there are no policy clients and no assigned clients, return empty array
-    if (policyClientIds.length === 0 && assignedClients.length === 0) {
-      return [];
-    }
+    console.log(`Found ${assignedClients.length} clients assigned to agent ${agentId}`);
+    return assignedClients;
     
-    // If we only have assigned clients (no policy clients), return those
-    if (policyClientIds.length === 0) {
-      return assignedClients;
-    }
-    
-    // Get clients from policies (that aren't already in assignedClients)
-    const assignedClientIds = assignedClients.map(client => client.id);
-    const policyClients = await db
-      .select()
-      .from(clients)
-      .where(
-        and(
-          inArray(clients.id, policyClientIds),
-          // Exclude clients already in assignedClients
-          not(inArray(clients.id, assignedClientIds))
-        )
-      );
-    
-    // Combine both sets of clients (assigned directly + via policies)
-    return [...assignedClients, ...policyClients];
+    // NOTE: The previous implementation also included clients that had policies with this agent
+    // This was causing permission issues where agents could see clients not directly assigned to them
   }
   
   async getClient(id: number): Promise<Client | undefined> {
