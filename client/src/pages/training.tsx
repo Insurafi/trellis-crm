@@ -51,17 +51,22 @@ interface VideoPlayerProps {
   title: string;
 }
 
-// Import the YouTube iframe HTML generator
-import getYouTubeEmbedHtml from "./iframe-video-content";
-
-// YouTube iframe embedded video component
+// The most reliable and simplest solution - just a direct link button
 const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
   return (
-    <div 
-      dangerouslySetInnerHTML={{ 
-        __html: getYouTubeEmbedHtml(youtubeId, title) 
-      }} 
-    />
+    <div className="mb-6">
+      <h3 className="text-lg font-medium mb-3">
+        Training Video: {title}
+      </h3>
+      <a 
+        href={`https://www.youtube.com/watch?v=${youtubeId}`} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium transition-colors"
+      >
+        Watch Training Video on YouTube
+      </a>
+    </div>
   );
 };
 
