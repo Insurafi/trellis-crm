@@ -58,24 +58,24 @@ const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
         <Video className="mr-2 h-5 w-5 text-red-500" />
         Video: {title}
       </h3>
-      <div className="relative pb-[56.25%] h-0 overflow-hidden max-w-full mb-2 rounded-md border border-border">
-        <iframe 
-          src={`https://www.youtube.com/embed/${youtubeId}`}
-          className="absolute top-0 left-0 w-full h-full" 
-          allowFullScreen
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        ></iframe>
+      <div className="border border-border rounded-md p-2 mb-2">
+        <img 
+          src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`} 
+          alt={title}
+          className="w-full rounded"
+        />
+        <div className="mt-2">
+          <a 
+            href={`https://www.youtube.com/watch?v=${youtubeId}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition-colors"
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span>Watch on YouTube</span>
+          </a>
+        </div>
       </div>
-      <a 
-        href={`https://www.youtube.com/watch?v=${youtubeId}`} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline text-sm"
-      >
-        <ExternalLink className="h-4 w-4" />
-        <span>Open in YouTube</span>
-      </a>
     </div>
   );
 };
