@@ -3487,7 +3487,11 @@ export default function TrainingPage() {
                                 </span>
                               </div>
                               <div className="flex-grow min-w-0 mr-2">
-                                <p className="font-medium text-left whitespace-normal break-words">{module.title}</p>
+                                <p className="font-medium text-left whitespace-normal w-full">
+                                  {module.title.includes("Insurance") 
+                                    ? module.title.replace("Insurance", "Ins.") 
+                                    : module.title}
+                                </p>
                                 <div className="flex items-center mt-1">
                                   <Progress value={progress} className="h-2 w-24" />
                                 </div>
@@ -3524,7 +3528,7 @@ export default function TrainingPage() {
                           </span>
                         </div>
                         <div className="flex-grow min-w-0 mr-2">
-                          <p className="font-medium text-left whitespace-normal break-words">Business Term Life Insurance</p>
+                          <p className="font-medium text-left whitespace-normal w-full">Business Term Life Ins.</p>
                           <div className="flex items-center mt-1">
                             <Progress value={35} className="h-2 w-24" />
                           </div>
@@ -3544,7 +3548,7 @@ export default function TrainingPage() {
                           </span>
                         </div>
                         <div className="flex-grow min-w-0 mr-2">
-                          <p className="font-medium text-left whitespace-normal break-words">Key Person Insurance</p>
+                          <p className="font-medium text-left whitespace-normal w-full">Key Person Ins.</p>
                           <div className="flex items-center mt-1">
                             <Progress value={0} className="h-2 w-24" />
                           </div>
