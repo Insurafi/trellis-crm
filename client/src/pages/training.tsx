@@ -44,6 +44,7 @@ import {
   Video 
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 
 // Video Player Component
 interface VideoPlayerProps {
@@ -85,6 +86,7 @@ interface TrainingModule {
 }
 
 export default function TrainingPage() {
+  const { toast } = useToast();
   const [selectedModule, setSelectedModule] = useState<string>("term");
   const [quizMode, setQuizMode] = useState<boolean>(false);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -3570,8 +3572,12 @@ export default function TrainingPage() {
                 variant="outline" 
                 className="mt-3 w-full"
                 onClick={() => {
-                  // You can navigate to a certificates page here
-                  alert("Certificates feature coming soon!");
+                  // Create a toast notification instead of an alert
+                  toast({
+                    title: "Certificates",
+                    description: "Certificates feature coming soon!",
+                    duration: 3000,
+                  });
                 }}
               >
                 <Award className="mr-2 h-4 w-4" />
