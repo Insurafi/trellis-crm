@@ -40,6 +40,15 @@ import { format } from "date-fns";
 const SAMPLE_UPDATES = [
   {
     id: 0,
+    title: "UPDATED: Training Videos Now Available on YouTube",
+    message: "We've improved our training system to use direct YouTube links for all training videos. This ensures maximum compatibility across all devices and browsers. All training videos now open in a new tab for uninterrupted learning.",
+    type: "training",
+    date: "2025-04-23T03:15:00Z",
+    link: "/simple-training",
+    linkText: "Go to Training Center"
+  },
+  {
+    id: 1,
     title: "NEW: Quick Final Expense Script Added to Call Scripts",
     message: "A new streamlined Final Expense script is now available in the Call Scripts section. This quick-reference guide will help you efficiently communicate Final Expense benefits to your clients and address common objections.",
     type: "announcement",
@@ -48,23 +57,23 @@ const SAMPLE_UPDATES = [
     linkText: "View Final Expense Script"
   },
   {
-    id: 1,
+    id: 2,
     title: "NOTICE: Resources Navigation Issue",
     message: "We're aware that some 'View Resources' links in the Training section are not working properly. Our team is actively working on this issue and expects to have it resolved by tomorrow. Thank you for your patience.",
     type: "system",
     date: "2025-04-22T19:15:00Z"
   },
   {
-    id: 2,
+    id: 3,
     title: "NEW TRAINING: Term & Whole Life with Living Expenses",
     message: "Two new comprehensive training modules have been added for Term with Living Expenses and Whole Life with Living Expenses. These modules include detailed content on key features, ideal client profiles, sales tips, objection handling, and quiz questions to test your knowledge.",
     type: "training",
     date: "2025-04-21T10:00:00Z",
-    link: "/training",
+    link: "/simple-training",
     linkText: "Access Training Modules"
   },
   {
-    id: 3,
+    id: 4,
     title: "Essential Insurance Books & Websites Added",
     message: "Check out our curated collection of must-read insurance books and industry websites. Featured titles include 'The Digital Life Insurance Agent' by Jeff Root, 'Questions and Answers on Life Insurance' by Tony Steuer, and 'Knock Out the Competition' by Michael Bonilla, plus reliable industry websites like LIMRA, Insurance News Net, and ThinkAdvisor.",
     type: "resources",
@@ -73,14 +82,14 @@ const SAMPLE_UPDATES = [
     linkText: "View Books & Websites"
   },
   {
-    id: 4,
+    id: 5,
     title: "Dashboard Enhancement: Updates Section Added",
     message: "A new Updates section has been added to all dashboards to keep you informed about the latest system changes, training materials, and marketing resources.",
     type: "system",
     date: "2025-04-21T11:30:00Z"
   },
   {
-    id: 5,
+    id: 6,
     title: "New Marketing Materials for Living Expenses Products",
     message: "New marketing templates, presentation slides, and client-facing materials for both Term and Whole Life with Living Expenses products are now available in the Marketing section.",
     type: "marketing",
