@@ -51,8 +51,8 @@ interface VideoPlayerProps {
   title: string;
 }
 
-// The most reliable and simplest solution - just a direct link button
-const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
+// Create a simple link out to YouTube
+function VideoPlayer({ youtubeId, title }: { youtubeId: string, title: string }) {
   return (
     <div className="mb-6">
       <h3 className="text-lg font-medium mb-3">
@@ -62,13 +62,13 @@ const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
         href={`https://www.youtube.com/watch?v=${youtubeId}`} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium transition-colors"
+        className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium"
       >
         Watch Training Video on YouTube
       </a>
     </div>
   );
-};
+}
 
 interface QuizQuestion {
   question: string;
