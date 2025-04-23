@@ -830,15 +830,25 @@ export class DatabaseStorage implements IStorage {
     // First get all agents
     const allAgents = await db.select().from(agents);
     
-    // Then get all user data with fullName
+    // Then get all user data with firstName and lastName
     const allUsers = await db.select().from(users);
     
     // Combine the data
     return allAgents.map(agent => {
       const user = allUsers.find(u => u.id === agent.userId);
+      // Create fullName from firstName and lastName if available, otherwise fall back to existing fullName
+      const fullName = user ? 
+        (user.firstName && user.lastName ? 
+          `${user.firstName} ${user.lastName}` : 
+          user.fullName || `Agent ${agent.id}`) 
+        : `Agent ${agent.id}`;
+      
       return {
         ...agent,
-        name: user?.fullName
+        name: fullName,
+        fullName: fullName,
+        firstName: user?.firstName,
+        lastName: user?.lastName
       };
     });
   }
@@ -858,10 +868,17 @@ export class DatabaseStorage implements IStorage {
       return agent; // Return agent without user data if user not found
     }
     
+    // Create fullName from firstName and lastName if available
+    const fullName = user.firstName && user.lastName ? 
+      `${user.firstName} ${user.lastName}` : 
+      user.fullName || `Agent ${agent.id}`;
+    
     // Combine agent and user data
     return {
       ...agent,
-      fullName: user.fullName,
+      fullName: fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email
     };
   }
@@ -870,18 +887,34 @@ export class DatabaseStorage implements IStorage {
     // First try the direct lookup
     const [agent] = await db.select().from(agents).where(eq(agents.userId, userId));
     
-    // If agent found, return it
+    // Get the user data to include name fields
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    
+    // If agent found, combine with user data and return it
     if (agent) {
       console.log(`Found agent with ID ${agent.id} for user ID ${userId}`);
+      
+      if (user) {
+        // Create fullName from firstName and lastName if available
+        const fullName = user.firstName && user.lastName ? 
+          `${user.firstName} ${user.lastName}` : 
+          user.fullName || `Agent ${agent.id}`;
+          
+        return {
+          ...agent,
+          fullName: fullName,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        };
+      }
+      
       return agent;
     }
     
     // Special handling for Monica's accounts (user ID 18 or 19)
     if (userId === 18 || userId === 19) {
       console.log(`Special lookup for Monica's user ID: ${userId}`);
-      
-      // Get the user to verify it's Monica
-      const [user] = await db.select().from(users).where(eq(users.id, userId));
       
       if (user && user.firstName === 'Monica' && user.lastName === 'Palmer') {
         console.log("Confirmed user is Monica Palmer, looking up agent ID 9");
@@ -890,7 +923,13 @@ export class DatabaseStorage implements IStorage {
         
         if (monicaAgent) {
           console.log("Found Monica's agent record with ID 9");
-          return monicaAgent;
+          return {
+            ...monicaAgent,
+            fullName: "Monica Palmer",
+            firstName: "Monica",
+            lastName: "Palmer",
+            email: user.email
+          };
         }
       }
     }
