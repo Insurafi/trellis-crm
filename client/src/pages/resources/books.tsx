@@ -24,7 +24,7 @@ const books = [
     title: "The Digital Life Insurance Agent",
     author: "Jeff Root",
     description: "How to market life insurance online and sell over the phone. A practical guide to leveraging digital marketing for insurance sales.",
-    link: "https://amazon.com/Digital-Life-Insurance-Agent-Insurance-ebook/dp/B01BUKR5EK/",
+    link: "https://www.amazon.com/dp/B01BUKR5EK/",
     rating: 4.5,
     coverImage: "https://m.media-amazon.com/images/I/41pLvjmOF4L._SX331_BO1,204,203,200_.jpg"
   },
@@ -33,7 +33,7 @@ const books = [
     title: "Questions and Answers on Life Insurance",
     author: "Tony Steuer",
     description: "The Life Insurance Toolbook. A comprehensive guide to understanding life insurance policies and helping clients make informed decisions.",
-    link: "https://amazon.com/Questions-Answers-Life-Insurance-Toolbook/dp/0984508104/",
+    link: "https://www.amazon.com/dp/0984508104/",
     rating: 4.7,
     coverImage: "https://m.media-amazon.com/images/I/51pLJrTdDPL._SX331_BO1,204,203,200_.jpg"
   },
@@ -42,7 +42,7 @@ const books = [
     title: "Knock Out the Competition",
     author: "Michael Bonilla",
     description: "A proven formula for selling final expense life insurance like a champion. Specific strategies for the final expense market.",
-    link: "https://amazon.com/Knock-Out-Competition-Selling-Insurance/dp/1735393509/",
+    link: "https://www.amazon.com/dp/1735393509/",
     rating: 4.8,
     coverImage: "https://m.media-amazon.com/images/I/41bq9U6YYTL._SX331_BO1,204,203,200_.jpg"
   },
@@ -51,7 +51,7 @@ const books = [
     title: "Paychecks and Playchecks",
     author: "Tom Hegna",
     description: "Retirement solutions for life. Strategies to create a steady stream of retirement income that lasts a lifetime.",
-    link: "https://amazon.com/Paychecks-Playchecks-Retirement-Solutions-Life/dp/0615393063/",
+    link: "https://www.amazon.com/dp/0615393063/",
     rating: 4.6,
     coverImage: "https://m.media-amazon.com/images/I/41YCFyHfVNL._SX331_BO1,204,203,200_.jpg"
   }
@@ -134,13 +134,15 @@ const BookCard = ({ book }: { book: typeof books[0] }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <button 
-          onClick={() => window.open(book.link, '_blank')}
+        <a 
+          href={book.link}
+          target="_blank"
+          rel="noopener noreferrer"
           className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
           <span>View on Amazon</span>
           <ExternalLink className="h-4 w-4" />
-        </button>
+        </a>
       </CardFooter>
     </Card>
   );
@@ -161,13 +163,15 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-muted-foreground text-sm">{website.description}</p>
       </CardContent>
       <CardFooter>
-        <button 
-          onClick={() => window.open(website.link, '_blank')}
+        <a 
+          href={website.link}
+          target="_blank"
+          rel="noopener noreferrer"
           className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
           <span>Visit Website</span>
           <ExternalLink className="h-4 w-4" />
-        </button>
+        </a>
       </CardFooter>
     </Card>
   );
