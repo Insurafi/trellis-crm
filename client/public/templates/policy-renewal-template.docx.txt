@@ -1,0 +1,43 @@
+SUBJECT: Important: Your [Policy Type] Insurance Policy Renewal
+
+Dear [Client Name],
+
+I hope this email finds you well. I'm writing to inform you that your [Policy Type] insurance policy #[Policy Number] is scheduled for renewal on [Renewal Date].
+
+Your Current Coverage:
+- Policy Type: [Policy Type]
+- Coverage Amount: [Coverage Amount]
+- Premium: [Current Premium] paid [Payment Frequency]
+- Effective Date: [Original Effective Date]
+- Renewal Date: [Renewal Date]
+
+As your dedicated insurance agent, I've reviewed your policy and would like to recommend the following:
+
+[Choose one of the following options based on your assessment:]
+
+OPTION 1 - Same Coverage, Same Premium:
+Your current coverage continues to be well-suited to your needs, and I'm pleased to inform you that there are no changes to your premium amount for the upcoming term.
+
+OPTION 2 - Same Coverage, Premium Change:
+Your current coverage remains appropriate, but there will be [an increase/a decrease] in your premium to [New Premium Amount]. This change is due to [briefly explain reason].
+
+OPTION 3 - Recommended Coverage Update:
+Based on our previous conversations and changes in your life circumstances, I recommend updating your coverage to [New Coverage Details]. This would adjust your premium to [New Premium Amount].
+
+Would you be available for a brief 15-minute call next week to review your policy and discuss your renewal options? Please let me know what day and time works best for you.
+
+If you have any questions or concerns in the meantime, please don't hesitate to contact me.
+
+Thank you for your continued trust in [Your Agency Name]. I look forward to continuing to help protect what matters most to you.
+
+Best regards,
+
+[Agent Name]
+[Your Agency Name]
+[Phone Number]
+[Email Address]
+[License Number]
+
+---
+
+Note: This is a sample template. Please customize it with your own agency information, client-specific details, and remove the options that don't apply to the specific renewal situation.
