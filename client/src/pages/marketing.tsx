@@ -74,7 +74,8 @@ import {
   Pause,
   CheckCircle,
   PenSquare,
-  Megaphone
+  Megaphone,
+  Download
 } from "lucide-react";
 
 export default function Marketing() {
@@ -616,7 +617,7 @@ export default function Marketing() {
           <CardHeader>
             <CardTitle>Email Templates</CardTitle>
             <CardDescription>
-              Create and manage your email templates for marketing campaigns.
+              Create and manage your email templates for marketing campaigns, or download ready-to-use templates.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -632,7 +633,13 @@ export default function Marketing() {
                     </div>
                     <Badge>Default</Badge>
                   </div>
-                  <div className="mt-4 text-right">
+                  <div className="mt-4 flex justify-end space-x-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/templates/welcome-email-template.docx.txt" download="Welcome Email Template.docx">
+                        <Download className="mr-2 h-3 w-3" />
+                        Download
+                      </a>
+                    </Button>
                     <Button variant="outline" size="sm">
                       <PenSquare className="mr-2 h-3 w-3" />
                       Edit
@@ -650,8 +657,15 @@ export default function Marketing() {
                         Policy renewal reminder
                       </p>
                     </div>
+                    <Badge>Default</Badge>
                   </div>
-                  <div className="mt-4 text-right">
+                  <div className="mt-4 flex justify-end space-x-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/templates/policy-renewal-template.docx.txt" download="Policy Renewal Template.docx">
+                        <Download className="mr-2 h-3 w-3" />
+                        Download
+                      </a>
+                    </Button>
                     <Button variant="outline" size="sm">
                       <PenSquare className="mr-2 h-3 w-3" />
                       Edit
@@ -669,6 +683,7 @@ export default function Marketing() {
                         Monthly updates and tips
                       </p>
                     </div>
+                    <Badge variant="outline">Custom</Badge>
                   </div>
                   <div className="mt-4 text-right">
                     <Button variant="outline" size="sm">
@@ -685,6 +700,118 @@ export default function Marketing() {
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Create New Template
                   </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Social Media Templates */}
+      <div className="mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Social Media Templates</CardTitle>
+            <CardDescription>
+              Download ready-to-use social media post templates for various insurance products.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium">Final Expense Posts</h3>
+                      <p className="text-sm text-neutral-500 mt-1">
+                        6 customizable social media posts
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">New</Badge>
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/templates/final-expense-social-media.txt" download="Final Expense Social Media Templates.txt">
+                        <Download className="mr-2 h-3 w-3" />
+                        Download
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium">Living Expenses Posts</h3>
+                      <p className="text-sm text-neutral-500 mt-1">
+                        Coming soon
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button variant="outline" size="sm" disabled>
+                      <Download className="mr-2 h-3 w-3" />
+                      Coming Soon
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Presentation Templates */}
+      <div className="mt-6 mb-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Presentation Templates</CardTitle>
+            <CardDescription>
+              Download presentation outlines and slide decks for client meetings.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium">Living Expenses Presentation</h3>
+                      <p className="text-sm text-neutral-500 mt-1">
+                        Detailed presentation outline
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">New</Badge>
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/templates/living-expenses-presentation-outline.txt" download="Living Expenses Presentation Outline.txt">
+                        <Download className="mr-2 h-3 w-3" />
+                        Download
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium">Term Life Insurance Presentation</h3>
+                      <p className="text-sm text-neutral-500 mt-1">
+                        Coming soon
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button variant="outline" size="sm" disabled>
+                      <Download className="mr-2 h-3 w-3" />
+                      Coming Soon
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
