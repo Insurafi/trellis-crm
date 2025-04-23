@@ -127,7 +127,7 @@ const AgentPerformancePage = () => {
 
 // Resources Books Page component
 const ResourcesBooksPage = () => {
-  const ResourcesBooks = lazy(() => import("@/pages/resources/books"));
+  const ResourcesBooks = lazy(() => import("@/pages/resources/books-fixed"));
   return (
     <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
       <ResourcesBooks />
