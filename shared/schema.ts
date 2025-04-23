@@ -40,6 +40,8 @@ export type User = typeof users.$inferSelect;
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  firstName: text("first_name"), // Added first name field
+  lastName: text("last_name"), // Added last name field
   company: text("company"),
   email: text("email").notNull(),
   phone: text("phone"),
@@ -48,7 +50,7 @@ export const clients = pgTable("clients", {
   city: text("city"), // Added city field
   state: text("state"), // Added state field
   zipCode: text("zip_code"), // Added zipCode field
-  dateOfBirth: date("date_of_birth"), // Added date of birth field
+  dateOfBirth: date("date_of_birth"), // Date field
   status: text("status").default("active"),
   avatarUrl: text("avatar_url"),
   notes: text("notes"),
@@ -65,6 +67,8 @@ export const clients = pgTable("clients", {
 
 export const insertClientSchema = createInsertSchema(clients).pick({
   name: true,
+  firstName: true, // Added first name field
+  lastName: true, // Added last name field
   company: true,
   email: true,
   phone: true,
@@ -76,8 +80,6 @@ export const insertClientSchema = createInsertSchema(clients).pick({
   dateOfBirth: true, // Added date of birth field
   status: true,
   avatarUrl: true,
-  insuranceType: true, // Added insurance type field
-  insuranceInfo: true, // Added insurance info field
   notes: true,
   username: true,
   password: true,

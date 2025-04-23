@@ -451,13 +451,23 @@ export default function ClientDetail() {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm font-medium">Full Name</label>
+                        <label htmlFor="firstName" className="text-sm font-medium">First Name</label>
                         <Input
-                          id="name"
-                          name="name"
-                          value={formData.name}
+                          id="firstName"
+                          name="firstName"
+                          value={formData.firstName || ''}
                           onChange={handleInputChange}
-                          placeholder="Full name"
+                          placeholder="First name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="lastName" className="text-sm font-medium">Last Name</label>
+                        <Input
+                          id="lastName"
+                          name="lastName"
+                          value={formData.lastName || ''}
+                          onChange={handleInputChange}
+                          placeholder="Last name"
                         />
                       </div>
                       <div className="space-y-2">

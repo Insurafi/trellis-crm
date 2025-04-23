@@ -135,14 +135,35 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createClient(client: InsertClient): Promise<Client> {
-    const [insertedClient] = await db.insert(clients).values(client).returning();
+    // Handle the date field properly if it's empty
+    const cleanedData = { ...client };
+    
+    // If dateOfBirth is an empty string, set it to null
+    if (cleanedData.dateOfBirth === '') {
+      cleanedData.dateOfBirth = undefined;
+    }
+    
+    // If we have firstName and lastName but not name, create the name
+    if (cleanedData.firstName && cleanedData.lastName && !cleanedData.name) {
+      cleanedData.name = `${cleanedData.firstName} ${cleanedData.lastName}`;
+    }
+    
+    const [insertedClient] = await db.insert(clients).values(cleanedData).returning();
     return insertedClient;
   }
   
   async updateClient(id: number, clientData: Partial<InsertClient>): Promise<Client | undefined> {
+    // Handle the date field properly if it's empty
+    const cleanedData = { ...clientData };
+    
+    // If dateOfBirth is an empty string, set it to null
+    if (cleanedData.dateOfBirth === '') {
+      cleanedData.dateOfBirth = undefined;
+    }
+    
     const [updatedClient] = await db
       .update(clients)
-      .set(clientData)
+      .set(cleanedData)
       .where(eq(clients.id, id))
       .returning();
     return updatedClient;
