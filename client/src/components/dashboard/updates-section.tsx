@@ -40,12 +40,12 @@ import { format } from "date-fns";
 const SAMPLE_UPDATES = [
   {
     id: 0,
-    title: "UPDATED: Training Videos Now Available on YouTube",
-    message: "We've improved our training system to use direct YouTube links for all training videos. This ensures maximum compatibility across all devices and browsers. All training videos now open in a new tab for uninterrupted learning.",
+    title: "SUCCESS: Training Videos Now Working Properly!",
+    message: "After overcoming many technical challenges, all training videos are now working flawlessly in Resources/Videos. Videos are now embedded directly within the page for a seamless viewing experience. More training videos will be added soon!",
     type: "training",
-    date: "2025-04-23T03:15:00Z",
-    link: "/simple-training",
-    linkText: "Go to Training Center"
+    date: "2025-04-23T05:40:00Z",
+    link: "/resources/videos",
+    linkText: "Watch Training Videos"
   },
   {
     id: 1,
