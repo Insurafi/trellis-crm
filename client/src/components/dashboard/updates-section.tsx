@@ -69,7 +69,7 @@ const SAMPLE_UPDATES = [
     message: "Two new comprehensive training modules have been added for Term with Living Expenses and Whole Life with Living Expenses. These modules include detailed content on key features, ideal client profiles, sales tips, objection handling, and quiz questions to test your knowledge.",
     type: "training",
     date: "2025-04-21T10:00:00Z",
-    link: "/simple-training",
+    link: "/training",
     linkText: "Access Training Modules"
   },
   {
