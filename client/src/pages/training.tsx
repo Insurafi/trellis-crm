@@ -51,23 +51,17 @@ interface VideoPlayerProps {
   title: string;
 }
 
-// Super simple button-only approach
+// Import the HTML content generator
+import getHtmlContent from "./html-training-content";
+
+// HTML-based video component that uses dangerouslySetInnerHTML
 const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
   return (
-    <div className="mb-6">
-      <h3 className="text-lg font-medium mb-3 flex items-center">
-        <Video className="mr-2 h-5 w-5 text-red-500" />
-        Training Video: {title}
-      </h3>
-      <a 
-        href={`https://www.youtube.com/watch?v=${youtubeId}`} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium transition-colors"
-      >
-        Watch Training Video on YouTube
-      </a>
-    </div>
+    <div 
+      dangerouslySetInnerHTML={{ 
+        __html: getHtmlContent(youtubeId, title) 
+      }} 
+    />
   );
 };
 
