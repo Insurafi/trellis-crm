@@ -62,10 +62,16 @@ function VideoPlayer({ youtubeId, title }: { youtubeId: string, title: string })
         href={`https://www.youtube.com/watch?v=${youtubeId}`} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium"
+        className="flex items-center justify-center w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium"
       >
+        <svg className="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 4-8 4z"></path>
+        </svg>
         Watch Training Video on YouTube
       </a>
+      <div className="mt-2 text-xs text-gray-500 text-center">
+        Video ID: {youtubeId} • Opens in a new tab
+      </div>
     </div>
   );
 }
@@ -3331,16 +3337,6 @@ export default function TrainingPage() {
           <p className="text-muted-foreground">
             Master life insurance products to better serve your clients
           </p>
-        </div>
-        
-        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-md mb-6 ml-auto">
-          <h2 className="text-lg font-semibold text-yellow-700 mb-2">Alternative Training Pages</h2>
-          <p className="mb-2">If you're having trouble with videos, try these alternatives:</p>
-          <div className="space-y-2">
-            <a href="/direct-training" className="text-blue-600 hover:underline block">Direct Training Links</a>
-            <a href="/simple-training" className="text-blue-600 hover:underline block">Simple Training Page</a>
-            <a href="/emergency-training" className="text-blue-600 hover:underline block">Emergency Training Page</a>
-          </div>
         </div>
         
         {!quizMode && (
