@@ -3596,8 +3596,6 @@ export default function TrainingPage() {
                   </div>
                 </div>
                 
-
-                
                 <div className="border rounded-lg overflow-hidden">
                   <div className="aspect-video relative" style={{height: "315px"}}>
                     <iframe 
