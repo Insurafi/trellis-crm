@@ -46,8 +46,29 @@ import {
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
+// Define a type for client data
+interface ClientData {
+  id?: number;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  avatarUrl: string;
+  notes: string;
+  sex: string;
+  dateOfBirth: string | null;
+  assignedAgentId: number | null;
+  [key: string]: any; // Allow other properties
+}
+
 // Helper function to calculate age from birthdate
-const calculateAge = (dateOfBirth: any) => {
+const calculateAge = (dateOfBirth: string | null) => {
   if (!dateOfBirth) return "Unknown";
   
   const birthDate = new Date(dateOfBirth);
@@ -74,17 +95,28 @@ export default function ClientDetail() {
   
   // Fetch client details
   const {
-    data: client,
+    data: client = {} as ClientData,
     isLoading,
     error,
     refetch
-  } = useQuery({
+  } = useQuery<ClientData>({
     queryKey: [`/api/clients/${clientId}`],
     enabled: !isNaN(clientId)
   });
 
+  // Define the Agent interface
+  interface Agent {
+    id: number;
+    userId: number;
+    firstName?: string;
+    lastName?: string;
+    fullName?: string;
+    email?: string;
+    [key: string]: any;
+  }
+
   // Fetch agents for dropdown
-  const { data: agents = [] } = useQuery({
+  const { data: agents = [] as Agent[] } = useQuery<Agent[]>({
     queryKey: ['/api/agents'],
     enabled: !isNaN(clientId)
   });
@@ -231,20 +263,50 @@ export default function ClientDetail() {
     }
   };
 
+  // Define interfaces for documents, policies, and tasks
+  interface Document {
+    id: number;
+    name: string;
+    clientId: number;
+    type: string;
+    path: string;
+    [key: string]: any;
+  }
+  
+  interface Policy {
+    id: number;
+    clientId: number;
+    policyNumber: string;
+    type: string;
+    status: string;
+    issueDate: string;
+    [key: string]: any;
+  }
+  
+  interface Task {
+    id: number;
+    title: string;
+    clientId: number;
+    assignedTo: number;
+    status: string;
+    dueDate: string;
+    [key: string]: any;
+  }
+
   // Fetch client documents
-  const { data: documents = [] } = useQuery({
+  const { data: documents = [] as Document[] } = useQuery<Document[]>({
     queryKey: [`/api/documents?clientId=${clientId}`],
     enabled: !isNaN(clientId)
   });
 
   // Fetch client policies
-  const { data: policies = [] } = useQuery({
+  const { data: policies = [] as Policy[] } = useQuery<Policy[]>({
     queryKey: [`/api/policies?clientId=${clientId}`],
     enabled: !isNaN(clientId)
   });
 
   // Fetch client tasks
-  const { data: tasks = [] } = useQuery({
+  const { data: tasks = [] as Task[] } = useQuery<Task[]>({
     queryKey: [`/api/tasks?clientId=${clientId}`],
     enabled: !isNaN(clientId)
   });

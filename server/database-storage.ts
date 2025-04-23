@@ -161,6 +161,11 @@ export class DatabaseStorage implements IStorage {
       cleanedData.dateOfBirth = undefined;
     }
     
+    // If we have firstName and lastName but not name, create the name
+    if (cleanedData.firstName && cleanedData.lastName && !cleanedData.name) {
+      cleanedData.name = `${cleanedData.firstName} ${cleanedData.lastName}`;
+    }
+    
     const [updatedClient] = await db
       .update(clients)
       .set(cleanedData)
