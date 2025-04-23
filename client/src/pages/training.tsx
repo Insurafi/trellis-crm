@@ -3668,6 +3668,41 @@ export default function TrainingPage() {
             </CardContent>
           </Card>
 
+          {/* Training Videos Section */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Video className="mr-2 h-5 w-5 text-primary" />
+                Training Videos
+              </CardTitle>
+              <CardDescription>
+                Watch expert video tutorials on selling insurance products
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="aspect-video">
+                    <iframe 
+                      className="w-full h-full"
+                      src="https://www.youtube.com/embed/jY4l6Vo3RAU" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen 
+                      title="How to sell Final Expense to low income seniors"
+                    ></iframe>
+                  </div>
+                  <div className="bg-muted p-3">
+                    <h3 className="font-medium">How to sell Final Expense to low income seniors</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      This video demonstrates effective techniques for helping seniors with limited income secure final expense coverage.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Resources Hub Section */}
           <Card>
             <CardHeader>
