@@ -118,7 +118,11 @@ const ArticleCard = ({ article }: { article: typeof articles[0] }) => {
           href={article.link}
           target="_blank"
           rel="noreferrer"
-          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
+          className="w-full flex items-center justify-center py-2 px-4 rounded-md bg-primary hover:bg-primary/90 text-white font-medium text-center gap-2"
+          onClick={(e) => {
+            e.preventDefault();
+            window.open(article.link, "_blank", "noopener,noreferrer");
+          }}
         >
           <span>Read Article</span>
           <ExternalLink className="h-4 w-4" />
@@ -147,7 +151,11 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
           href={website.link}
           target="_blank"
           rel="noreferrer"
-          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
+          className="w-full flex items-center justify-center py-2 px-4 rounded-md bg-primary hover:bg-primary/90 text-white font-medium text-center gap-2"
+          onClick={(e) => {
+            e.preventDefault();
+            window.open(website.link, "_blank", "noopener,noreferrer");
+          }}
         >
           <span>Visit Website</span>
           <ExternalLink className="h-4 w-4" />
