@@ -58,10 +58,12 @@ function VideoPlayer({ title }: VideoPlayerProps) {
         Training Module: {title}
       </h3>
       <div className="w-full bg-slate-100 border-2 border-slate-200 rounded-md p-6 text-center">
-        <Video className="h-16 w-16 mx-auto mb-3 text-slate-400" />
-        <p className="text-slate-600 font-medium">Video-based training content will be available soon</p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 text-slate-400">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <p className="text-slate-600 font-medium">Video Coming Soon</p>
         <p className="text-sm text-slate-500 mt-2">
-          Our team is currently preparing high-quality training videos for this module.
+          We're updating our training content for better learning experiences.
         </p>
       </div>
     </div>
