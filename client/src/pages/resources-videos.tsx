@@ -126,26 +126,7 @@ export default function ResourcesVideos() {
                 </div>
               </div>
 
-              <div className="border rounded-lg overflow-hidden">
-                <div className="aspect-video relative" style={{height: "250px"}}>
-                  <iframe 
-                    src="https://www.youtube.com/embed/dC_Cv0CiRiY" 
-                    width="100%" 
-                    height="100%" 
-                    style={{position: "absolute", top: 0, left: 0}}
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowFullScreen 
-                    title="Effective Insurance Needs Analysis"
-                  ></iframe>
-                </div>
-                <div className="bg-muted p-3">
-                  <h3 className="font-medium">Effective Insurance Needs Analysis</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Learn techniques for conducting a thorough insurance needs analysis with clients.
-                  </p>
-                </div>
-              </div>
+
             </div>
           </CardContent>
         </Card>
