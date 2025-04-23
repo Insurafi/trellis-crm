@@ -3484,8 +3484,8 @@ export default function TrainingPage() {
                               <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center mr-3`}>
                                 {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
                               </div>
-                              <div>
-                                <p className="font-medium">{module.title}</p>
+                              <div className="flex-grow min-w-0 mr-2">
+                                <p className="font-medium text-left whitespace-normal break-words">{module.title}</p>
                                 <div className="flex items-center mt-1">
                                   <Progress value={progress} className="h-2 w-24" />
                                   <span className="text-xs text-muted-foreground ml-2">{progress}%</span>
@@ -3520,8 +3520,8 @@ export default function TrainingPage() {
                         <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                           <Building2 className="h-4 w-4" />
                         </div>
-                        <div>
-                          <p className="font-medium">Business Term Life Insurance</p>
+                        <div className="flex-grow min-w-0 mr-2">
+                          <p className="font-medium text-left whitespace-normal break-words">Business Term Life Insurance</p>
                           <div className="flex items-center mt-1">
                             <Progress value={35} className="h-2 w-24" />
                             <span className="text-xs text-muted-foreground ml-2">35%</span>
@@ -3539,8 +3539,8 @@ export default function TrainingPage() {
                         <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                           <Landmark className="h-4 w-4" />
                         </div>
-                        <div>
-                          <p className="font-medium">Key Person Insurance</p>
+                        <div className="flex-grow min-w-0 mr-2">
+                          <p className="font-medium text-left whitespace-normal break-words">Key Person Insurance</p>
                           <div className="flex items-center mt-1">
                             <Progress value={0} className="h-2 w-24" />
                             <span className="text-xs text-muted-foreground ml-2">0%</span>
