@@ -49,17 +49,21 @@ export default function ResourcesVideos() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="border rounded-lg overflow-hidden">
-                <div className="aspect-video relative" style={{height: "250px"}}>
-                  <iframe 
-                    src="https://www.youtube.com/embed/aOd0aAGvT38" 
-                    width="100%" 
-                    height="100%" 
-                    style={{position: "absolute", top: 0, left: 0}}
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowFullScreen 
-                    title="Indexed Universal Life (IUL) Insurance"
-                  ></iframe>
+                <div className="relative" style={{height: "180px"}}>
+                  <div className="absolute inset-0 bg-cover bg-center" 
+                       style={{backgroundImage: "url('https://img.youtube.com/vi/aOd0aAGvT38/maxresdefault.jpg')"}}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Button 
+                        variant="outline" 
+                        className="bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
+                        onClick={() => window.open("https://www.youtube.com/watch?v=aOd0aAGvT38", "_blank")}
+                      >
+                        <Video className="h-6 w-6 mr-2" />
+                        Watch Video
+                      </Button>
+                    </div>
+                  </div>
                 </div>
                 <div className="bg-muted p-3">
                   <h3 className="font-medium">Indexed Universal Life Insurance</h3>
@@ -70,17 +74,21 @@ export default function ResourcesVideos() {
               </div>
 
               <div className="border rounded-lg overflow-hidden">
-                <div className="aspect-video relative" style={{height: "250px"}}>
-                  <iframe 
-                    src="https://www.youtube.com/embed/PNQCfRzXmB8" 
-                    width="100%" 
-                    height="100%" 
-                    style={{position: "absolute", top: 0, left: 0}}
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowFullScreen 
-                    title="Simplified Issue Life Insurance"
-                  ></iframe>
+                <div className="relative" style={{height: "180px"}}>
+                  <div className="absolute inset-0 bg-cover bg-center" 
+                       style={{backgroundImage: "url('https://img.youtube.com/vi/PNQCfRzXmB8/maxresdefault.jpg')"}}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Button 
+                        variant="outline" 
+                        className="bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
+                        onClick={() => window.open("https://www.youtube.com/watch?v=PNQCfRzXmB8", "_blank")}
+                      >
+                        <Video className="h-6 w-6 mr-2" />
+                        Watch Video
+                      </Button>
+                    </div>
+                  </div>
                 </div>
                 <div className="bg-muted p-3">
                   <h3 className="font-medium">Simplified Issue Life Insurance</h3>
@@ -106,17 +114,21 @@ export default function ResourcesVideos() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="border rounded-lg overflow-hidden">
-                <div className="aspect-video relative" style={{height: "250px"}}>
-                  <iframe 
-                    src="https://www.youtube.com/embed/jY4l6Vo3RAU" 
-                    width="100%" 
-                    height="100%" 
-                    style={{position: "absolute", top: 0, left: 0}}
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowFullScreen 
-                    title="How to sell Final Expense to low income seniors"
-                  ></iframe>
+                <div className="relative" style={{height: "180px"}}>
+                  <div className="absolute inset-0 bg-cover bg-center" 
+                       style={{backgroundImage: "url('https://img.youtube.com/vi/jY4l6Vo3RAU/maxresdefault.jpg')"}}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Button 
+                        variant="outline" 
+                        className="bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
+                        onClick={() => window.open("https://www.youtube.com/watch?v=jY4l6Vo3RAU", "_blank")}
+                      >
+                        <Video className="h-6 w-6 mr-2" />
+                        Watch Video
+                      </Button>
+                    </div>
+                  </div>
                 </div>
                 <div className="bg-muted p-3">
                   <h3 className="font-medium">Final Expense Sales for Low Income Seniors</h3>
