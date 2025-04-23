@@ -54,14 +54,15 @@ export default function ResourcesVideos() {
                        style={{backgroundImage: "url('https://img.youtube.com/vi/aOd0aAGvT38/maxresdefault.jpg')"}}
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Button 
-                        variant="outline" 
-                        className="bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
-                        onClick={() => window.open("https://www.youtube.com/watch?v=aOd0aAGvT38", "_blank")}
+                      <a 
+                        href="https://www.youtube.com/watch?v=aOd0aAGvT38" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
-                      </Button>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -79,14 +80,15 @@ export default function ResourcesVideos() {
                        style={{backgroundImage: "url('https://img.youtube.com/vi/PNQCfRzXmB8/maxresdefault.jpg')"}}
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Button 
-                        variant="outline" 
-                        className="bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
-                        onClick={() => window.open("https://www.youtube.com/watch?v=PNQCfRzXmB8", "_blank")}
+                      <a 
+                        href="https://www.youtube.com/watch?v=PNQCfRzXmB8" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
-                      </Button>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -119,14 +121,15 @@ export default function ResourcesVideos() {
                        style={{backgroundImage: "url('https://img.youtube.com/vi/jY4l6Vo3RAU/maxresdefault.jpg')"}}
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Button 
-                        variant="outline" 
-                        className="bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
-                        onClick={() => window.open("https://www.youtube.com/watch?v=jY4l6Vo3RAU", "_blank")}
+                      <a 
+                        href="https://www.youtube.com/watch?v=jY4l6Vo3RAU" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
-                      </Button>
+                      </a>
                     </div>
                   </div>
                 </div>
