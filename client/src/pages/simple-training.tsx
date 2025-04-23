@@ -191,37 +191,43 @@ export default function SimpleTrainingPage() {
             <CardContent>
               <ul className="space-y-4">
                 <li>
-                  <div 
-                    onClick={() => window.open("https://www.amazon.com/dp/0972437614/", "_blank")}
-                    className="flex items-center text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+                  <a 
+                    href="https://amzn.to/3K3JyZa"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     Questions That Life Insurance Agents Need to Ask Themselves
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => window.open("https://www.amazon.com/dp/1934354007/", "_blank")}
-                    className="flex items-center text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+                  <a 
+                    href="https://amzn.to/43zU4v6"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     Life Insurance Selling Strategies
-                  </div>
+                  </a>
                 </li>
                 <li>
-                  <div 
-                    onClick={() => window.open("https://lifeinsuranceacademy.com", "_blank")}
-                    className="flex items-center text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+                  <a 
+                    href="https://lifeinsuranceacademy.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     Life Insurance Academy
-                  </div>
+                  </a>
                 </li>
               </ul>
             </CardContent>

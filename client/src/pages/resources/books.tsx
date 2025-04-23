@@ -24,7 +24,7 @@ const books = [
     title: "The Digital Life Insurance Agent",
     author: "Jeff Root",
     description: "How to market life insurance online and sell over the phone. A practical guide to leveraging digital marketing for insurance sales.",
-    link: "https://www.amazon.com/dp/B01BUKR5EK/",
+    link: "https://amzn.to/3xVcJWx",
     rating: 4.5,
     coverImage: "https://m.media-amazon.com/images/I/41pLvjmOF4L._SX331_BO1,204,203,200_.jpg"
   },
@@ -33,7 +33,7 @@ const books = [
     title: "Questions and Answers on Life Insurance",
     author: "Tony Steuer",
     description: "The Life Insurance Toolbook. A comprehensive guide to understanding life insurance policies and helping clients make informed decisions.",
-    link: "https://www.amazon.com/dp/0984508104/",
+    link: "https://amzn.to/49vqsaU",
     rating: 4.7,
     coverImage: "https://m.media-amazon.com/images/I/51pLJrTdDPL._SX331_BO1,204,203,200_.jpg"
   },
@@ -42,18 +42,9 @@ const books = [
     title: "Knock Out the Competition",
     author: "Michael Bonilla",
     description: "A proven formula for selling final expense life insurance like a champion. Specific strategies for the final expense market.",
-    link: "https://www.amazon.com/dp/1735393509/",
+    link: "https://amzn.to/4avFxcf",
     rating: 4.8,
     coverImage: "https://m.media-amazon.com/images/I/41bq9U6YYTL._SX331_BO1,204,203,200_.jpg"
-  },
-  {
-    id: 4,
-    title: "Paychecks and Playchecks",
-    author: "Tom Hegna",
-    description: "Retirement solutions for life. Strategies to create a steady stream of retirement income that lasts a lifetime.",
-    link: "https://www.amazon.com/dp/0615393063/",
-    rating: 4.6,
-    coverImage: "https://m.media-amazon.com/images/I/41YCFyHfVNL._SX331_BO1,204,203,200_.jpg"
   }
 ];
 
@@ -103,10 +94,6 @@ const websites = [
 ];
 
 const BookCard = ({ book }: { book: typeof books[0] }) => {
-  const handleClick = () => {
-    window.open(book.link, '_blank');
-  };
-
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -138,23 +125,21 @@ const BookCard = ({ book }: { book: typeof books[0] }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <div
-          onClick={handleClick}
-          className="w-full cursor-pointer flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
+        <a
+          href={book.link}
+          target="_blank"
+          rel="noreferrer"
+          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
           <span>View on Amazon</span>
           <ExternalLink className="h-4 w-4" />
-        </div>
+        </a>
       </CardFooter>
     </Card>
   );
 };
 
 const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
-  const handleClick = () => {
-    window.open(website.link, '_blank');
-  };
-
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -169,13 +154,15 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-muted-foreground text-sm">{website.description}</p>
       </CardContent>
       <CardFooter>
-        <div
-          onClick={handleClick}
-          className="w-full cursor-pointer flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
+        <a
+          href={website.link}
+          target="_blank"
+          rel="noreferrer"
+          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
           <span>Visit Website</span>
           <ExternalLink className="h-4 w-4" />
-        </div>
+        </a>
       </CardFooter>
     </Card>
   );
