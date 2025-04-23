@@ -265,6 +265,7 @@ const LeadsPage: React.FC = () => {
       email: "",
       phoneNumber: "",
       address: "",
+      addressLine2: "", // Added address line 2 field
       city: "",
       state: "",
       zipCode: "",
@@ -330,6 +331,16 @@ const LeadsPage: React.FC = () => {
   // Set up edit form when a lead is selected
   React.useEffect(() => {
     if (selectedLead && isEditDialogOpen) {
+      // Check if address contains multiple lines to split into address line 1 and 2
+      let addressLine1 = "";
+      let addressLine2 = "";
+      
+      if (selectedLead.address) {
+        const addressParts = selectedLead.address.split('\n');
+        addressLine1 = addressParts[0] || "";
+        addressLine2 = addressParts.length > 1 ? addressParts.slice(1).join('\n') : "";
+      }
+      
       editForm.reset({
         firstName: selectedLead.firstName,
         lastName: selectedLead.lastName,
@@ -337,7 +348,8 @@ const LeadsPage: React.FC = () => {
         dateOfBirth: formatDate(selectedLead.dateOfBirth),
         email: selectedLead.email,
         phoneNumber: selectedLead.phoneNumber,
-        address: selectedLead.address,
+        address: addressLine1,
+        addressLine2: addressLine2, // Added address line 2
         city: selectedLead.city || "",
         state: selectedLead.state || "",
         zipCode: selectedLead.zipCode || "",
@@ -439,6 +451,7 @@ const LeadsPage: React.FC = () => {
                 email: "",
                 phoneNumber: "",
                 address: "",
+                addressLine2: "", // Added address line 2 field
                 city: "",
                 state: "",
                 zipCode: "",
@@ -585,9 +598,23 @@ const LeadsPage: React.FC = () => {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Address Line 1</FormLabel>
                       <FormControl>
                         <Input placeholder="123 Main St" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={addForm.control}
+                  name="addressLine2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address Line 2</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Apt, Suite, Unit, etc. (optional)" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -117,12 +117,23 @@ export default function ClientDetail() {
         formattedDateOfBirth = date.toISOString().split('T')[0];
       }
       
+      // Check if address contains multiple lines to split into address line 1 and 2
+      let addressLine1 = "";
+      let addressLine2 = "";
+      
+      if (client.address) {
+        const addressParts = client.address.split('\n');
+        addressLine1 = addressParts[0] || "";
+        addressLine2 = addressParts.length > 1 ? addressParts.slice(1).join('\n') : "";
+      }
+      
       setFormData({
         name: client.name || "",
         email: client.email || "",
         phone: client.phone || "",
         company: client.company || "",
-        address: client.address || "",
+        address: addressLine1,
+        addressLine2: addressLine2,
         city: client.city || "",
         state: client.state || "",
         zipCode: client.zipCode || "",
@@ -196,7 +207,14 @@ export default function ClientDetail() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateClientMutation.mutate(formData);
+    
+    // Combine address line 1 and 2 before saving
+    const dataToSubmit = {
+      ...formData,
+      address: formData.address + (formData.addressLine2 ? '\n' + formData.addressLine2 : '')
+    };
+    
+    updateClientMutation.mutate(dataToSubmit);
   };
 
   const handleDelete = () => {
