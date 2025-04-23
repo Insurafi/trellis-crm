@@ -101,8 +101,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Term Life Insurance Explained"
-            youtubeId="OzQnP9Z0q_o"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
@@ -282,8 +282,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Term Life Insurance with Living Benefits"
-            youtubeId="lF2O9g5FdUg"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
@@ -444,8 +444,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Understanding Whole Life Insurance"
-            youtubeId="kGGhnAPKAvM"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
