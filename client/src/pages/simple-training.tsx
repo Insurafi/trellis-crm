@@ -25,19 +25,12 @@ export default function SimpleTrainingPage() {
           </CardHeader>
           <CardContent className="space-y-4 pt-4">
             <p>Learn the basics of term life insurance, its benefits, and how to explain it to clients.</p>
-            <a 
-              href="https://www.youtube.com/watch?v=5wa87ydMXE4" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-full bg-red-600 hover:bg-red-700 text-white rounded-md p-4 text-center font-medium"
-            >
-              <svg className="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 4-8 4z"></path>
+            <div className="bg-muted p-6 rounded-md text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 text-muted-foreground">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
               </svg>
-              Watch on YouTube
-            </a>
-            <div className="text-xs text-center text-gray-500">
-              Video ID: 5wa87ydMXE4 • Opens in a new tab
+              <p className="font-medium mb-1">Video Coming Soon</p>
+              <p className="text-sm text-muted-foreground">We're updating our training content for better learning experiences.</p>
             </div>
             <Button variant="outline" className="w-full mt-2">
               Take Quiz
