@@ -999,6 +999,27 @@ export default function TrainingPage() {
       description: "Learn about VUL products, sub-account investments, and high-net-worth client strategies.",
       content: (
         <div className="space-y-6">
+          <div className="border rounded-lg overflow-hidden">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
+                src="https://www.youtube.com/embed/VbqpDrIkvJg" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="What is Variable Universal Life (VUL) Insurance?"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">Variable Universal Life (VUL) Insurance</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Learn about Variable Universal Life policies, their investment component, and optimal client strategies.
+              </p>
+            </div>
+          </div>
+          
           <div className="border rounded-lg overflow-hidden mb-6">
             <div className="bg-sky-50 p-4">
               <h3 className="text-lg font-medium text-sky-800 mb-2">Key VUL Concepts Overview</h3>
