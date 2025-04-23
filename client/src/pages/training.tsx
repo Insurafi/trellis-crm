@@ -99,10 +99,6 @@ export default function TrainingPage() {
       description: "Learn the basics of term life insurance, its benefits, and how to explain it to clients.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
           
           <div>
             <h3 className="text-lg font-medium">What is Term Life Insurance?</h3>
@@ -280,10 +276,6 @@ export default function TrainingPage() {
       description: "Learn about term life insurance with living expenses benefits that provide coverage during your lifetime.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
           
           <div>
             <h3 className="text-lg font-medium">What is Term with Living Expenses?</h3>
@@ -442,10 +434,6 @@ export default function TrainingPage() {
       description: "Master whole life insurance concepts, cash value accumulation, and client matching.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
           
           <div>
             <h3 className="text-lg font-medium">What is Whole Life Insurance?</h3>
@@ -633,10 +621,6 @@ export default function TrainingPage() {
       description: "Learn about whole life insurance with living benefits that provide financial support during your lifetime.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
           
           <div>
             <h3 className="text-lg font-medium">What is Whole Life with Living Expenses?</h3>
