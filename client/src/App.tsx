@@ -24,6 +24,7 @@ import AuthPage from "@/pages/auth-page";
 import HomeRedirect from "@/components/home-redirect";
 import Training from "@/pages/training";
 import SimpleTraining from "@/pages/simple-training";
+import EmergencyTraining from "@/pages/emergency-training";
 import Analytics from "@/pages/analytics";
 import Resources from "@/pages/resources";
 import SimpleClientLogin from "@/pages/simple-client-login";
@@ -170,6 +171,7 @@ function Router() {
       <ProtectedRoute path="/agent-profile" component={AgentProfilePage} />
       <ProtectedRoute path="/training" component={Training} />
       <ProtectedRoute path="/simple-training" component={SimpleTraining} />
+      <ProtectedRoute path="/emergency-training" component={EmergencyTraining} />
       <ProtectedRoute path="/analytics" component={Analytics} />
       <ProtectedRoute path="/resources" component={Resources} />
       <ProtectedRoute path="/resources/books" component={ResourcesBooksPage} />
