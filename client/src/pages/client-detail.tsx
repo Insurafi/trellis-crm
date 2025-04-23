@@ -92,6 +92,8 @@ export default function ClientDetail() {
   // Form state
   const [formData, setFormData] = useState({
     name: "",
+    firstName: "", // Added firstName field
+    lastName: "",  // Added lastName field
     email: "",
     phone: "",
     company: "",
@@ -211,9 +213,13 @@ export default function ClientDetail() {
     e.preventDefault();
     
     // Combine address line 1 and 2 before saving
+    // Also update the name field based on first and last name
     const dataToSubmit = {
       ...formData,
-      address: formData.address + (formData.addressLine2 ? '\n' + formData.addressLine2 : '')
+      address: formData.address + (formData.addressLine2 ? '\n' + formData.addressLine2 : ''),
+      name: formData.firstName && formData.lastName 
+        ? `${formData.firstName} ${formData.lastName}` 
+        : formData.name
     };
     
     updateClientMutation.mutate(dataToSubmit);
