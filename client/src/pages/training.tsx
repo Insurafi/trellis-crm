@@ -3699,6 +3699,25 @@ export default function TrainingPage() {
                     </p>
                   </div>
                 </div>
+                
+                <div className="border rounded-lg overflow-hidden mt-6">
+                  <div className="aspect-video">
+                    <iframe 
+                      className="w-full h-full"
+                      src="https://www.youtube.com/embed/aOd0aAGvT38" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen 
+                      title="Indexed Universal Life (IUL) Insurance"
+                    ></iframe>
+                  </div>
+                  <div className="bg-muted p-3">
+                    <h3 className="font-medium">Indexed Universal Life (IUL) Insurance</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Learn about Indexed Universal Life policies, how they work, and the best strategies for presenting them to clients.
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
