@@ -192,7 +192,7 @@ export default function SimpleTrainingPage() {
               <ul className="space-y-4">
                 <li>
                   <a 
-                    href="https://www.amazon.com/Questions-That-Insurance-Agents-Themselves/dp/0972437614" 
+                    href="https://amazon.com/Questions-That-Insurance-Agents-Themselves/dp/0972437614" 
                     target="_blank"
                     rel="noopener noreferrer" 
                     className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
@@ -205,7 +205,7 @@ export default function SimpleTrainingPage() {
                 </li>
                 <li>
                   <a 
-                    href="https://www.amazon.com/Life-Insurance-Selling-Strategies-Professionals/dp/1934354007" 
+                    href="https://amazon.com/Life-Insurance-Selling-Strategies-Professionals/dp/1934354007" 
                     target="_blank"
                     rel="noopener noreferrer" 
                     className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
