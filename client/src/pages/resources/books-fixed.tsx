@@ -10,11 +10,12 @@ import {
 } from "@/components/ui/card";
 import { 
   ChevronLeft, 
-  ExternalLink,
   FileText,
-  Globe
+  Globe,
+  ExternalLink
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/card";
 
 const articles = [
   {
@@ -98,70 +99,71 @@ const websites = [
 
 const ArticleCard = ({ article }: { article: typeof articles[0] }) => {
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-xl">{article.title}</CardTitle>
-            <CardDescription className="mt-1">by {article.author}</CardDescription>
-          </div>
-          <div className="flex items-center">
-            <span className="text-sm font-medium text-muted-foreground">{article.publishDate}</span>
-          </div>
+    <div className="border rounded-lg overflow-hidden">
+      <div className="bg-muted p-4">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="font-medium text-lg">{article.title}</h3>
+          <span className="text-sm text-muted-foreground">{article.publishDate}</span>
         </div>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground text-sm">{article.description}</p>
-      </CardContent>
-      <CardFooter>
-        <a
-          href={article.link}
-          target="_blank"
+        <p className="text-sm text-muted-foreground mb-3">
+          {article.description}
+        </p>
+        <a 
+          href={article.link} 
+          target="_blank" 
           rel="noreferrer"
-          className="w-full flex items-center justify-center py-2 px-4 rounded-md bg-primary hover:bg-primary/90 text-white font-medium text-center gap-2"
-          onClick={(e) => {
-            e.preventDefault();
-            window.open(article.link, "_blank", "noopener,noreferrer");
-          }}
+          className="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded flex items-center justify-center mb-3 w-full"
         >
-          <span>Read Article</span>
-          <ExternalLink className="h-4 w-4" />
+          <span>Open Article</span>
+          <ExternalLink className="ml-2 h-4 w-4" />
         </a>
-      </CardFooter>
-    </Card>
+        <div className="aspect-[16/10] border rounded bg-white">
+          <iframe 
+            src={article.link} 
+            title={article.title}
+            width="100%" 
+            height="100%" 
+            className="rounded"
+          ></iframe>
+        </div>
+      </div>
+    </div>
   );
 };
 
 const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <div className="flex items-start justify-between">
+    <div className="border rounded-lg overflow-hidden">
+      <div className="bg-muted p-4">
+        <div className="flex justify-between items-start mb-2">
           <div>
-            <CardTitle className="text-xl">{website.title}</CardTitle>
-            <CardDescription className="mt-1">{website.category}</CardDescription>
+            <h3 className="font-medium text-lg">{website.title}</h3>
+            <p className="text-sm text-muted-foreground">{website.category}</p>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground text-sm">{website.description}</p>
-      </CardContent>
-      <CardFooter>
-        <a
-          href={website.link}
-          target="_blank"
+        <p className="text-sm text-muted-foreground mb-3">
+          {website.description}
+        </p>
+        <a 
+          href={website.link} 
+          target="_blank" 
           rel="noreferrer"
-          className="w-full flex items-center justify-center py-2 px-4 rounded-md bg-primary hover:bg-primary/90 text-white font-medium text-center gap-2"
-          onClick={(e) => {
-            e.preventDefault();
-            window.open(website.link, "_blank", "noopener,noreferrer");
-          }}
+          className="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded flex items-center justify-center mb-3 w-full"
         >
           <span>Visit Website</span>
-          <ExternalLink className="h-4 w-4" />
+          <ExternalLink className="ml-2 h-4 w-4" />
         </a>
-      </CardFooter>
-    </Card>
+        <div className="aspect-[16/10] border rounded bg-white">
+          <iframe 
+            src={website.link} 
+            title={website.title}
+            width="100%" 
+            height="100%" 
+            className="rounded"
+          ></iframe>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -198,7 +200,7 @@ export default function ResourcesBooks() {
         </TabsList>
         
         <TabsContent value="articles">
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
             {articles.map((article) => (
               <ArticleCard key={article.id} article={article} />
             ))}
@@ -206,7 +208,7 @@ export default function ResourcesBooks() {
         </TabsContent>
         
         <TabsContent value="websites">
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
             {websites.map((website) => (
               <WebsiteCard key={website.id} website={website} />
             ))}
