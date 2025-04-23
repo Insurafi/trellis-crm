@@ -3566,7 +3566,14 @@ export default function TrainingPage() {
             </CardContent>
             <CardFooter className="flex-col items-start">
               <p className="text-sm text-muted-foreground">Complete all modules to earn your certification</p>
-              <Button variant="outline" className="mt-3 w-full">
+              <Button 
+                variant="outline" 
+                className="mt-3 w-full"
+                onClick={() => {
+                  // You can navigate to a certificates page here
+                  alert("Certificates feature coming soon!");
+                }}
+              >
                 <Award className="mr-2 h-4 w-4" />
                 View Certificates
               </Button>
