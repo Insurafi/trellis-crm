@@ -51,6 +51,7 @@ interface VideoPlayerProps {
   title: string;
 }
 
+// Create a simple video card component that doesn't rely on external resources
 const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
   return (
     <div className="mb-6">
@@ -59,29 +60,26 @@ const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
         Video: {title}
       </h3>
       <div className="rounded-md overflow-hidden border border-border">
-        <div className="bg-muted p-4 flex flex-col md:flex-row items-center gap-4">
-          <div className="flex-shrink-0 w-full md:w-48 h-auto">
-            <img 
-              src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`} 
-              alt={title}
-              className="w-full h-auto rounded object-cover"
-            />
-          </div>
-          <div className="flex flex-col justify-between h-full">
-            <p className="font-medium">{title}</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Life Insurance Academy Training
-            </p>
-            <a 
-              href={`https://www.youtube.com/watch?v=${youtubeId}`} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              <span>Watch Video on YouTube</span>
-            </a>
-          </div>
+        <div className="bg-muted p-4 flex items-center justify-center">
+          <a 
+            href={`https://www.youtube.com/watch?v=${youtubeId}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex flex-col items-center"
+          >
+            <div className="w-64 h-36 bg-red-600 rounded-md flex items-center justify-center text-white mb-3 shadow-md hover:bg-red-700 transition-colors">
+              <div className="text-center">
+                <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12 mb-1 mx-auto" stroke="currentColor">
+                  <path d="M21 12L3 21V3L21 12Z" fill="currentColor" stroke="none" />
+                </svg>
+                <span className="block text-sm">Click to watch on YouTube</span>
+              </div>
+            </div>
+            <span className="text-blue-600 hover:underline flex items-center">
+              <ExternalLink className="h-4 w-4 mr-1" />
+              {title}
+            </span>
+          </a>
         </div>
       </div>
     </div>
