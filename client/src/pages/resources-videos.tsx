@@ -72,7 +72,7 @@ export default function ResourcesVideos() {
               <div className="border rounded-lg overflow-hidden">
                 <div className="aspect-video relative" style={{height: "250px"}}>
                   <iframe 
-                    src="https://www.youtube.com/embed/n4ZO0QBJnX0" 
+                    src="https://www.youtube.com/embed/PNQCfRzXmB8" 
                     width="100%" 
                     height="100%" 
                     style={{position: "absolute", top: 0, left: 0}}
