@@ -103,6 +103,26 @@ export default function TrainingPage() {
       description: "Learn the basics of term life insurance, its benefits, and how to explain it to clients.",
       content: (
         <div className="space-y-6">
+          <div className="border rounded-lg overflow-hidden">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
+                src="https://www.youtube.com/embed/xEumF_1FeNY" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="How Term Life Insurance Works"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">How Term Life Insurance Works</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Learn the fundamentals of term life insurance policies, their benefits, and how they provide financial protection.
+              </p>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Term Life Insurance?</h3>
