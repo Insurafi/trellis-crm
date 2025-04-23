@@ -39,6 +39,15 @@ import { format } from "date-fns";
 // Sample updates until we build a real API endpoint
 const SAMPLE_UPDATES = [
   {
+    id: 0,
+    title: "NEW: Quick Final Expense Script Added to Call Scripts",
+    message: "A new streamlined Final Expense script is now available in the Call Scripts section. This quick-reference guide will help you efficiently communicate Final Expense benefits to your clients and address common objections.",
+    type: "announcement",
+    date: "2025-04-23T01:45:00Z",
+    link: "/resources/call-scripts",
+    linkText: "View Final Expense Script"
+  },
+  {
     id: 1,
     title: "NOTICE: Resources Navigation Issue",
     message: "We're aware that some 'View Resources' links in the Training section are not working properly. Our team is actively working on this issue and expects to have it resolved by tomorrow. Thank you for your patience.",
