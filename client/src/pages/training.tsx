@@ -3479,7 +3479,7 @@ export default function TrainingPage() {
                         };
                         
                         return (
-                          <div key={module.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                          <div key={module.id} className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="flex items-center">
                               <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center mr-3`}>
                                 {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
@@ -3488,11 +3488,15 @@ export default function TrainingPage() {
                                 <p className="font-medium text-left whitespace-normal break-words">{module.title}</p>
                                 <div className="flex items-center mt-1">
                                   <Progress value={progress} className="h-2 w-24" />
-                                  <span className="text-xs text-muted-foreground ml-2">{progress}%</span>
+                                  <span className="text-xs text-muted-foreground ml-2 relative">
+                                    <span className="absolute -left-1 -top-8 w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium">
+                                      {progress}%
+                                    </span>
+                                  </span>
                                 </div>
                               </div>
                             </div>
-                            <div className="text-right">
+                            <div className="mt-8 text-right">
                               <Button variant={isCompleted ? "outline" : "default"} size="sm">
                                 {isCompleted ? 'Review' : 'Continue'}
                               </Button>
@@ -3515,7 +3519,7 @@ export default function TrainingPage() {
                   <div className="space-y-3">
                     {/* Note: Current modules don't have business-specific IDs, 
                         this is a placeholder for future business products modules */}
-                    <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                           <Building2 className="h-4 w-4" />
@@ -3524,17 +3528,21 @@ export default function TrainingPage() {
                           <p className="font-medium text-left whitespace-normal break-words">Business Term Life Insurance</p>
                           <div className="flex items-center mt-1">
                             <Progress value={35} className="h-2 w-24" />
-                            <span className="text-xs text-muted-foreground ml-2">35%</span>
+                            <span className="text-xs text-muted-foreground ml-2 relative">
+                              <span className="absolute -left-1 -top-8 w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium">
+                                35%
+                              </span>
+                            </span>
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="mt-8 text-right">
                         <Button variant="default" size="sm">
                           Continue
                         </Button>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                           <Landmark className="h-4 w-4" />
@@ -3543,11 +3551,15 @@ export default function TrainingPage() {
                           <p className="font-medium text-left whitespace-normal break-words">Key Person Insurance</p>
                           <div className="flex items-center mt-1">
                             <Progress value={0} className="h-2 w-24" />
-                            <span className="text-xs text-muted-foreground ml-2">0%</span>
+                            <span className="text-xs text-muted-foreground ml-2 relative">
+                              <span className="absolute -left-1 -top-8 w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium">
+                                0%
+                              </span>
+                            </span>
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="mt-8 text-right">
                         <Button variant="default" size="sm">
                           Start
                         </Button>
