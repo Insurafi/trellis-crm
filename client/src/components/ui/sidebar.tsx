@@ -127,8 +127,10 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                         : "text-neutral-700 hover:bg-neutral-100"
                     )}
                   >
-                    {item.icon}
-                    {item.label}
+                    <div className="flex items-center w-full">
+                      <span className="flex-shrink-0">{item.icon}</span>
+                      <span className="whitespace-normal break-words">{item.label}</span>
+                    </div>
                   </Link>
                 ))}
               </nav>

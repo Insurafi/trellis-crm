@@ -3407,13 +3407,13 @@ export default function TrainingPage() {
                       resetQuiz();
                     }}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center w-full">
                       {selectedModule === module.id ? (
-                        <BookOpen className="mr-2 h-4 w-4" />
+                        <BookOpen className="mr-2 h-4 w-4 flex-shrink-0" />
                       ) : (
-                        <BookOpen className="mr-2 h-4 w-4 opacity-50" />
+                        <BookOpen className="mr-2 h-4 w-4 opacity-50 flex-shrink-0" />
                       )}
-                      <span>{module.title}</span>
+                      <span className="text-left whitespace-normal break-words">{module.title}</span>
                     </div>
                   </Button>
                 ))}
@@ -3435,13 +3435,13 @@ export default function TrainingPage() {
                       resetQuiz();
                     }}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center w-full">
                       {selectedModule === module.id ? (
-                        <BookOpen className="mr-2 h-4 w-4" />
+                        <BookOpen className="mr-2 h-4 w-4 flex-shrink-0" />
                       ) : (
-                        <BookOpen className="mr-2 h-4 w-4 opacity-50" />
+                        <BookOpen className="mr-2 h-4 w-4 opacity-50 flex-shrink-0" />
                       )}
-                      <span>{module.title}</span>
+                      <span className="text-left whitespace-normal break-words">{module.title}</span>
                     </div>
                   </Button>
                 ))}
