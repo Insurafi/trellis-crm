@@ -483,6 +483,27 @@ export default function TrainingPage() {
           <div className="border rounded-lg overflow-hidden">
             <div className="aspect-video relative" style={{height: "315px"}}>
               <iframe 
+                src="https://www.youtube.com/embed/e67N0J259FA" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Understanding Whole Life Insurance Cartoon"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">What is Whole Life Insurance? (Animated)</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Watch this animated video explaining how whole life insurance works, how cash value grows, and its key benefits.
+              </p>
+            </div>
+          </div>
+          
+          <div className="border rounded-lg overflow-hidden mt-4">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
                 src="https://www.youtube.com/embed/Zs8PS4AUUxM" 
                 width="100%" 
                 height="100%" 
