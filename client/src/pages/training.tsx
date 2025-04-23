@@ -3560,10 +3560,12 @@ export default function TrainingPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video">
+                  <div className="aspect-video relative" style={{height: "315px"}}>
                     <iframe 
-                      className="w-full h-full"
                       src="https://www.youtube.com/embed/jY4l6Vo3RAU" 
+                      width="100%" 
+                      height="100%" 
+                      style={{position: "absolute", top: 0, left: 0}}
                       frameBorder="0" 
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                       allowFullScreen 
@@ -3579,10 +3581,12 @@ export default function TrainingPage() {
                 </div>
                 
                 <div className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video">
+                  <div className="aspect-video relative" style={{height: "315px"}}>
                     <iframe 
-                      className="w-full h-full"
                       src="https://www.youtube.com/embed/aOd0aAGvT38" 
+                      width="100%" 
+                      height="100%" 
+                      style={{position: "absolute", top: 0, left: 0}}
                       frameBorder="0" 
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                       allowFullScreen 
@@ -3598,10 +3602,12 @@ export default function TrainingPage() {
                 </div>
                 
                 <div className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video">
+                  <div className="aspect-video relative" style={{height: "315px"}}>
                     <iframe 
-                      className="w-full h-full"
                       src="https://www.youtube.com/embed/n4ZO0QBJnX0" 
+                      width="100%" 
+                      height="100%" 
+                      style={{position: "absolute", top: 0, left: 0}}
                       frameBorder="0" 
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                       allowFullScreen 
