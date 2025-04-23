@@ -3333,6 +3333,16 @@ export default function TrainingPage() {
           </p>
         </div>
         
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-md mb-6 ml-auto">
+          <h2 className="text-lg font-semibold text-yellow-700 mb-2">Alternative Training Pages</h2>
+          <p className="mb-2">If you're having trouble with videos, try these alternatives:</p>
+          <div className="space-y-2">
+            <a href="/direct-training" className="text-blue-600 hover:underline block">Direct Training Links</a>
+            <a href="/simple-training" className="text-blue-600 hover:underline block">Simple Training Page</a>
+            <a href="/emergency-training" className="text-blue-600 hover:underline block">Emergency Training Page</a>
+          </div>
+        </div>
+        
         {!quizMode && (
           <Button 
             onClick={() => {
