@@ -300,6 +300,26 @@ export default function TrainingPage() {
       description: "Learn about term life insurance with living expenses benefits that provide coverage during your lifetime.",
       content: (
         <div className="space-y-6">
+          <div className="border rounded-lg overflow-hidden">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
+                src="https://www.youtube.com/embed/e7t0B2oDPWE" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Living Benefits Life Insurance: How It Works"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">Living Benefits Life Insurance: How It Works</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Learn how living benefits work in life insurance and how they can provide financial protection during your lifetime.
+              </p>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Term with Living Expenses?</h3>
