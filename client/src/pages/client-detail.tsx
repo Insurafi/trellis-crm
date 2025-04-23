@@ -129,6 +129,8 @@ export default function ClientDetail() {
       
       setFormData({
         name: client.name || "",
+        firstName: client.firstName || "",
+        lastName: client.lastName || "",
         email: client.email || "",
         phone: client.phone || "",
         company: client.company || "",
