@@ -147,6 +147,16 @@ const ResourcesArticlesPage = () => {
   );
 };
 
+// Article Redirect Page component
+const ArticleRedirectPage = () => {
+  const ArticleRedirect = lazy(() => import("@/pages/resources/article-redirect"));
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <ArticleRedirect />
+    </Suspense>
+  );
+};
+
 // Create a ClientDetailPage component to handle lazy loading
 const ClientDetailPage = () => {
   return (
@@ -190,6 +200,7 @@ function Router() {
       <ProtectedRoute path="/resources/books" component={ResourcesBooksPage} />
       <ProtectedRoute path="/resources/articles" component={ResourcesArticlesPage} />
       <ProtectedRoute path="/resources/videos" component={ResourcesVideos} />
+      <ProtectedRoute path="/resources/article-redirect" component={ArticleRedirectPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/client-login" component={SimpleClientLogin} />
       <Route path="/client-api-test" component={DirectClientLogin} />

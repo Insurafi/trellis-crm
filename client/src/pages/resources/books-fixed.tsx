@@ -15,7 +15,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const articles = [
   {
@@ -108,23 +108,17 @@ const ArticleCard = ({ article }: { article: typeof articles[0] }) => {
         <p className="text-sm text-muted-foreground mb-3">
           {article.description}
         </p>
-        <a 
-          href={article.link} 
-          target="_blank" 
-          rel="noreferrer"
+        <Link
+          href={`/resources/article-redirect?url=${encodeURIComponent(article.link)}&title=${encodeURIComponent(article.title)}`}
           className="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded flex items-center justify-center mb-3 w-full"
         >
           <span>Open Article</span>
           <ExternalLink className="ml-2 h-4 w-4" />
-        </a>
-        <div className="aspect-[16/10] border rounded bg-white">
-          <iframe 
-            src={article.link} 
-            title={article.title}
-            width="100%" 
-            height="100%" 
-            className="rounded"
-          ></iframe>
+        </Link>
+        <div className="aspect-[16/9] border rounded bg-card p-4 flex flex-col items-center justify-center text-center">
+          <h4 className="text-primary font-medium mb-2">{article.title}</h4>
+          <p className="text-sm text-muted-foreground mb-3">Click the button above to read this article</p>
+          <FileText className="h-12 w-12 text-muted-foreground/50" />
         </div>
       </div>
     </div>
@@ -144,23 +138,17 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-sm text-muted-foreground mb-3">
           {website.description}
         </p>
-        <a 
-          href={website.link} 
-          target="_blank" 
-          rel="noreferrer"
+        <Link
+          href={`/resources/article-redirect?url=${encodeURIComponent(website.link)}&title=${encodeURIComponent(website.title)}`}
           className="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded flex items-center justify-center mb-3 w-full"
         >
           <span>Visit Website</span>
           <ExternalLink className="ml-2 h-4 w-4" />
-        </a>
-        <div className="aspect-[16/10] border rounded bg-white">
-          <iframe 
-            src={website.link} 
-            title={website.title}
-            width="100%" 
-            height="100%" 
-            className="rounded"
-          ></iframe>
+        </Link>
+        <div className="aspect-[16/9] border rounded bg-card p-4 flex flex-col items-center justify-center text-center">
+          <h4 className="text-primary font-medium mb-2">{website.title}</h4>
+          <p className="text-sm text-muted-foreground mb-3">Click the button above to visit this website</p>
+          <Globe className="h-12 w-12 text-muted-foreground/50" />
         </div>
       </div>
     </div>
