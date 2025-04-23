@@ -134,10 +134,17 @@ const BookCard = ({ book }: { book: typeof books[0] }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" onClick={() => window.open(book.link, '_blank')}>
-          View on Amazon
-          <ExternalLink className="ml-2 h-4 w-4" />
-        </Button>
+        <a 
+          href={book.link} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="w-full"
+        >
+          <Button variant="outline" className="w-full">
+            View on Amazon
+            <ExternalLink className="ml-2 h-4 w-4" />
+          </Button>
+        </a>
       </CardFooter>
     </Card>
   );
@@ -158,10 +165,17 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-muted-foreground text-sm">{website.description}</p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" onClick={() => window.open(website.link, '_blank')}>
-          Visit Website
-          <ExternalLink className="ml-2 h-4 w-4" />
-        </Button>
+        <a 
+          href={website.link} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="w-full"
+        >
+          <Button variant="outline" className="w-full">
+            Visit Website
+            <ExternalLink className="ml-2 h-4 w-4" />
+          </Button>
+        </a>
       </CardFooter>
     </Card>
   );
