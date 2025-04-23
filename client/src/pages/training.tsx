@@ -458,6 +458,26 @@ export default function TrainingPage() {
       description: "Master whole life insurance concepts, cash value accumulation, and client matching.",
       content: (
         <div className="space-y-6">
+          <div className="border rounded-lg overflow-hidden">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
+                src="https://www.youtube.com/embed/Zs8PS4AUUxM" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Understanding Whole Life Insurance"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">Understanding Whole Life Insurance</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Learn about Whole Life Insurance policies, their cash value component, and long-term benefits.
+              </p>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Whole Life Insurance?</h3>
@@ -645,6 +665,26 @@ export default function TrainingPage() {
       description: "Learn about whole life insurance with living benefits that provide financial support during your lifetime.",
       content: (
         <div className="space-y-6">
+          <div className="border rounded-lg overflow-hidden">
+            <div className="aspect-video relative" style={{height: "315px"}}>
+              <iframe 
+                src="https://www.youtube.com/embed/JklLUMDlm-U" 
+                width="100%" 
+                height="100%" 
+                style={{position: "absolute", top: 0, left: 0}}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Living Benefits of Life Insurance"
+              ></iframe>
+            </div>
+            <div className="bg-muted p-3">
+              <h3 className="font-medium">Living Benefits of Life Insurance</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Learn how living benefits can provide financial support for critical, chronic, or terminal illnesses.
+              </p>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Whole Life with Living Expenses?</h3>
