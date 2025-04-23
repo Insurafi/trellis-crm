@@ -51,15 +51,15 @@ interface VideoPlayerProps {
   title: string;
 }
 
-// Import the HTML content generator
-import getHtmlContent from "./html-training-content";
+// Import the YouTube iframe HTML generator
+import getYouTubeEmbedHtml from "./iframe-video-content";
 
-// HTML-based video component that uses dangerouslySetInnerHTML
+// YouTube iframe embedded video component
 const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
   return (
     <div 
       dangerouslySetInnerHTML={{ 
-        __html: getHtmlContent(youtubeId, title) 
+        __html: getYouTubeEmbedHtml(youtubeId, title) 
       }} 
     />
   );
