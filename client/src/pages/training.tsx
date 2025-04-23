@@ -635,8 +635,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Whole Life Insurance with Living Benefits"
-            youtubeId="yv7mKSfZdS8"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
@@ -804,8 +804,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Indexed Universal Life Insurance Explained"
-            youtubeId="oi-JARnzGVY"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
@@ -997,8 +997,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Variable Universal Life Insurance Explained"
-            youtubeId="oi-JARnzGVY"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
@@ -1195,8 +1195,8 @@ export default function TrainingPage() {
       content: (
         <div className="space-y-6">
           <VideoPlayer 
-            title="Mortgage Protection Insurance Explained"
-            youtubeId="OzQnP9Z0q_o"
+            title="Selling Life Insurance: The Importance of Process in Sales"
+            youtubeId="5wa87ydMXE4"
           />
           
           <div>
