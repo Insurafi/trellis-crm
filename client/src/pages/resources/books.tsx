@@ -134,17 +134,13 @@ const BookCard = ({ book }: { book: typeof books[0] }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <a 
-          href={book.link} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="w-full inline-block"
+        <button 
+          onClick={() => window.open(book.link, '_blank')}
+          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
-          <div className="flex items-center justify-center w-full py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2">
-            <span>View on Amazon</span>
-            <ExternalLink className="h-4 w-4" />
-          </div>
-        </a>
+          <span>View on Amazon</span>
+          <ExternalLink className="h-4 w-4" />
+        </button>
       </CardFooter>
     </Card>
   );
@@ -165,17 +161,13 @@ const WebsiteCard = ({ website }: { website: typeof websites[0] }) => {
         <p className="text-muted-foreground text-sm">{website.description}</p>
       </CardContent>
       <CardFooter>
-        <a 
-          href={website.link} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="w-full inline-block"
+        <button 
+          onClick={() => window.open(website.link, '_blank')}
+          className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
-          <div className="flex items-center justify-center w-full py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2">
-            <span>Visit Website</span>
-            <ExternalLink className="h-4 w-4" />
-          </div>
-        </a>
+          <span>Visit Website</span>
+          <ExternalLink className="h-4 w-4" />
+        </button>
       </CardFooter>
     </Card>
   );
