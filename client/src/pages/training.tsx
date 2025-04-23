@@ -3596,27 +3596,13 @@ export default function TrainingPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video relative" style={{height: "315px"}}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/aOd0aAGvT38" 
-                      width="100%" 
-                      height="100%" 
-                      style={{position: "absolute", top: 0, left: 0}}
-                      frameBorder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen 
-                      title="Indexed Universal Life (IUL) Insurance"
-                    ></iframe>
-                  </div>
-                  <div className="bg-muted p-3">
-                    <h3 className="font-medium">Indexed Universal Life (IUL) Insurance</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Learn about Indexed Universal Life policies, how they work, and the best strategies for presenting them to clients.
-                    </p>
-                  </div>
-                </div>
+                <Alert className="mb-6">
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>Training videos moved</AlertTitle>
+                  <AlertDescription>
+                    All training videos are now available in the <a href="/resources/videos" className="text-primary underline hover:text-primary/80">Resources → Training Videos</a> section.
+                  </AlertDescription>
+                </Alert>
               </div>
             </CardContent>
           </Card>
