@@ -186,13 +186,13 @@ export default function SimpleTrainingPage() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Books & Websites</CardTitle>
+              <CardTitle>Articles & Websites</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-4">
                 <li>
                   <a 
-                    href="https://amzn.to/3K3JyZa"
+                    href="https://www.lifehappens.org/insurance-overview/life-insurance/term-life-insurance/"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
@@ -200,12 +200,12 @@ export default function SimpleTrainingPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    Questions That Life Insurance Agents Need to Ask Themselves
+                    Understanding Term Life Insurance
                   </a>
                 </li>
                 <li>
                   <a 
-                    href="https://amzn.to/43zU4v6"
+                    href="https://www.lifehappens.org/insurance-overview/life-insurance/permanent-life-insurance/"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
@@ -213,7 +213,7 @@ export default function SimpleTrainingPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    Life Insurance Selling Strategies
+                    The Basics of Whole Life Insurance
                   </a>
                 </li>
                 <li>

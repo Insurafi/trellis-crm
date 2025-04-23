@@ -40,6 +40,15 @@ import { format } from "date-fns";
 const SAMPLE_UPDATES = [
   {
     id: 0,
+    title: "UPDATED: Insurance Articles Instead of Books",
+    message: "We've replaced book recommendations with educational articles about life insurance. Our curated collection now features informative articles from trusted industry sources like Life Happens, LIMRA, NAIC, and the Insurance Information Institute.",
+    type: "resources",
+    date: "2025-04-23T15:30:00Z",
+    link: "/resources/books",
+    linkText: "Read Insurance Articles"
+  },
+  {
+    id: 1,
     title: "SUCCESS: Training Videos Now Working Properly!",
     message: "After overcoming many technical challenges, all training videos are now working flawlessly in Resources/Videos. Videos are now embedded directly within the page for a seamless viewing experience. More training videos will be added soon!",
     type: "training",
@@ -48,7 +57,7 @@ const SAMPLE_UPDATES = [
     linkText: "Watch Training Videos"
   },
   {
-    id: 1,
+    id: 2,
     title: "NEW: Quick Final Expense Script Added to Call Scripts",
     message: "A new streamlined Final Expense script is now available in the Call Scripts section. This quick-reference guide will help you efficiently communicate Final Expense benefits to your clients and address common objections.",
     type: "announcement",
@@ -57,29 +66,20 @@ const SAMPLE_UPDATES = [
     linkText: "View Final Expense Script"
   },
   {
-    id: 2,
+    id: 3,
     title: "NOTICE: Resources Navigation Issue",
     message: "We're aware that some 'View Resources' links in the Training section are not working properly. Our team is actively working on this issue and expects to have it resolved by tomorrow. Thank you for your patience.",
     type: "system",
     date: "2025-04-22T19:15:00Z"
   },
   {
-    id: 3,
+    id: 4,
     title: "NEW TRAINING: Term & Whole Life with Living Expenses",
     message: "Two new comprehensive training modules have been added for Term with Living Expenses and Whole Life with Living Expenses. These modules include detailed content on key features, ideal client profiles, sales tips, objection handling, and quiz questions to test your knowledge.",
     type: "training",
     date: "2025-04-21T10:00:00Z",
     link: "/training",
     linkText: "Access Training Modules"
-  },
-  {
-    id: 4,
-    title: "Essential Insurance Books & Websites Added",
-    message: "Check out our curated collection of must-read insurance books and industry websites. Featured titles include 'The Digital Life Insurance Agent' by Jeff Root, 'Questions and Answers on Life Insurance' by Tony Steuer, and 'Knock Out the Competition' by Michael Bonilla, plus reliable industry websites like LIMRA, Insurance News Net, and ThinkAdvisor.",
-    type: "resources",
-    date: "2025-04-21T15:45:00Z",
-    link: "/resources/books",
-    linkText: "View Books & Websites"
   },
   {
     id: 5,
@@ -328,7 +328,7 @@ const UpdatesSection = () => {
                             <option value="training">Training</option>
                             <option value="system">System Update</option>
                             <option value="marketing">Marketing</option>
-                            <option value="resources">Books & Resources</option>
+                            <option value="resources">Articles & Resources</option>
                           </select>
                         </FormControl>
                         <FormMessage />

@@ -18,33 +18,38 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const books = [
+const articles = [
   {
     id: 1,
-    title: "The Digital Life Insurance Agent",
-    author: "Jeff Root",
-    description: "How to market life insurance online and sell over the phone. A practical guide to leveraging digital marketing for insurance sales.",
-    link: "https://amzn.to/3xVcJWx",
-    rating: 4.5,
-    coverImage: "https://m.media-amazon.com/images/I/41pLvjmOF4L._SX331_BO1,204,203,200_.jpg"
+    title: "Understanding Term Life Insurance",
+    author: "LIMRA",
+    description: "This comprehensive article explains the basics of term life insurance, including policy terms, coverage options, and ideal candidates for this type of insurance.",
+    link: "https://www.lifehappens.org/insurance-overview/life-insurance/term-life-insurance/",
+    publishDate: "March 2025"
   },
   {
     id: 2,
-    title: "Questions and Answers on Life Insurance",
-    author: "Tony Steuer",
-    description: "The Life Insurance Toolbook. A comprehensive guide to understanding life insurance policies and helping clients make informed decisions.",
-    link: "https://amzn.to/49vqsaU",
-    rating: 4.7,
-    coverImage: "https://m.media-amazon.com/images/I/51pLJrTdDPL._SX331_BO1,204,203,200_.jpg"
+    title: "The Basics of Whole Life Insurance",
+    author: "Life Happens",
+    description: "An in-depth look at how whole life insurance works, its cash value component, and how it differs from term policies for long-term financial planning.",
+    link: "https://www.lifehappens.org/insurance-overview/life-insurance/permanent-life-insurance/",
+    publishDate: "February 2025"
   },
   {
     id: 3,
-    title: "Knock Out the Competition",
-    author: "Michael Bonilla",
-    description: "A proven formula for selling final expense life insurance like a champion. Specific strategies for the final expense market.",
-    link: "https://amzn.to/4avFxcf",
-    rating: 4.8,
-    coverImage: "https://m.media-amazon.com/images/I/41bq9U6YYTL._SX331_BO1,204,203,200_.jpg"
+    title: "Life Insurance for Business Protection",
+    author: "Insurance Information Institute",
+    description: "How life insurance can protect businesses through key person insurance, buy-sell agreements, and executive benefits packages.",
+    link: "https://www.iii.org/article/life-insurance-for-business",
+    publishDate: "January 2025"
+  },
+  {
+    id: 4,
+    title: "Understanding Living Benefits in Life Insurance",
+    author: "NAIC",
+    description: "A detailed guide to living benefits such as critical illness, chronic illness, and terminal illness riders that can be added to life insurance policies.",
+    link: "https://content.naic.org/consumer/life-insurance.htm",
+    publishDate: "April 2025"
   }
 ];
 
@@ -93,45 +98,31 @@ const websites = [
   }
 ];
 
-const BookCard = ({ book }: { book: typeof books[0] }) => {
+const ArticleCard = ({ article }: { article: typeof articles[0] }) => {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-xl">{book.title}</CardTitle>
-            <CardDescription className="mt-1">by {book.author}</CardDescription>
+            <CardTitle className="text-xl">{article.title}</CardTitle>
+            <CardDescription className="mt-1">by {article.author}</CardDescription>
           </div>
-          <div className="flex items-center space-x-1">
-            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-medium">{book.rating}</span>
+          <div className="flex items-center">
+            <span className="text-sm font-medium text-muted-foreground">{article.publishDate}</span>
           </div>
         </div>
       </CardHeader>
       <CardContent className="flex-grow">
-        <div className="flex flex-col sm:flex-row gap-4">
-          {book.coverImage && (
-            <div className="flex-shrink-0 w-24 sm:w-28 mx-auto sm:mx-0">
-              <img
-                src={book.coverImage}
-                alt={`Cover of ${book.title}`}
-                className="w-full h-auto rounded-md shadow-md"
-              />
-            </div>
-          )}
-          <div>
-            <p className="text-muted-foreground text-sm">{book.description}</p>
-          </div>
-        </div>
+        <p className="text-muted-foreground text-sm">{article.description}</p>
       </CardContent>
       <CardFooter>
         <a
-          href={book.link}
+          href={article.link}
           target="_blank"
           rel="noreferrer"
           className="w-full flex items-center justify-center py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground text-center gap-2"
         >
-          <span>View on Amazon</span>
+          <span>Read Article</span>
           <ExternalLink className="h-4 w-4" />
         </a>
       </CardFooter>
@@ -184,15 +175,15 @@ export default function ResourcesBooks() {
         </div>
         <h1 className="text-3xl font-bold">Insurance Resources</h1>
         <p className="text-muted-foreground mt-2">
-          Recommended books and websites to enhance your insurance knowledge and sales skills.
+          Recommended articles and websites to enhance your insurance knowledge and sales skills.
         </p>
       </div>
 
-      <Tabs defaultValue="books" className="w-full">
+      <Tabs defaultValue="articles" className="w-full">
         <TabsList className="mb-8 w-full justify-start">
-          <TabsTrigger value="books" className="flex items-center">
+          <TabsTrigger value="articles" className="flex items-center">
             <BookOpen className="mr-2 h-4 w-4" />
-            Books
+            Articles
           </TabsTrigger>
           <TabsTrigger value="websites" className="flex items-center">
             <Globe className="mr-2 h-4 w-4" />
@@ -200,10 +191,10 @@ export default function ResourcesBooks() {
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="books">
+        <TabsContent value="articles">
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-            {books.map((book) => (
-              <BookCard key={book.id} book={book} />
+            {articles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
             ))}
           </div>
         </TabsContent>
