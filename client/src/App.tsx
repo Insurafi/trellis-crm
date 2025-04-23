@@ -28,6 +28,7 @@ import EmergencyTraining from "@/pages/emergency-training";
 import DirectTraining from "@/pages/direct-training";
 import Analytics from "@/pages/analytics";
 import Resources from "@/pages/resources";
+import ResourcesVideos from "@/pages/resources-videos";
 import SimpleClientLogin from "@/pages/simple-client-login";
 import DirectClientLogin from "@/pages/direct-client-login";
 import FinalClientTest from "@/pages/final-client-test";
@@ -177,6 +178,7 @@ function Router() {
       <ProtectedRoute path="/analytics" component={Analytics} />
       <ProtectedRoute path="/resources" component={Resources} />
       <ProtectedRoute path="/resources/books" component={ResourcesBooksPage} />
+      <ProtectedRoute path="/resources/videos" component={ResourcesVideos} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/client-login" component={SimpleClientLogin} />
       <Route path="/client-api-test" component={DirectClientLogin} />

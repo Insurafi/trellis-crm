@@ -39,7 +39,7 @@ const resourceCategories = [
     title: "Training Videos",
     description: "Educational videos on insurance products, sales techniques, and more.",
     icon: <Video className="h-12 w-12 p-3 rounded-full bg-blue-100 text-blue-600 mb-4" />,
-    link: "/resources" // Temporary link until this section is implemented
+    link: "/resources/videos"
   },
   {
     id: 4,
