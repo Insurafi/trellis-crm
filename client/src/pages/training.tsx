@@ -504,20 +504,20 @@ export default function TrainingPage() {
           <div className="border rounded-lg overflow-hidden mt-4">
             <div className="aspect-video relative" style={{height: "315px"}}>
               <iframe 
-                src="https://www.youtube.com/embed/Zs8PS4AUUxM" 
+                src="https://www.youtube.com/embed/yl8br38W4SE" 
                 width="100%" 
                 height="100%" 
                 style={{position: "absolute", top: 0, left: 0}}
                 frameBorder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
-                title="Understanding Whole Life Insurance"
+                title="How Whole Life Insurance Works (Animated Explanation)"
               ></iframe>
             </div>
             <div className="bg-muted p-3">
-              <h3 className="font-medium">Understanding Whole Life Insurance</h3>
+              <h3 className="font-medium">How Whole Life Insurance Works (Animated Explanation)</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Learn about Whole Life Insurance policies, their cash value component, and long-term benefits.
+                A clear animated explanation of whole life insurance mechanics, cash value growth, and how premiums work.
               </p>
             </div>
           </div>
