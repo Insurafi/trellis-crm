@@ -44,7 +44,7 @@ const SAMPLE_UPDATES = [
     message: "A new streamlined Final Expense script is now available in the Call Scripts section. This quick-reference guide will help you efficiently communicate Final Expense benefits to your clients and address common objections.",
     type: "announcement",
     date: "2025-04-23T01:45:00Z",
-    link: "/resources/call-scripts",
+    link: "/communications?tab=call",
     linkText: "View Final Expense Script"
   },
   {
