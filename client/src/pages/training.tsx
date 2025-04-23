@@ -3482,10 +3482,7 @@ export default function TrainingPage() {
                           <div key={module.id} className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="flex items-center">
                               <div className="relative mr-3">
-                                <div className={`h-8 w-8 rounded-full ${isCompleted ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'} flex items-center justify-center`}>
-                                  {icons[module.id as keyof typeof icons] || <BookOpen className="h-4 w-4" />}
-                                </div>
-                                <span className="absolute -bottom-4 -right-2 w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium text-xs">
+                                <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium text-xs">
                                   {progress}%
                                 </span>
                               </div>
@@ -3522,10 +3519,7 @@ export default function TrainingPage() {
                     <div className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center">
                         <div className="relative mr-3">
-                          <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                            <Building2 className="h-4 w-4" />
-                          </div>
-                          <span className="absolute -bottom-4 -right-2 w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium text-xs">
+                          <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium text-xs">
                             35%
                           </span>
                         </div>
@@ -3545,10 +3539,7 @@ export default function TrainingPage() {
                     <div className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-center">
                         <div className="relative mr-3">
-                          <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                            <Landmark className="h-4 w-4" />
-                          </div>
-                          <span className="absolute -bottom-4 -right-2 w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium text-xs">
+                          <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-purple-300 bg-white text-purple-500 font-medium text-xs">
                             0%
                           </span>
                         </div>
