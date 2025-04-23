@@ -54,15 +54,13 @@ export default function ResourcesVideos() {
                        style={{backgroundImage: "url('https://img.youtube.com/vi/aOd0aAGvT38/maxresdefault.jpg')"}}
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <a 
-                        href="https://www.youtube.com/watch?v=aOd0aAGvT38" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md"
+                      <button 
+                        onClick={() => { window.open("https://www.youtube.com/watch?v=aOd0aAGvT38", "_blank", "noopener,noreferrer"); }}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md cursor-pointer"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -80,15 +78,13 @@ export default function ResourcesVideos() {
                        style={{backgroundImage: "url('https://img.youtube.com/vi/PNQCfRzXmB8/maxresdefault.jpg')"}}
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <a 
-                        href="https://www.youtube.com/watch?v=PNQCfRzXmB8" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md"
+                      <button 
+                        onClick={() => { window.open("https://www.youtube.com/watch?v=PNQCfRzXmB8", "_blank", "noopener,noreferrer"); }}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md cursor-pointer"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -121,15 +117,13 @@ export default function ResourcesVideos() {
                        style={{backgroundImage: "url('https://img.youtube.com/vi/jY4l6Vo3RAU/maxresdefault.jpg')"}}
                   >
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <a 
-                        href="https://www.youtube.com/watch?v=jY4l6Vo3RAU" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md"
+                      <button 
+                        onClick={() => { window.open("https://www.youtube.com/watch?v=jY4l6Vo3RAU", "_blank", "noopener,noreferrer"); }}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md cursor-pointer"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
