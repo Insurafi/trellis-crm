@@ -4041,6 +4041,93 @@ export default function TrainingPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* FAQ Section */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <HelpCircle className="mr-2 h-5 w-5 text-purple-600" />
+                Frequently Asked Questions
+              </CardTitle>
+              <CardDescription>
+                Common questions about insurance products and sales techniques
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="term-vs-whole">
+                  <AccordionTrigger>What's the difference between term and whole life insurance?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      <span className="font-medium text-foreground">Term life insurance</span> provides coverage for a specific period (10, 20, 30 years) with lower premiums but no cash value accumulation. It's pure protection.
+                    </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Whole life insurance</span> provides lifetime coverage with higher premiums, but includes a cash value component that grows over time and can be borrowed against. It combines protection with a savings element.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="underwriting">
+                  <AccordionTrigger>How do I explain the underwriting process to clients?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground">
+                      Explain that underwriting is the process insurance companies use to evaluate risk. It typically involves reviewing health history, medical exams, lifestyle, and occupation to determine eligibility and premium rates. Frame it as the company's way of ensuring fairness in pricing based on individual risk factors. Emphasize that being honest during this process is crucial for claim approval later.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="policy-riders">
+                  <AccordionTrigger>What are the most valuable policy riders to recommend?</AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="list-disc pl-6 text-muted-foreground space-y-1">
+                      <li><span className="font-medium text-foreground">Accelerated Death Benefit:</span> Allows access to death benefits if diagnosed with terminal illness</li>
+                      <li><span className="font-medium text-foreground">Waiver of Premium:</span> Waives premiums if disabled and unable to work</li>
+                      <li><span className="font-medium text-foreground">Guaranteed Insurability:</span> Allows purchasing additional coverage without medical underwriting</li>
+                      <li><span className="font-medium text-foreground">Long-Term Care:</span> Provides benefits for nursing home or home health care</li>
+                      <li><span className="font-medium text-foreground">Child Rider:</span> Extends coverage to children at minimal additional cost</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="needs-analysis">
+                  <AccordionTrigger>How do I conduct an effective needs analysis?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      A thorough needs analysis involves:
+                    </p>
+                    <ol className="list-decimal pl-6 text-muted-foreground space-y-1">
+                      <li>Assessing income replacement needs (typically 10-15x annual income)</li>
+                      <li>Calculating debt and final expenses (mortgage, loans, funeral costs)</li>
+                      <li>Factoring in education expenses for children</li>
+                      <li>Considering additional family needs (care for special needs dependents)</li>
+                      <li>Reviewing existing coverage and identifying gaps</li>
+                      <li>Determining timeline for coverage needs (term) vs. lifetime needs (permanent)</li>
+                    </ol>
+                    <p className="text-muted-foreground mt-2">
+                      Use our needs analysis calculator tool during client meetings for comprehensive recommendations.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="objection-handling">
+                  <AccordionTrigger>How do I handle price objections?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      When facing price objections:
+                    </p>
+                    <ul className="list-disc pl-6 text-muted-foreground space-y-1">
+                      <li>Reframe insurance as a monthly expense rather than annual cost</li>
+                      <li>Compare to other monthly expenses with less value (coffee, streaming services)</li>
+                      <li>Illustrate the "cost per day" to provide perspective</li>
+                      <li>Focus on value and peace of mind rather than price</li>
+                      <li>Show cost of delay - premiums increase with age and health changes</li>
+                      <li>Offer alternative options (different term lengths, slightly lower face amounts)</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
