@@ -38,8 +38,10 @@ import {
   HelpCircle, 
   Info, 
   Landmark,
+  ShieldCheck,
   Target,
-  ThumbsUp, 
+  ThumbsUp,
+  TrendingUp,
   Users,
   Video 
 } from "lucide-react";
@@ -997,10 +999,34 @@ export default function TrainingPage() {
       description: "Learn about VUL products, sub-account investments, and high-net-worth client strategies.",
       content: (
         <div className="space-y-6">
-          <VideoPlayer 
-            title="Selling Life Insurance: The Importance of Process in Sales"
-            
-          />
+          <div className="border rounded-lg overflow-hidden mb-6">
+            <div className="bg-sky-50 p-4">
+              <h3 className="text-lg font-medium text-sky-800 mb-2">Key VUL Concepts Overview</h3>
+              <p className="text-sm text-sky-700 mb-4">
+                Variable Universal Life combines permanent insurance with investment options for clients seeking both protection and growth potential.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-3 rounded-md border border-sky-200">
+                  <h4 className="font-medium text-sky-900 flex items-center">
+                    <ShieldCheck className="h-4 w-4 mr-2 text-sky-500" />
+                    Protection Component
+                  </h4>
+                  <p className="text-sm mt-1">
+                    Provides permanent death benefit protection with adjustable coverage options
+                  </p>
+                </div>
+                <div className="bg-white p-3 rounded-md border border-sky-200">
+                  <h4 className="font-medium text-sky-900 flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-2 text-sky-500" />
+                    Investment Component
+                  </h4>
+                  <p className="text-sm mt-1">
+                    Cash value invested in sub-accounts with various investment options and risk levels
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           
           <div>
             <h3 className="text-lg font-medium">What is Variable Universal Life Insurance (VUL)?</h3>
