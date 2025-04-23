@@ -58,22 +58,30 @@ const VideoPlayer = ({ youtubeId, title }: VideoPlayerProps) => {
         <Video className="mr-2 h-5 w-5 text-red-500" />
         Video: {title}
       </h3>
-      <div className="border border-border rounded-md p-2 mb-2">
-        <img 
-          src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`} 
-          alt={title}
-          className="w-full rounded"
-        />
-        <div className="mt-2">
-          <a 
-            href={`https://www.youtube.com/watch?v=${youtubeId}`} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition-colors"
-          >
-            <ExternalLink className="h-4 w-4" />
-            <span>Watch on YouTube</span>
-          </a>
+      <div className="rounded-md overflow-hidden border border-border">
+        <div className="bg-muted p-4 flex flex-col md:flex-row items-center gap-4">
+          <div className="flex-shrink-0 w-full md:w-48 h-auto">
+            <img 
+              src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`} 
+              alt={title}
+              className="w-full h-auto rounded object-cover"
+            />
+          </div>
+          <div className="flex flex-col justify-between h-full">
+            <p className="font-medium">{title}</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Life Insurance Academy Training
+            </p>
+            <a 
+              href={`https://www.youtube.com/watch?v=${youtubeId}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              <span>Watch Video on YouTube</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
