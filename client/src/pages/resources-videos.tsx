@@ -49,54 +49,42 @@ export default function ResourcesVideos() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="border rounded-lg overflow-hidden">
-                <div className="relative" style={{height: "180px"}}>
-                  <div className="absolute inset-0 bg-cover bg-center" 
-                       style={{backgroundImage: "url('https://img.youtube.com/vi/aOd0aAGvT38/maxresdefault.jpg')"}}
-                  >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <a 
-                        href="https://www.youtube.com/watch?v=aOd0aAGvT38" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md cursor-pointer"
-                      >
-                        <Video className="h-6 w-6 mr-2" />
-                        Watch Video
-                      </a>
-                    </div>
-                  </div>
-                </div>
                 <div className="bg-muted p-3">
                   <h3 className="font-medium">Indexed Universal Life Insurance</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground mt-1 mb-3">
                     Learn about Indexed Universal Life policies, how they work, and strategies for presenting them to clients.
                   </p>
+                  <div className="aspect-video">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src="https://www.youtube.com/embed/aOd0aAGvT38" 
+                      title="Indexed Universal Life Insurance" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen>
+                    </iframe>
+                  </div>
                 </div>
               </div>
 
               <div className="border rounded-lg overflow-hidden">
-                <div className="relative" style={{height: "180px"}}>
-                  <div className="absolute inset-0 bg-cover bg-center" 
-                       style={{backgroundImage: "url('https://img.youtube.com/vi/PNQCfRzXmB8/maxresdefault.jpg')"}}
-                  >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <a 
-                        href="https://www.youtube.com/watch?v=PNQCfRzXmB8" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md cursor-pointer"
-                      >
-                        <Video className="h-6 w-6 mr-2" />
-                        Watch Video
-                      </a>
-                    </div>
-                  </div>
-                </div>
                 <div className="bg-muted p-3">
                   <h3 className="font-medium">Simplified Issue Life Insurance</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground mt-1 mb-3">
                     An overview of simplified issue insurance products and how they can benefit specific client situations.
                   </p>
+                  <div className="aspect-video">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src="https://www.youtube.com/embed/PNQCfRzXmB8" 
+                      title="Simplified Issue Life Insurance" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen>
+                    </iframe>
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,28 +104,22 @@ export default function ResourcesVideos() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="border rounded-lg overflow-hidden">
-                <div className="relative" style={{height: "180px"}}>
-                  <div className="absolute inset-0 bg-cover bg-center" 
-                       style={{backgroundImage: "url('https://img.youtube.com/vi/jY4l6Vo3RAU/maxresdefault.jpg')"}}
-                  >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <a 
-                        href="https://www.youtube.com/watch?v=jY4l6Vo3RAU" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md cursor-pointer"
-                      >
-                        <Video className="h-6 w-6 mr-2" />
-                        Watch Video
-                      </a>
-                    </div>
-                  </div>
-                </div>
                 <div className="bg-muted p-3">
                   <h3 className="font-medium">Final Expense Sales for Low Income Seniors</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground mt-1 mb-3">
                     Effective techniques for helping seniors with limited income secure final expense coverage.
                   </p>
+                  <div className="aspect-video">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src="https://www.youtube.com/embed/jY4l6Vo3RAU" 
+                      title="Final Expense Sales for Low Income Seniors" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen>
+                    </iframe>
+                  </div>
                 </div>
               </div>
 
