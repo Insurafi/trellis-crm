@@ -58,7 +58,7 @@ export default function ResourcesVideos() {
                         href="https://www.youtube.com/watch?v=aOd0aAGvT38" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
@@ -84,7 +84,7 @@ export default function ResourcesVideos() {
                         href="https://www.youtube.com/watch?v=PNQCfRzXmB8" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
@@ -125,7 +125,7 @@ export default function ResourcesVideos() {
                         href="https://www.youtube.com/watch?v=jY4l6Vo3RAU" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border-primary text-primary"
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground border-none hover:bg-primary/90 shadow-md"
                       >
                         <Video className="h-6 w-6 mr-2" />
                         Watch Video
