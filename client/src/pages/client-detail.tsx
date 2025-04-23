@@ -96,6 +96,7 @@ export default function ClientDetail() {
     phone: "",
     company: "",
     address: "",
+    addressLine2: "", // Added new field for address line 2
     city: "",
     state: "",
     zipCode: "",
@@ -500,13 +501,23 @@ export default function ClientDetail() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="address" className="text-sm font-medium">Address</label>
+                        <label htmlFor="address" className="text-sm font-medium">Address Line 1</label>
                         <Input
                           id="address"
                           name="address"
                           value={formData.address || ""}
                           onChange={handleInputChange}
-                          placeholder="Street address"
+                          placeholder="Street number and name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="addressLine2" className="text-sm font-medium">Address Line 2</label>
+                        <Input
+                          id="addressLine2"
+                          name="addressLine2"
+                          value={formData.addressLine2 || ""}
+                          onChange={handleInputChange}
+                          placeholder="Apt, Suite, Unit, etc. (optional)"
                         />
                       </div>
                       <div className="space-y-2">
