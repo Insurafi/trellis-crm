@@ -3596,27 +3596,7 @@ export default function TrainingPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="aspect-video relative" style={{height: "315px"}}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/n4ZO0QBJnX0" 
-                      width="100%" 
-                      height="100%" 
-                      style={{position: "absolute", top: 0, left: 0}}
-                      frameBorder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen 
-                      title="Simplified Issue Life Insurance"
-                    ></iframe>
-                  </div>
-                  <div className="bg-muted p-3">
-                    <h3 className="font-medium">Simplified Issue Life Insurance</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      An overview of simplified issue insurance products and how they can benefit specific client situations.
-                    </p>
-                  </div>
-                </div>
-                
+
                 <div className="border rounded-lg overflow-hidden">
                   <div className="aspect-video relative" style={{height: "315px"}}>
                     <iframe 
