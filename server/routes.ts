@@ -26,7 +26,8 @@ import { fromZodError } from "zod-validation-error";
 import { sendEmail, processTemplate, replaceAgentName } from "./email-service";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
 import { registerAnalyticsRoutes } from "./routes-analytics";
-import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
+// Disabled lead to client synchronization to prevent automatic conversion 
+// import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
 import { setupAuth, isAuthenticated, isAdmin, isAdminOrTeamLeader, hashPassword, comparePasswords as authComparePasswords } from "./auth";
 import { setupClientAuth, isAuthenticatedClient } from "./client-auth";
 import { setupSimpleRegister } from "./simple-register";
@@ -2288,8 +2289,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // Synchronize leads to clients before starting the server 
-  await syncExistingLeadsToClients();
+  // Lead-to-client synchronization disabled to prevent automatic conversion
+  // await syncExistingLeadsToClients();
 
   // Setup scheduled task cleanup
   setupTaskCleanup();
