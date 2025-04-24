@@ -280,7 +280,7 @@ const LeadsPage: React.FC = () => {
       insuranceTypeInterest: "",
       leadSource: "Website",
       assignedAgentId: null,
-      status: "new",
+      status: "Leads",
       notes: "",
     },
   });
@@ -415,6 +415,7 @@ const LeadsPage: React.FC = () => {
   const StatusBadge = ({ status }: { status: string }) => {
     const statusConfig = {
       new: { variant: "outline", icon: <Clock size={14} className="mr-1" />, label: "New" },
+      Leads: { variant: "outline", icon: <Clock size={14} className="mr-1" />, label: "Leads" },
       contacted: { variant: "secondary", icon: <Clock size={14} className="mr-1" />, label: "Contacted" },
       qualified: { variant: "default", icon: <Check size={14} className="mr-1" />, label: "Qualified" },
       unqualified: { variant: "destructive", icon: <X size={14} className="mr-1" />, label: "Unqualified" },
@@ -422,7 +423,7 @@ const LeadsPage: React.FC = () => {
       lost: { variant: "outline", icon: <X size={14} className="mr-1" />, label: "Lost" },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.Leads;
 
     return (
       <Badge variant={config.variant as any} className="flex items-center">
@@ -466,7 +467,7 @@ const LeadsPage: React.FC = () => {
                 insuranceTypeInterest: "",
                 leadSource: "Website",
                 assignedAgentId: null,
-                status: "new",
+                status: "Leads",
                 notes: "",
               });
             }
