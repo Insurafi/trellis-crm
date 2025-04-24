@@ -4257,8 +4257,8 @@ export default function TrainingPage() {
                       <li>Move the opportunity to the "Negotiation" or appropriate pipeline stage</li>
                       <li>Complete the "New Policy" form with detailed information about the policy, coverage amounts, and premium</li>
                       <li>Run the full quote in the system for the client</li>
-                      <li>Submit the quote for RO staff review and approval</li>
-                      <li>Once the quote is approved by RO staff, collect and input the client's banking information</li>
+                      <li>Submit the quote for Rohrer staff review and approval</li>
+                      <li>Once the quote is approved by Rohrer staff, collect and input the client's banking information</li>
                       <li>Upload all signed application documents to the client's profile with the "Application" tag</li>
                       <li>Submit the application to the carrier using the "Submit to Carrier" button</li>
                       <li>Update the policy status to "Pending" while waiting for carrier approval</li>
