@@ -106,51 +106,62 @@ const LeadsPage: React.FC = () => {
   // Add lead mutation
   const addLeadMutation = useMutation({
     mutationFn: async (newLead: LeadFormValues) => {
-      // Add enhanced debugging for lead creation
       console.log("Starting lead creation with data:", newLead);
       
       try {
-        const response = await apiRequest("POST", "/api/leads", newLead);
+        // Use fetch directly to have more control over the response handling
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newLead),
+          credentials: "include",
+        });
+        
         console.log("Lead creation API response status:", response.status, response.statusText);
         
         if (!response.ok) {
-          // Try to extract the error message from the response
+          let errorMessage = "Failed to add lead";
           try {
             const errorData = await response.json();
-            console.error("Lead creation error details:", errorData);
-            throw new Error(errorData.message || 'Failed to add lead');
-          } catch (parseError) {
-            console.error("Failed to parse error response:", parseError);
-            throw new Error(`Failed to add lead: ${response.statusText}`);
+            errorMessage = errorData.message || errorMessage;
+          } catch (e) {
+            errorMessage = `${errorMessage}: ${response.statusText}`;
           }
+          throw new Error(errorMessage);
         }
         
-        // Debug successful response
-        const responseData = await response.clone().json();
+        // Parse the successful response
+        const responseData = await response.json();
         console.log("Lead created successfully:", responseData);
-        return response;
+        return responseData;
       } catch (error) {
         console.error("Lead creation exception:", error);
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Successfully created a lead
       queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+      
       toast({
         title: "Lead added",
-        description: "New lead has been successfully added",
+        description: `New lead "${data.lead.firstName} ${data.lead.lastName}" has been successfully added`,
       });
+      
+      // Reset the form and close the dialog
+      addForm.reset();
       setIsAddDialogOpen(false);
     },
     onError: (error: Error) => {
       console.error("Lead add error:", error);
       
       // Improved error message that shows the actual error
-      let errorMessage = "Failed to add lead";
+      let errorMessage = "Failed to add lead: undefined";
       if (error instanceof Error) {
         errorMessage = error.message || errorMessage;
-        // Log full error details for debugging
-        console.error("Full error details:", JSON.stringify(error, null, 2));
+        console.error("Full error details:", error);
       }
       
       toast({
