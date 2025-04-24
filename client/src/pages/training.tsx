@@ -4042,12 +4042,12 @@ export default function TrainingPage() {
             </CardContent>
           </Card>
 
-          {/* FAQ Section */}
+          {/* Insurance FAQ Section */}
           <Card className="mt-6">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <HelpCircle className="mr-2 h-5 w-5 text-purple-600" />
-                Frequently Asked Questions
+                Insurance FAQ
               </CardTitle>
               <CardDescription>
                 Common questions about insurance products and sales techniques
@@ -4123,6 +4123,150 @@ export default function TrainingPage() {
                       <li>Show cost of delay - premiums increase with age and health changes</li>
                       <li>Offer alternative options (different term lengths, slightly lower face amounts)</li>
                     </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+          
+          {/* Trellis & Insurafi FAQ Section */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Briefcase className="mr-2 h-5 w-5 text-blue-600" />
+                Trellis & Insurafi FAQ
+              </CardTitle>
+              <CardDescription>
+                Answers to common questions about using our CRM and client portal systems
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="what-is-trellis">
+                  <AccordionTrigger>What is Trellis?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      Trellis is our comprehensive CRM (Customer Relationship Management) platform designed specifically for insurance brokers and agents. It helps you manage client relationships, track sales opportunities, store documents, generate quotes, schedule appointments, and monitor commissions - all in one centralized system.
+                    </p>
+                    <p className="text-muted-foreground">
+                      The name "Trellis" symbolizes how our platform provides structure and support for your insurance business to grow, much like a garden trellis supports climbing plants.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="what-is-insurafi">
+                  <AccordionTrigger>What is Insurafi?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      Insurafi is our client-facing portal that complements the Trellis CRM. It provides your clients with secure access to their insurance policies, documents, and account information. When you store documents or policy details in Trellis, clients can view this information through their Insurafi portal.
+                    </p>
+                    <p className="text-muted-foreground">
+                      The name combines "Insurance" with "Fi" (from "fidelity"), emphasizing trustworthiness and security in managing client insurance information.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="pipeline-management">
+                  <AccordionTrigger>How do I use the sales pipeline in Trellis?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      The Trellis pipeline helps you track sales opportunities through different stages. Here's how to use it effectively:
+                    </p>
+                    <ol className="list-decimal pl-6 text-muted-foreground space-y-1">
+                      <li>Navigate to the Pipeline section from the main sidebar</li>
+                      <li>Click "Add Opportunity" to create a new sales opportunity</li>
+                      <li>Fill in details including client, policy type, and estimated value</li>
+                      <li>Assign the opportunity to a stage (Lead, Qualified, Proposal, etc.)</li>
+                      <li>Update opportunities by dragging between stages as they progress</li>
+                      <li>Use the "Expected Close Date" to prioritize your follow-ups</li>
+                      <li>Track conversion rates in the Analytics dashboard to identify areas for improvement</li>
+                    </ol>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="client-portal-setup">
+                  <AccordionTrigger>How do I set up a client in the Insurafi portal?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      To provide clients access to the Insurafi portal:
+                    </p>
+                    <ol className="list-decimal pl-6 text-muted-foreground space-y-1">
+                      <li>First create the client in Trellis under the Clients section</li>
+                      <li>Ensure you've added their email address and other contact details</li>
+                      <li>Check the "Enable Client Portal" option when creating or editing the client</li>
+                      <li>Upload any relevant documents the client should have access to</li>
+                      <li>Click "Send Portal Invitation" to email login credentials to your client</li>
+                      <li>The client will receive instructions to set up their password</li>
+                      <li>Any policies or documents you add to this client will automatically appear in their portal</li>
+                    </ol>
+                    <p className="text-muted-foreground mt-2">
+                      Pro tip: Walk your clients through the portal during an initial meeting or via screen sharing to increase adoption and satisfaction.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="commission-tracking">
+                  <AccordionTrigger>How does the commission tracking system work?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      The Trellis commission tracking system helps you monitor earned and pending commissions:
+                    </p>
+                    <ul className="list-disc pl-6 text-muted-foreground space-y-1">
+                      <li>When creating a policy, enter the premium amount and commission percentage</li>
+                      <li>For recurring commissions, set the payment frequency (monthly, quarterly, annual)</li>
+                      <li>Trellis automatically calculates expected commission amounts</li>
+                      <li>Mark commissions as "received" when payments arrive from carriers</li>
+                      <li>View commission reports by date range, carrier, or agent</li>
+                      <li>Export commission data for accounting and tax purposes</li>
+                      <li>Set up commission splits for policies with multiple agents</li>
+                    </ul>
+                    <p className="text-muted-foreground mt-2">
+                      For team leaders: Access the "Team Commissions" view to see overrides and downline performance.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="document-management">
+                  <AccordionTrigger>What's the best way to organize documents in Trellis?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      For effective document management in Trellis:
+                    </p>
+                    <ul className="list-disc pl-6 text-muted-foreground space-y-1">
+                      <li>Use consistent naming conventions (e.g., "ClientName_PolicyType_Date")</li>
+                      <li>Apply appropriate document tags (Application, Policy, Medical, etc.)</li>
+                      <li>Always associate documents with the relevant client or policy</li>
+                      <li>Set document visibility (Internal only vs. Client visible)</li>
+                      <li>Use the document expiration feature for time-sensitive items</li>
+                      <li>Utilize document templates for commonly used forms</li>
+                      <li>Regularly archive outdated documents to maintain system performance</li>
+                    </ul>
+                    <p className="text-muted-foreground mt-2">
+                      Remember: Documents marked "Client Visible" will automatically appear in the client's Insurafi portal.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="policy-purchase">
+                  <AccordionTrigger>What happens when a client wants to purchase a policy?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-muted-foreground mb-2">
+                      When a client is ready to purchase a policy, follow these steps in Trellis:
+                    </p>
+                    <ol className="list-decimal pl-6 text-muted-foreground space-y-1">
+                      <li>Move the opportunity to the "Negotiation" or appropriate pipeline stage</li>
+                      <li>Complete the "New Policy" form with detailed information about the policy, coverage amounts, and premium</li>
+                      <li>Upload all signed application documents to the client's profile with the "Application" tag</li>
+                      <li>Submit the application to the carrier using the "Submit to Carrier" button</li>
+                      <li>Update the policy status to "Pending" while waiting for carrier approval</li>
+                      <li>Once approved, upload the policy documents and change status to "Active"</li>
+                      <li>Schedule a policy delivery appointment with the client</li>
+                      <li>Move the opportunity to "Closed Won" in the pipeline</li>
+                      <li>The system will automatically calculate expected commissions based on the policy details</li>
+                    </ol>
+                    <p className="text-muted-foreground mt-2">
+                      The client will receive a notification through their Insurafi portal once the policy is active, and they'll be able to access all their policy documents there.
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
