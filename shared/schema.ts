@@ -622,7 +622,7 @@ export const leads = pgTable("leads", {
   // Lead Management
   leadSource: text("lead_source"), // How the lead was acquired
   assignedAgentId: integer("assigned_agent_id").references(() => agents.id),
-  status: text("status").default("new"), // new, contacted, qualified, proposal, closed-won, closed-lost
+  status: text("status").default("LEADS"), // LEADS, contacted, qualified, proposal, closed-won, closed-lost
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
