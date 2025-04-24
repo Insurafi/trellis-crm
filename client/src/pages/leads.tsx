@@ -103,6 +103,36 @@ const LeadsPage: React.FC = () => {
     queryKey: ["/api/agents"],
   });
 
+  // Add lead form
+  const addForm = useForm<LeadFormValues>({
+    resolver: zodResolver(leadFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      sex: "", // Added sex field with empty default
+      dateOfBirth: "",
+      email: "",
+      phoneNumber: "",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      height: "",
+      weight: "",
+      smokerStatus: "No",
+      medicalConditions: "",
+      familyHistory: "",
+      incomeRange: "",
+      existingCoverage: "",
+      coverageNeeds: "",
+      insuranceTypeInterest: "",
+      leadSource: "Website",
+      assignedAgentId: null,
+      status: "Leads",
+      notes: "",
+    },
+  });
+
   // Add lead mutation
   const addLeadMutation = useMutation({
     mutationFn: async (newLead: LeadFormValues) => {
@@ -276,7 +306,6 @@ const LeadsPage: React.FC = () => {
       email: "",
       phoneNumber: "",
       address: "",
-      addressLine2: "", // Added address line 2 field
       city: "",
       state: "",
       zipCode: "",
