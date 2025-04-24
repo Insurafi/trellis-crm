@@ -622,7 +622,7 @@ export const leads = pgTable("leads", {
   // Lead Management
   leadSource: text("lead_source"), // How the lead was acquired
   assignedAgentId: integer("assigned_agent_id").references(() => agents.id),
-  status: text("status").default("LEADS"), // LEADS, contacted, qualified, proposal, closed-won, closed-lost
+  status: text("status").default("Leads"), // Leads, contacted, qualified, proposal, closed-won, closed-lost
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -683,7 +683,7 @@ export const insertLeadSchema = baseLeadSchema.extend({
   insuranceTypeInterest: baseLeadSchema.shape.insuranceTypeInterest.optional(),
   leadSource: baseLeadSchema.shape.leadSource.optional().default("Website"),
   assignedAgentId: baseLeadSchema.shape.assignedAgentId.optional(),
-  status: baseLeadSchema.shape.status.optional().default("new"),
+  status: baseLeadSchema.shape.status.optional().default("Leads"),
   notes: baseLeadSchema.shape.notes.optional(),
   lastContactedAt: baseLeadSchema.shape.lastContactedAt.optional(),
 });
