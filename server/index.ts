@@ -4,7 +4,8 @@ import { setupVite, serveStatic, log } from "./vite";
 import { initializeData } from "./initialize-data";
 import { initializePipelineData } from "./initialize-pipeline-data";
 import { initializeCommissionData } from "./initialize-commission-data";
-import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
+// Disabled lead to client sync to prevent automatic conversion
+// import { syncExistingLeadsToClients } from "./sync-existing-leads-to-clients";
 import { syncExistingPoliciesToClients } from "./sync-existing-policies-to-clients";
 import { setupOnlineStatusCleanup } from "./online-status-cleanup";
 
@@ -75,8 +76,8 @@ app.use((req, res, next) => {
     
     // Initialize database with sample data
     try {
-      // First synchronize leads with clients to ensure proper associations
-      await syncExistingLeadsToClients();
+      // Note: Lead-to-client sync has been disabled to prevent automatic lead conversion
+      // await syncExistingLeadsToClients();
       
       // Then synchronize policies with clients to ensure proper linkage
       await syncExistingPoliciesToClients();

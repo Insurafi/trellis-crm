@@ -1349,46 +1349,9 @@ export function registerAgentLeadsPolicyRoutes(app: Express) {
       const leadData = insertLeadSchema.parse(cleanedData);
       const newLead = await storage.createLead(leadData);
       
-      // Also create a client record from the lead data
-      const clientData = {
-        name: `${newLead.firstName} ${newLead.lastName}`.toUpperCase(), // Ensure consistent naming format
-        email: newLead.email || `lead${newLead.id}@placeholder.com`, // Ensure email is not null
-        phone: newLead.phoneNumber,
-        // Include all address fields
-        address: newLead.address,
-        city: newLead.city, // Add city field
-        state: newLead.state, // Add state field
-        zipCode: newLead.zipCode, // Add zip code field
-        sex: newLead.sex,
-        dateOfBirth: newLead.dateOfBirth, // Include date of birth
-        status: "active",
-        notes: newLead.notes,
-        // Link to the lead and assigned agent
-        assignedAgentId: newLead.assignedAgentId,
-        leadId: newLead.id,
-        // Add additional fields for insurance information
-        insuranceType: newLead.insuranceTypeInterest,
-        insuranceInfo: newLead.existingCoverage
-      };
-      
-      // Create the client record
-      try {
-        const newClient = await storage.createClient(clientData);
-        console.log(`Created client #${newClient.id} from lead #${newLead.id}`);
-        
-        // Add the client info to the response
-        res.status(201).json({
-          lead: newLead,
-          client: newClient
-        });
-      } catch (clientError) {
-        // If client creation fails, still return the lead but log the error
-        console.error("Error creating client from lead:", clientError);
-        res.status(201).json({
-          lead: newLead,
-          clientError: "Failed to create client record"
-        });
-      }
+      // Return only the lead without automatically creating a client
+      console.log(`Created lead #${newLead.id}`);
+      res.status(201).json({ lead: newLead });
     } catch (error) {
       console.error("Error creating lead:", error);
       handleValidationError(error, res);
