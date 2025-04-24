@@ -80,7 +80,7 @@ const leadFormSchema = z.object({
   insuranceTypeInterest: z.string().optional(),
   leadSource: z.string().default("Website"),
   assignedAgentId: z.number().nullable().optional(),
-  status: z.string().default("new"),
+  status: z.string().default("Leads"),
   notes: z.string().optional(),
 });
 
