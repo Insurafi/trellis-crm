@@ -312,6 +312,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.sendFile("public/download.html", { root: "./client" });
   });
   
+  // Serve a direct download page (without requiring login)
+  app.get("/direct-download", (req, res) => {
+    res.sendFile("direct-download.html", { root: "./client" });
+  });
+  
   // Serve the code ZIP file
   app.get("/trellis-crm-code.zip", (req, res) => {
     res.sendFile("public/trellis-crm-code.zip", { root: "./client" });
