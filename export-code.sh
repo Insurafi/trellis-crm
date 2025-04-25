@@ -24,4 +24,4 @@ else
   cd ..
   echo "New archive created as 'trellis-crm-new.zip'"
   echo "Please run this script again to download the new archive."
-fi
+fibash
