@@ -3,159 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trellis CRM Code Download</title>
+    <title>Download Trellis CRM Code</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            max-width: 960px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
             line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
         }
         h1 {
-            color: #333;
-            border-bottom: 2px solid #eee;
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e7eb;
             padding-bottom: 10px;
         }
-        .file-card {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h2 {
-            margin-top: 0;
-            color: #444;
-        }
-        p {
-            color: #666;
-        }
-        .buttons {
-            margin-top: 15px;
-        }
-        .btn {
+        .download-button {
             display: inline-block;
-            background-color: #4285f4;
+            background-color: #4f46e5;
             color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 6px;
             text-decoration: none;
-            margin-right: 10px;
-            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
         }
-        .btn:hover {
-            background-color: #3367d6;
+        .download-button:hover {
+            background-color: #4338ca;
         }
-        pre {
-            background-color: #f5f5f5;
-            padding: 15px;
+        .instructions {
+            margin-top: 30px;
+            background-color: #f0f9ff;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3b82f6;
+        }
+        .instructions h2 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 6px;
             border-radius: 4px;
-            overflow-x: auto;
-            margin-top: 15px;
-        }
-        .hidden {
-            display: none;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
         }
     </style>
 </head>
 <body>
-    <h1>Trellis CRM Code Download Center</h1>
-    <p>This page allows you to download the source code for the Trellis CRM application.</p>
-
-    <div class="file-card">
-        <h2>Client Code (Frontend)</h2>
-        <p>Contains the React components, hooks, and pages that make up the user interface.</p>
-        <div class="buttons">
-            <a href="/export-code/client-code.md" download="trellis-client-code.md" class="btn">Download</a>
-            <button class="btn" onclick="toggleSection('client-preview')">Preview</button>
+    <div class="container">
+        <h1>Trellis CRM Code Download</h1>
+        <p>This page allows you to download the complete source code for the Trellis CRM application.</p>
+        
+        <a href="/trellis-crm-code.zip" download class="download-button">Download Complete Code</a>
+        
+        <div class="instructions">
+            <h2>Installation Instructions</h2>
+            <ol>
+                <li>Download and extract the ZIP file to a folder on your computer.</li>
+                <li>Open a terminal or command prompt in that folder.</li>
+                <li>Run <code>npm install</code> to install all dependencies.</li>
+                <li>Create a <code>.env</code> file in the root directory with your database credentials.</li>
+                <li>Run <code>npm run dev</code> to start the development server.</li>
+            </ol>
+            <p><strong>Note:</strong> You'll need Node.js 18+ and PostgreSQL to run this application.</p>
         </div>
-        <pre id="client-preview" class="hidden">Loading...</pre>
     </div>
-
-    <div class="file-card">
-        <h2>Server Code (Backend)</h2>
-        <p>Contains the Express.js routes, authentication logic, and API endpoints.</p>
-        <div class="buttons">
-            <a href="/export-code/server-code.md" download="trellis-server-code.md" class="btn">Download</a>
-            <button class="btn" onclick="toggleSection('server-preview')">Preview</button>
-        </div>
-        <pre id="server-preview" class="hidden">Loading...</pre>
-    </div>
-
-    <div class="file-card">
-        <h2>Database Schema</h2>
-        <p>Contains the Drizzle ORM schema definitions for all database tables.</p>
-        <div class="buttons">
-            <a href="/export-code/database-schema.md" download="trellis-database-schema.md" class="btn">Download</a>
-            <button class="btn" onclick="toggleSection('schema-preview')">Preview</button>
-        </div>
-        <pre id="schema-preview" class="hidden">Loading...</pre>
-    </div>
-
-    <div class="file-card">
-        <h2>Key Code Snippets</h2>
-        <p>Important code snippets from various parts of the application.</p>
-        <div class="buttons">
-            <a href="/export-code/key-snippets.md" download="trellis-key-snippets.md" class="btn">Download</a>
-            <button class="btn" onclick="toggleSection('snippets-preview')">Preview</button>
-        </div>
-        <pre id="snippets-preview" class="hidden">Loading...</pre>
-    </div>
-
-    <div class="file-card">
-        <h2>Project Configuration</h2>
-        <p>Contains the package.json and other configuration files.</p>
-        <div class="buttons">
-            <a href="/export-code/project-config.md" download="trellis-project-config.md" class="btn">Download</a>
-            <button class="btn" onclick="toggleSection('config-preview')">Preview</button>
-        </div>
-        <pre id="config-preview" class="hidden">Loading...</pre>
-    </div>
-
-    <div class="file-card">
-        <h2>Full File Structure</h2>
-        <p>Overview of all files in the application.</p>
-        <div class="buttons">
-            <a href="/export-code/README.md" download="trellis-file-structure.md" class="btn">Download</a>
-            <button class="btn" onclick="toggleSection('readme-preview')">Preview</button>
-        </div>
-        <pre id="readme-preview" class="hidden">Loading...</pre>
-    </div>
-
-    <script>
-        function toggleSection(id) {
-            const element = document.getElementById(id);
-            
-            if (element.classList.contains('hidden')) {
-                element.classList.remove('hidden');
-                
-                // Load content if it's just "Loading..."
-                if (element.textContent === "Loading...") {
-                    const fileMap = {
-                        'client-preview': '/export-code/client-code.md',
-                        'server-preview': '/export-code/server-code.md',
-                        'schema-preview': '/export-code/database-schema.md',
-                        'snippets-preview': '/export-code/key-snippets.md',
-                        'config-preview': '/export-code/project-config.md',
-                        'readme-preview': '/export-code/README.md'
-                    };
-                    
-                    fetch(fileMap[id])
-                        .then(response => response.text())
-                        .then(data => {
-                            element.textContent = data;
-                        })
-                        .catch(error => {
-                            element.textContent = "Error loading file: " + error.message;
-                        });
-                }
-            } else {
-                element.classList.add('hidden');
-            }
-        }
-    </script>
 </body>
 </html>
