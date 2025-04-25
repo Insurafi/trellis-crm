@@ -307,6 +307,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.sendFile("direct-client-dashboard.html", { root: "./client" });
   });
   
+  // Serve the download page for code download
+  app.get("/download.html", (req, res) => {
+    res.sendFile("public/download.html", { root: "./client" });
+  });
+  
+  // Serve the code ZIP file
+  app.get("/trellis-crm-code.zip", (req, res) => {
+    res.sendFile("public/trellis-crm-code.zip", { root: "./client" });
+  });
+  
   // Direct client login API endpoint that doesn't go through auth middleware
   app.post("/direct-client-login", async (req, res) => {
     try {

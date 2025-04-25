@@ -209,6 +209,7 @@ function Router() {
       <Route path="/client-dashboard" component={ClientDashboard} />
       <Route path="/bypass-login" component={BypassLogin} />
       <Route path="/simple-register" component={SimpleRegister} />
+      <Route path="/download" component={DownloadPage} />
       <Route component={NotFound} />
     </Switch>
   );
