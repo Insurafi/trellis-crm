@@ -317,9 +317,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.sendFile("direct-download.html", { root: "./client" });
   });
   
+  // Serve a page that automatically downloads from GitHub
+  app.get("/github-download", (req, res) => {
+    res.sendFile("github-download.html", { root: "./client" });
+  });
+  
   // Serve the code ZIP file
   app.get("/trellis-crm-code.zip", (req, res) => {
     res.sendFile("public/trellis-crm-code.zip", { root: "./client" });
+  });
+  
+  // Serve GitHub ZIP file directly
+  app.get("/github-zip", (req, res) => {
+    res.sendFile("trellis-crm-github.zip", { root: "." });
   });
   
   // Direct client login API endpoint that doesn't go through auth middleware
