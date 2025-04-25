@@ -33,6 +33,7 @@ import SimpleClientLogin from "@/pages/simple-client-login";
 import DirectClientLogin from "@/pages/direct-client-login";
 import FinalClientTest from "@/pages/final-client-test";
 import ClientDashboard from "@/pages/client-dashboard";
+import DownloadPage from "@/pages/download-page";
 
 // Use wrapper components to handle lazy loading
 const AgentsPage = () => {
