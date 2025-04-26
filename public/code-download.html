@@ -1,83 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Download Trellis CRM Code</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; }
-    h1 { color: #3b82f6; margin-bottom: 2rem; }
-    .button { background-color: #3b82f6; color: white; padding: 1rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; display: inline-block; margin: 1rem 0; }
-    .button:hover { background-color: #2563eb; }
-    pre { background-color: #f1f5f9; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
-    .success { color: #16a34a; font-weight: bold; }
-    .error { color: #dc2626; font-weight: bold; }
-    .instructions { background-color: #f8fafc; border-left: 4px solid #3b82f6; padding: 1rem; margin: 1rem 0; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Trellis CRM Code</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+        h1 {
+            color: #6366f1;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #4f46e5;
+            margin-top: 30px;
+        }
+        .download-btn {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: background-color 0.2s ease;
+        }
+        .download-btn:hover {
+            background-color: #4338ca;
+        }
+        code {
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid #e2e8f0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e5e7eb;
+        }
+        .note {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .folder-structure {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre;
+            line-height: 1.4;
+        }
+    </style>
 </head>
 <body>
-  <h1>Download Trellis CRM Code</h1>
-  <p>The complete Trellis CRM project code is available for download!</p>
-  
-  <div class="instructions">
-    <h3>How to download:</h3>
-    <p>1. Click the "Download Code" button below to download the ZIP file</p>
-    <p>2. The file is approximately 1.8MB and contains all frontend, backend, and configuration files</p>
-  </div>
-  
-  <a href="https://codeload.github.com/Insurafi/trellis-crm/zip/refs/heads/main" class="button">Download Code from GitHub</a>
-  
-  <hr>
-  
-  <h2>Alternative Download Options</h2>
-  
-  <h3>Option 1: Direct Download Link</h3>
-  <p>If the GitHub download doesn't work, try this direct link:</p>
-  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Insurafi/trellis-crm" class="button">Download via DownGit</a>
-  
-  <h3>Option 2: Clone Repository</h3>
-  <p>If you have Git installed, you can clone the repository:</p>
-  <pre>git clone https://github.com/Insurafi/trellis-crm.git</pre>
-  
-  <h3>Option 3: Download from File System</h3>
-  <p>If the other options aren't working, you can also download the ZIP file we just created:</p>
-  <ol>
-    <li>In the Replit file browser, find the file <code>trellis-crm-export.zip</code></li>
-    <li>Right-click on it and select "Download"</li>
-  </ol>
-  
-  <h2>What's included in the ZIP file:</h2>
-  <ul>
-    <li><strong>Frontend code</strong> (React, TypeScript)</li>
-    <li><strong>Backend code</strong> (Node.js, Express.js)</li>
-    <li><strong>Database schema</strong> (PostgreSQL, Drizzle ORM)</li>
-    <li><strong>Configuration files</strong></li>
-  </ul>
-  
-  <h2>Project Structure:</h2>
-  <pre>
-├── client/            # Frontend code
-│   ├── src/           # React components and pages
-│   │   ├── components/# UI components
-│   │   ├── hooks/     # Custom React hooks
-│   │   ├── lib/       # Utility functions
-│   │   └── pages/     # Page components
-├── server/            # Backend code
-│   ├── auth.ts        # Authentication middleware
-│   ├── routes.ts      # API routes
-│   └── storage.ts     # Database operations
-├── shared/            # Shared code
-│   └── schema.ts      # Database schema
-└── config files       # Various configuration files
-  </pre>
-  
-  <h2>Setup Instructions:</h2>
-  <ol>
-    <li>Extract the ZIP file</li>
-    <li>Install dependencies: <code>npm install</code></li>
-    <li>Set up a PostgreSQL database</li>
-    <li>Configure environment variables as specified in the README</li>
-    <li>Run the application: <code>npm run dev</code></li>
-  </ol>
-  
-  <p><strong>Note:</strong> The GitHub repository is public and contains all of the code for the Trellis CRM application.</p>
+    <h1>Trellis CRM - Download Source Code</h1>
+
+    <div class="card">
+        <h2>Option 1: Direct Download</h2>
+        <p>Click the button below to download the complete source code as a ZIP file:</p>
+        <a href="/trellis-crm-export.zip" class="download-btn" download>Download Trellis CRM Code (ZIP)</a>
+    </div>
+
+    <div class="card">
+        <h2>Option 2: Push to GitHub</h2>
+        <p>You can push the code directly to your GitHub account using the provided script:</p>
+        <pre>./push-to-github.sh</pre>
+        <p>This script will create a new repository and push all the code to it.</p>
+    </div>
+
+    <div class="card">
+        <h2>Setting Up Locally</h2>
+        <p>After downloading the code:</p>
+        <ol>
+            <li>Extract the ZIP file</li>
+            <li>Install dependencies:
+                <pre>npm install</pre>
+            </li>
+            <li>Set up a PostgreSQL database</li>
+            <li>Copy the <code>.env.example</code> file to <code>.env</code> and update the database connection details</li>
+            <li>Run the database migrations:
+                <pre>npm run db:push</pre>
+            </li>
+            <li>Start the development server:
+                <pre>npm run dev</pre>
+            </li>
+        </ol>
+    </div>
+
+    <div class="note">
+        <p><strong>Note:</strong> To set up the SendGrid email integration, you'll need to provide your own SENDGRID_API_KEY in the .env file.</p>
+    </div>
+
+    <div class="card">
+        <h2>Project Structure</h2>
+        <div class="folder-structure">
+├── client/           # React frontend
+├── server/           # Express backend
+├── shared/           # Shared types and schemas
+├── migrations/       # Database migrations
+├── public/           # Static assets
+└── ...               # Configuration files
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Key Features</h2>
+        <ul>
+            <li>Comprehensive Lead Management</li>
+            <li>Client Portal</li>
+            <li>Policy Tracking</li>
+            <li>Commission Management</li>
+            <li>Task Management</li>
+            <li>Calendar Integration</li>
+            <li>Marketing Campaign Tools</li>
+            <li>Document Storage</li>
+            <li>Performance Analytics</li>
+        </ul>
+    </div>
 </body>
 </html>
