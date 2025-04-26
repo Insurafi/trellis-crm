@@ -3,11 +3,11 @@ import { createServer, type Server } from "http";
 import { WebSocketServer } from "ws";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { registerAgentLeadsPolicyRoutes } from "./routes-agents-leads-policies";
-import { setupAnalyticsRoutes } from "./routes-analytics";
+// import { setupAnalyticsRoutes } from "./routes-analytics";
 import path from "path";
 import fs from "fs";
 import { setupClientAuth, isAuthenticatedClient } from "./client-auth";
-import syncExistingPolicies from "./sync-existing-policies-to-clients";
+import { syncExistingPoliciesToClients } from "./sync-existing-policies-to-clients";
 import { setupOnlineStatusCleanup } from "./online-status-cleanup";
 import { storage } from "./storage";
 
@@ -303,7 +303,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Initialize background tasks
-  syncExistingPolicies();
+  syncExistingPoliciesToClients();
   
   // IMPORTANT: This block has been commented out to prevent automatic lead-to-client conversion
   // syncExistingLeads();
