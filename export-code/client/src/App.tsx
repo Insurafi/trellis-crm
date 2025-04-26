@@ -33,6 +33,7 @@ import SimpleClientLogin from "@/pages/simple-client-login";
 import DirectClientLogin from "@/pages/direct-client-login";
 import FinalClientTest from "@/pages/final-client-test";
 import ClientDashboard from "@/pages/client-dashboard";
+import DownloadPage from "@/pages/download-page";
 
 // Use wrapper components to handle lazy loading
 const AgentsPage = () => {
@@ -208,6 +209,7 @@ function Router() {
       <Route path="/client-dashboard" component={ClientDashboard} />
       <Route path="/bypass-login" component={BypassLogin} />
       <Route path="/simple-register" component={SimpleRegister} />
+      <Route path="/download" component={DownloadPage} />
       <Route component={NotFound} />
     </Switch>
   );
